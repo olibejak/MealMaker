@@ -14,11 +14,11 @@ export default function IngredientsScreen () {
             <View style={styles.topBar}>
                 <View style={styles.topBarContent}>
                     <View style={styles.searchIcon}>
-                        <Image source={HamburgerIcon} style={styles.iconSize} />
+                        <Image source={require('../assets/myassets/hamburger_menu.png')} style={styles.iconSize} />
                     </View>
                     <Text style={styles.topBarFont}>Ingredients</Text>
                     <View style={styles.searchIcon}>
-                        <Image source={BookIcon} style={styles.iconSize} />
+                        <Image source={require('../assets/myassets/book.png')} style={styles.iconSize} />
                     </View>
                 </View>
             </View>
@@ -26,21 +26,21 @@ export default function IngredientsScreen () {
                 <View style={styles.searchBar}>
                     <View style={styles.searchIcon}>
                         <TouchableOpacity style={styles.center}>
-                            <Image source={SearchIcon} style={styles.iconSize} />
+                            <Image source={require('../assets/myassets/search.png')} style={styles.iconSize} />
                         </TouchableOpacity>
                     </View>
-                    {/*<View style={styles.searchContent}>*/}
-                    <Text style={styles.searchContent}>Search ingredients</Text>
-                    {/*</View>*/}
+                    <View style={styles.searchContent}>
+                        <Text >Search ingredients</Text>
+                    </View>
                 </View>
                 <View style={styles.card}>
                     <Text style={styles.cardTextContent}>White Wine Vinegar</Text>
                     <View style={styles.cardIcons}>
                         <TouchableOpacity style={styles.center}>
-                            <Image source={KitchenIcon} style={styles.iconSize} />
+                            <Image source={require('../assets/myassets/kitchen.png')} style={styles.iconSize} />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.center}>
-                            <Image source={ShoppingIcon} style={styles.iconSize} />
+                            <Image source={require('../assets/myassets/shopping.png')} style={styles.iconSize} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -48,28 +48,36 @@ export default function IngredientsScreen () {
             <View style={styles.bottomBar}>
                 <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */}}>
                     <View style={styles.bottomBarButton}>
-                        {/*<EggIcon width={24} height={24} />*/}
+                        <View style={[styles.bottomBarIcon, styles.enabled]}>
+                            <Image source={require('../assets/myassets/egg.png')}/>
+                        </View>
                         <Text style={[styles.labelText, styles.enabledText]}>Ingredients</Text>
                     </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */}}>
                     <View style={styles.bottomBarButton}>
-                        {/*<DiningIcon width={24} height={24} />*/}
+                        <View style={styles.bottomBarIcon}>
+                        <Image source={require('../assets/myassets/dining.png')}/>
+                        </View>
                         <Text style={styles.labelText}>Recipes</Text>
                     </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */}}>
                     <View style={styles.bottomBarButton}>
-                        {/*<KitchenIcon width={24} height={24} />*/}
+                        <View style={styles.bottomBarIcon}>
+                            <Image source={require('../assets/myassets/kitchen.png')}/>
+                        </View>
                         <Text style={styles.labelText}>Fridge</Text>
                     </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */}}>
                     <View style={styles.bottomBarButton}>
-                        {/*<ShoppingIcon width={24} height={24} />*/}
+                        <View style={styles.bottomBarIcon}>
+                            <Image source={require('../assets/myassets/shopping.png')}/>
+                        </View>
                         <Text style={styles.labelText}>Shopping list</Text>
                     </View>
                 </TouchableOpacity>
@@ -95,6 +103,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FEF7FF',
         display: 'flex',
         alignItems: 'flex-end',
+        justifyContent: 'flex-end',
         paddingTop: 8,
         paddingBottom: 8,
         paddingRight: 0,
@@ -122,6 +131,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         width: '100%',
+        flexDirection: 'row',
     },
     searchIcon: {
         height: 48,
@@ -133,10 +143,13 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     searchContent: {
-        height: '100%',
+        height: 56,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: "center",
+        textAlign: "center",
+        fontSize: 16,
+
     },
     topBarContent: {
         backgroundColor: 'rgba(255,255,255,0)',
@@ -145,7 +158,9 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
+        flexDirection: 'row',
         padding: 0,
+        fontSize: 22,
     },
     iconSize: {
         width: 24,
@@ -165,6 +180,13 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+
+    //  Shadow
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     cardTextContent: {
         width: '100%',
@@ -172,6 +194,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         padding: 16,
+        fontSize: 16,
     },
     cardIcons: {
         paddingTop: 20,
@@ -214,11 +237,16 @@ const styles = StyleSheet.create({
     bottomBarIcon: {
         paddingTop: 4,
         paddingBottom: 4,
-        paddingRight: 20,
-        paddingLeft: 20,
+        marginLeft: 20,
+        marginRight: 20,
         width: 24,
         height: 24,
         backgroundColor: 'rgba(243,237,247,0)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 12,
+        marginBottom: 4,
     },
     labelText: {
         fontSize: 12,
@@ -229,7 +257,7 @@ const styles = StyleSheet.create({
     },
     enabled: {
         borderRadius: 16,
-        backgroundColor: '#F3EDF7',
+        backgroundColor: '#E8DEF8',
     },
     enabledText: {
         fontWeight: '600',
