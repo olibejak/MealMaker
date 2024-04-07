@@ -1,4 +1,4 @@
-import {TouchableOpacity, View, StyleSheet, Image, Text, Touchable} from "react-native";
+import {TouchableOpacity, View, StyleSheet, Image, Text, Touchable, TextInput} from "react-native";
 import HamburgerIcon from '../assets/myassets/hamburger.svg';
 import BookIcon from '../assets/myassets/book.svg';
 import SearchIcon from '../assets/myassets/search.svg';
@@ -30,7 +30,7 @@ export default function IngredientsScreen () {
                         </View>
                     </View>
                     <View style={styles.searchContent}>
-                        <Text style={styles.fontRegular}>Search ingredients</Text>
+                        <TextInput placeholder={"Search ingredients"} returnKeyType="search" onChangeText={/* Handle change */} style={styles.fontRegular}></TextInput>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.card}>
@@ -177,14 +177,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
 
-    //  Shadow
+        //  Shadow
         shadowColor: "#000",
         shadowOffset: {
             width: 2, // Rightward shadow
             height: 2, // Downward shadow
         },
         shadowOpacity: 0.50,
-        shadowRadius: 3.84,
+        shadowRadius: 2,
         // Android shadow (uniform, no direction control)
         elevation: 5,
     },
@@ -262,27 +262,22 @@ const styles = StyleSheet.create({
     },
     fontRegular: {
         fontFamily: 'Roboto-Regular',
-        letterSpacing: 0.6,
         fontSize: 16,
     },
     fontLarge: {
         fontFamily: 'Roboto-Regular',
-        letterSpacing: 0.6,
         fontSize: 22,
     },
     fontSmallBold: {
         fontFamily: 'Roboto-Bold',
-        letterSpacing: 0.6,
         fontSize: 12,
     },
     fontRegularMedium: {
         fontFamily: 'Roboto-Medium',
-        letterSpacing: 0.6,
         fontSize: 16,
     },
     fontSmall: {
         fontFamily: 'Roboto-Regular',
-        letterSpacing: 0.6,
         fontSize: 12,
     },
     textCenter: {
