@@ -1,15 +1,13 @@
 import {View, StyleSheet,ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
 
-export default function IngredientsScreen () {
-    const title = "Ingredients";
-    const filtersOn = false;
-    const selectedBottomBar = "ingredients";
+export default function FridgeScreen () {
+    const title = "My fridge";
+    const selectedBottomBar = "fridge";
     const fridgeButtonOn = true;
-    const cartButtonOn = true;
+    const cartButtonOn = false;
 
     return (
         <View style={styles.screen}>
@@ -17,7 +15,6 @@ export default function IngredientsScreen () {
                 <TopNavigationBar title={title}/>
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                <SearchBar filtersOn={filtersOn}/>
                 {Array.from({ length: 15 }).map((_, index) => (
                     <Card
                         key={index}
@@ -28,7 +25,7 @@ export default function IngredientsScreen () {
                 ))}
             </ScrollView>
             <View>
-                <BottomNavigationBar selected={selectedBottomBar} />
+                <BottomNavigationBar selected={selectedBottomBar}/>
             </View>
         </View>
     )

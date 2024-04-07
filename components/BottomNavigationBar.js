@@ -1,54 +1,56 @@
+import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {BasketIcon, DiningIcon, EggIcon, FridgeIcon} from "../assets/icons";
+import { useNavigation } from '@react-navigation/native';
 
-export default function BottomNavigationBar ({ selected }) {
+export default function BottomNavigationBar() {
+    const navigation = useNavigation();
+    const state = navigation.getState();
+    const selected = state.routes[state.index].name; // Dynamically get the current route name
+
+    function isSelected(current) {
+        return selected === current ? styles.enabled : {};
+    }
 
     return (
         <View style={styles.bottomBar}>
-            <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */
-            }}>
+            <TouchableOpacity style={styles.center} onPress={() => navigation.navigate('Ingredients')}>
                 <View style={styles.bottomBarButton}>
-                    <View style={[styles.bottomBarIcon, isSelected(selected, "ingredients")]}>
+                    <View style={[styles.bottomBarIcon, isSelected("Ingredients")]}>
                         <EggIcon/>
                     </View>
-                    <Text style={[styles.textCenter, styles.fontSmallBold]}>Ingredients</Text>
+                    <Text style={[styles.textCenter, isSelected("Ingredients") ? styles.fontSmallBold : styles.fontSmall]}>Ingredients</Text>
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */
-            }}>
+            <TouchableOpacity style={styles.center} onPress={() => navigation.navigate('Recipes')}>
                 <View style={styles.bottomBarButton}>
-                    <View style={[styles.bottomBarIcon, isSelected(selected, "recipes")]}>
+                    <View style={[styles.bottomBarIcon, isSelected("Recipes")]}>
                         <DiningIcon/>
                     </View>
-                    <Text style={styles.fontSmall}>Recipes</Text>
+                    <Text style={[styles.textCenter, isSelected("Recipes") ? styles.fontSmallBold : styles.fontSmall]}>Recipes</Text>
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */
-            }}>
+            <TouchableOpacity style={styles.center} onPress={() => navigation.navigate('Fridge')}>
                 <View style={styles.bottomBarButton}>
-                    <View style={[styles.bottomBarIcon, isSelected(selected, "fridge")]}>
+                    <View style={[styles.bottomBarIcon, isSelected("Fridge")]}>
                         <FridgeIcon/>
                     </View>
-                    <Text style={styles.fontSmall}>Fridge</Text>
+                    <Text style={[styles.textCenter, isSelected("Fridge") ? styles.fontSmallBold : styles.fontSmall]}>Fridge</Text>
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */
-            }}>
+            <TouchableOpacity style={styles.center} onPress={() => navigation.navigate('ShoppingList')}>
                 <View style={styles.bottomBarButton}>
-                    <View style={[styles.bottomBarIcon, isSelected(selected, "shopping")]}>
+                    <View style={[styles.bottomBarIcon, isSelected("ShoppingList")]}>
                         <BasketIcon/>
                     </View>
-                    <Text style={styles.fontSmall}>Shopping list</Text>
+                    <Text style={[styles.textCenter, isSelected("ShoppingList") ? styles.fontSmallBold : styles.fontSmall]}>Shopping list</Text>
                 </View>
             </TouchableOpacity>
         </View>
-    )};
-
-function isSelected (selected, current) {
-    return selected === current ? styles.enabled : {};
+    );
 }
 
 const styles = StyleSheet.create({
@@ -75,7 +77,6 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         width: "100%",
         height: 30,
-        backgroundColor: 'rgba(243,237,247,0)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -85,7 +86,6 @@ const styles = StyleSheet.create({
     center: {
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: 'rgba(255,255,255,0)',
         padding: 0,
     },
     enabled: {
