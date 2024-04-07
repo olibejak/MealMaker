@@ -16,7 +16,7 @@ export default function IngredientsScreen () {
                     <TouchableOpacity style={styles.searchIcon}>
                         <Image source={require('../assets/myassets/hamburger_menu.png')} style={styles.iconSize} />
                     </TouchableOpacity>
-                    <Text style={styles.topBarFont}>Ingredients</Text>
+                    <Text style={styles.fontLarge}>Ingredients</Text>
                     <TouchableOpacity style={styles.searchIcon}>
                         <Image source={require('../assets/myassets/book.png')} style={styles.iconSize} />
                     </TouchableOpacity>
@@ -30,11 +30,11 @@ export default function IngredientsScreen () {
                         </View>
                     </View>
                     <View style={styles.searchContent}>
-                        <Text style={styles.font}>Search ingredients</Text>
+                        <Text style={styles.fontRegular}>Search ingredients</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.card}>
-                    <Text style={styles.cardTextContent}>White Wine Vinegar</Text>
+                    <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>White Wine Vinegar</Text>
                     <View style={styles.cardIcons}>
                         <TouchableOpacity style={[styles.center, styles.cardButton]}>
                             <Image source={require('../assets/myassets/kitchen.png')} style={styles.iconSize} />
@@ -51,7 +51,7 @@ export default function IngredientsScreen () {
                         <View style={[styles.bottomBarIcon, styles.enabled]}>
                             <Image source={require('../assets/myassets/egg.png')}/>
                         </View>
-                        <Text style={[styles.labelText, styles.enabledText]}>Ingredients</Text>
+                        <Text style={[styles.textCenter, styles.fontSmallBold]}>Ingredients</Text>
                     </View>
                 </TouchableOpacity>
 
@@ -60,7 +60,7 @@ export default function IngredientsScreen () {
                         <View style={styles.bottomBarIcon}>
                         <Image source={require('../assets/myassets/dining.png')}/>
                         </View>
-                        <Text style={styles.labelText}>Recipes</Text>
+                        <Text style={styles.fontSmall}>Recipes</Text>
                     </View>
                 </TouchableOpacity>
 
@@ -69,7 +69,7 @@ export default function IngredientsScreen () {
                         <View style={styles.bottomBarIcon}>
                             <Image source={require('../assets/myassets/kitchen.png')}/>
                         </View>
-                        <Text style={styles.labelText}>Fridge</Text>
+                        <Text style={styles.fontSmall}>Fridge</Text>
                     </View>
                 </TouchableOpacity>
 
@@ -78,7 +78,7 @@ export default function IngredientsScreen () {
                         <View style={styles.bottomBarIcon}>
                             <Image source={require('../assets/myassets/shopping.png')}/>
                         </View>
-                        <Text style={styles.labelText}>Shopping list</Text>
+                        <Text style={styles.fontSmall}>Shopping list</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -125,9 +125,11 @@ const styles = StyleSheet.create({
         overflow: 'auto',
     },
     searchBar: {
-        height: 56,
+        paddingTop: 8,
+        paddingBottom: 8,
+        height: 60,
         backgroundColor: '#EBE6EF',
-        borderRadius: 20,
+        borderRadius: 28,
         display: 'flex',
         alignItems: 'center',
         width: '100%',
@@ -165,16 +167,11 @@ const styles = StyleSheet.create({
         height: 24,
         padding: 8,
     },
-    topBarFont: {
-        fontSize: 22,
-        lineHeight: 20,
-        fontFamily: 'Roboto',
-    },
     card: {
         width: '100%',
         borderRadius: 12,
         backgroundColor: '#F6F2F9',
-        height: 80,
+        height: 90,
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -197,8 +194,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         padding: 16,
-        fontSize: 16,
-        fontWeight: '500',
     },
     cardIcons: {
         paddingTop: 20,
@@ -242,7 +237,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 4,
         marginRight: 4,
-        paddingTop: 12,
+        paddingTop: 4,
         paddingBottom: 16,
     },
     bottomBarIcon: {
@@ -261,25 +256,36 @@ const styles = StyleSheet.create({
         marginTop: 12,
         marginBottom: 4,
     },
-    labelText: {
-        fontSize: 12,
-        fontWeight: '400',
-        lineHeight: 16,
-        textAlign: 'center',
-        fontFamily: 'Roboto',
-    },
     enabled: {
         borderRadius: 16,
         backgroundColor: '#E6DEF6',
     },
-    enabledText: {
-        fontWeight: '600',
-    },
-    roboto: {
-        fontFamily: 'Roboto',
-    },
-    font: {
+    fontRegular: {
+        fontFamily: 'Roboto-Regular',
+        letterSpacing: 0.6,
         fontSize: 16,
-        fontFamily: 'Roboto',
+    },
+    fontLarge: {
+        fontFamily: 'Roboto-Regular',
+        letterSpacing: 0.6,
+        fontSize: 22,
+    },
+    fontSmallBold: {
+        fontFamily: 'Roboto-Bold',
+        letterSpacing: 0.6,
+        fontSize: 12,
+    },
+    fontRegularMedium: {
+        fontFamily: 'Roboto-Medium',
+        letterSpacing: 0.6,
+        fontSize: 16,
+    },
+    fontSmall: {
+        fontFamily: 'Roboto-Regular',
+        letterSpacing: 0.6,
+        fontSize: 12,
+    },
+    textCenter: {
+        textAlign: 'center',
     },
 });
