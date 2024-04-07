@@ -1,4 +1,4 @@
-import {TouchableOpacity, View, StyleSheet, Image, Text} from "react-native";
+import {TouchableOpacity, View, StyleSheet, Image, Text, Touchable} from "react-native";
 import HamburgerIcon from '../assets/myassets/hamburger.svg';
 import BookIcon from '../assets/myassets/book.svg';
 import SearchIcon from '../assets/myassets/search.svg';
@@ -13,37 +13,37 @@ export default function IngredientsScreen () {
         <View style={styles.screen}>
             <View style={styles.topBar}>
                 <View style={styles.topBarContent}>
-                    <View style={styles.searchIcon}>
+                    <TouchableOpacity style={styles.searchIcon}>
                         <Image source={require('../assets/myassets/hamburger_menu.png')} style={styles.iconSize} />
-                    </View>
+                    </TouchableOpacity>
                     <Text style={styles.topBarFont}>Ingredients</Text>
-                    <View style={styles.searchIcon}>
+                    <TouchableOpacity style={styles.searchIcon}>
                         <Image source={require('../assets/myassets/book.png')} style={styles.iconSize} />
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.scrollableScreen}>
-                <View style={styles.searchBar}>
+                <TouchableOpacity style={styles.searchBar}>
                     <View style={styles.searchIcon}>
-                        <TouchableOpacity style={styles.center}>
+                        <View style={styles.center}>
                             <Image source={require('../assets/myassets/search.png')} style={styles.iconSize} />
-                        </TouchableOpacity>
+                        </View>
                     </View>
                     <View style={styles.searchContent}>
-                        <Text >Search ingredients</Text>
+                        <Text style={styles.font}>Search ingredients</Text>
                     </View>
-                </View>
-                <View style={styles.card}>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.card}>
                     <Text style={styles.cardTextContent}>White Wine Vinegar</Text>
                     <View style={styles.cardIcons}>
-                        <TouchableOpacity style={styles.center}>
+                        <TouchableOpacity style={[styles.center, styles.cardButton]}>
                             <Image source={require('../assets/myassets/kitchen.png')} style={styles.iconSize} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.center}>
+                        <TouchableOpacity style={[styles.center, styles.cardButton]}>
                             <Image source={require('../assets/myassets/shopping.png')} style={styles.iconSize} />
                         </TouchableOpacity>
                     </View>
-                </View>
+                </TouchableOpacity>
             </View>
             <View style={styles.bottomBar}>
                 <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */}}>
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     },
     topBar: {
         height: 116,
-        backgroundColor: '#FEF7FF',
+        backgroundColor: '#FDF7FE',
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'flex-end',
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: 56,
-        backgroundColor: '#ECE6F0',
+        backgroundColor: '#EBE6EF',
         borderRadius: 20,
         display: 'flex',
         alignItems: 'center',
@@ -149,7 +149,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         textAlign: "center",
         fontSize: 16,
-
     },
     topBarContent: {
         backgroundColor: 'rgba(255,255,255,0)',
@@ -160,7 +159,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         padding: 0,
-        fontSize: 22,
     },
     iconSize: {
         width: 24,
@@ -175,26 +173,32 @@ const styles = StyleSheet.create({
     card: {
         width: '100%',
         borderRadius: 12,
-        backgroundColor: '#E7E7E7',
+        backgroundColor: '#F6F2F9',
         height: 80,
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
 
     //  Shadow
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 2, // Rightward shadow
+            height: 2, // Downward shadow
+        },
+        shadowOpacity: 0.50,
         shadowRadius: 3.84,
+        // Android shadow (uniform, no direction control)
         elevation: 5,
     },
     cardTextContent: {
-        width: '100%',
+        // width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-start',
         padding: 16,
         fontSize: 16,
+        fontWeight: '500',
     },
     cardIcons: {
         paddingTop: 20,
@@ -204,7 +208,16 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 6, // Note: gap is not directly supported in React Native, you might need to adjust margins manually
+        gap: 6,
+    },
+    cardButton: {
+        width: 40,
+        height: 40,
+        backgroundColor: '#E6DEF6',
+        borderRadius: 100,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     center: {
         display: 'flex',
@@ -217,30 +230,30 @@ const styles = StyleSheet.create({
         borderRadius: 100,
     },
     bottomBar: {
-        backgroundColor: '#E9E4ED',
+        backgroundColor: '#F2EDF6',
         height: 116,
-        // React Native doesn't use 'overflow', 'display', and 'flexWrap' in the same way as CSS for the web, so these are omitted.
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'space-evenly',
-        // 'gap' is not directly supported. You might need to manage spacing manually with margin or padding in child components.
     },
     bottomBarButton: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginLeft: 4, // Note: gap is not directly supported in React Native
-        marginRight: 4, // Note: gap is not directly supported in React Native
+        marginLeft: 4,
+        marginRight: 4,
         paddingTop: 12,
         paddingBottom: 16,
     },
     bottomBarIcon: {
         paddingTop: 4,
         paddingBottom: 4,
-        marginLeft: 20,
-        marginRight: 20,
-        width: 24,
-        height: 24,
+        paddingLeft: 20,
+        paddingRight: 20,
+        // width: 24,
+        width: "100%",
+        // height: 24,
+        height: 30,
         backgroundColor: 'rgba(243,237,247,0)',
         display: 'flex',
         alignItems: 'center',
@@ -257,12 +270,16 @@ const styles = StyleSheet.create({
     },
     enabled: {
         borderRadius: 16,
-        backgroundColor: '#E8DEF8',
+        backgroundColor: '#E6DEF6',
     },
     enabledText: {
         fontWeight: '600',
     },
     roboto: {
+        fontFamily: 'Roboto',
+    },
+    font: {
+        fontSize: 16,
         fontFamily: 'Roboto',
     },
 });
