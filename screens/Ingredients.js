@@ -30,7 +30,7 @@ export default function IngredientsScreen () {
                         </View>
                     </View>
                     <View style={styles.searchContent}>
-                        <TextInput placeholder={"Search ingredients"} returnKeyType="search" onChangeText={/* Handle change */} style={styles.fontRegular}></TextInput>
+                        <TextInput placeholder={"Search ingredients"} returnKeyType="search" onChangeText={() => {/* Handle change */}} style={styles.fontRegular}></TextInput>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.card}>
