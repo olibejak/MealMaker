@@ -147,10 +147,11 @@ const styles = StyleSheet.create({
     searchContent: {
         height: 56,
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: "center",
-        textAlign: "center",
+        textAlign: "left",
         fontSize: 16,
+        width: '100%',
     },
     topBarContent: {
         backgroundColor: 'rgba(255,255,255,0)',
@@ -245,9 +246,7 @@ const styles = StyleSheet.create({
         paddingBottom: 4,
         paddingLeft: 20,
         paddingRight: 20,
-        // width: 24,
         width: "100%",
-        // height: 24,
         height: 30,
         backgroundColor: 'rgba(243,237,247,0)',
         display: 'flex',
@@ -263,6 +262,7 @@ const styles = StyleSheet.create({
     fontRegular: {
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
+        letterSpacing: 0.5,
     },
     fontLarge: {
         fontFamily: 'Roboto-Regular',
@@ -271,14 +271,17 @@ const styles = StyleSheet.create({
     fontSmallBold: {
         fontFamily: 'Roboto-Bold',
         fontSize: 12,
+        letterSpacing: 0.5,
     },
     fontRegularMedium: {
         fontFamily: 'Roboto-Medium',
         fontSize: 16,
+        letterSpacing: 0.5,
     },
     fontSmall: {
         fontFamily: 'Roboto-Regular',
         fontSize: 12,
+        letterSpacing: 0.5,
     },
     textCenter: {
         textAlign: 'center',
