@@ -1,42 +1,35 @@
-import {TouchableOpacity, View, StyleSheet, Text, TextInput} from "react-native";
-import Svg, {G, Path} from "react-native-svg";
+import {TouchableOpacity, View, StyleSheet, Text, ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import {BasketCardIcon, FridgeCardIcon, SearchIcon} from "../assets/icons";
+import {BasketCardIcon, FridgeCardIcon} from "../assets/icons";
+import SearchBar from "../components/SearchBar";
+import Card from "../components/Card";
 
 export default function IngredientsScreen () {
+    const title = "Ingredientsbzzzzzzzz";
+    const filtersOn = false;
+    const selectedBottomBar = "ingredients";
+    const fridgeButtonOn = true;
+    const cartButtonOn = true;
 
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={"Ingredientsbzzz"}/>
+                <TopNavigationBar title={title}/>
             </View>
-            <View style={styles.scrollableScreen}>
-                <TouchableOpacity style={styles.searchBar}>
-                    <View style={styles.searchIcon}>
-                        <View style={styles.center}>
-                            <SearchIcon/>
-                        </View>
-                    </View>
-                    <View style={styles.searchContent}>
-                        <TextInput placeholder={"Search ingredients"} returnKeyType="search" onChangeText={() => {/* Handle change */
-                        }} style={styles.fontRegular}></TextInput>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.card}>
-                    <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>White Wine Vinegar</Text>
-                    <View style={styles.cardIcons}>
-                        <TouchableOpacity style={[styles.center, styles.cardButton]}>
-                            <FridgeCardIcon/>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.center, styles.cardButton]}>
-                            <BasketCardIcon/>
-                        </TouchableOpacity>
-                    </View>
-                </TouchableOpacity>
-            </View>
+            <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
+                <SearchBar filtersOn={filtersOn}/>
+                {Array.from({ length: 15 }).map((_, index) => (
+                    <Card
+                        key={index}
+                        text={"White Wine Vinegar"}
+                        fridgeButtonOn={fridgeButtonOn}
+                        cartButtonOn={cartButtonOn}
+                    />
+                ))}
+            </ScrollView>
             <View>
-                <BottomNavigationBar/>
+                <BottomNavigationBar selected={selectedBottomBar}/>
             </View>
         </View>
     )
@@ -55,99 +48,21 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     scrollableScreen: {
-        backgroundColor: 'rgba(53,171,53,0)',
+        backgroundColor: '#FFF',
         paddingTop: 8,
         paddingBottom: 8,
         paddingRight: 16,
         paddingLeft: 16,
-        display: 'flex',
-        flexDirection: 'column',
+
+    },
+    scrolling: {
         alignItems: 'center',
-        flexGrow: 1,
-        margin: 8,
-        gap: 8,
-        overflow: 'auto',
     },
-    searchBar: {
-        paddingTop: 8,
-        paddingBottom: 8,
-        height: 60,
-        backgroundColor: '#EBE6EF',
-        borderRadius: 28,
-        display: 'flex',
-        alignItems: 'center',
-        width: '100%',
-        flexDirection: 'row',
-    },
-    searchIcon: {
-        height: 48,
-        backgroundColor: 'rgba(213,89,192,0)',
-        width: 48,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 0,
-    },
-    searchContent: {
-        height: 56,
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: "center",
-        textAlign: "left",
-        fontSize: 16,
-        width: '100%',
-    },
+
     iconSize: {
         width: 24,
         height: 24,
         padding: 8,
-    },
-    card: {
-        width: '100%',
-        borderRadius: 12,
-        backgroundColor: '#F6F2F9',
-        height: 90,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-
-        //  Shadow
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 2, // Rightward shadow
-            height: 2, // Downward shadow
-        },
-        shadowOpacity: 0.50,
-        shadowRadius: 2,
-        // Android shadow (uniform, no direction control)
-        elevation: 5,
-    },
-    cardTextContent: {
-        // width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        padding: 16,
-    },
-    cardIcons: {
-        paddingTop: 20,
-        paddingRight: 11,
-        paddingBottom: 20,
-        paddingLeft: 26,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-    },
-    cardButton: {
-        width: 40,
-        height: 40,
-        backgroundColor: '#E6DEF6',
-        borderRadius: 100,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     center: {
         display: 'flex',

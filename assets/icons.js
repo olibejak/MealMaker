@@ -62,7 +62,7 @@ const BasketIcon = () => (
 
 const SearchIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <G id="Icon">
+        <G id="icon">
             <Path id="icon" fillRule="evenodd" clipRule="evenodd"
                   d="M14.76 13.27L20.49 19L19 20.49L13.27 14.76C12.2 15.53 10.91 16 9.5 16C5.91 16 3 13.09 3 9.5C3 5.91 5.91 3 9.5 3C13.09 3 16 5.91 16 9.5C16 10.91 15.53 12.2 14.76 13.27ZM9.5 5C7.01 5 5 7.01 5 9.5C5 11.99 7.01 14 9.5 14C11.99 14 14 11.99 14 9.5C14 7.01 11.99 5 9.5 5Z"
                   fill="black"/>
@@ -90,5 +90,23 @@ const BasketCardIcon = () => (
     </Svg>
 )
 
+const FilterIcon = () => (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <Path
+            d="M7.005 6H17.005L11.995 12.3L7.005 6ZM4.255 5.61C6.275 8.2 10.005 13 10.005 13V19C10.005 19.55 10.455 20 11.005 20H13.005C13.555 20 14.005 19.55 14.005 19V13C14.005 13 17.725 8.2 19.745 5.61C20.255 4.95 19.785 4 18.955 4H5.045C4.215 4 3.745 4.95 4.255 5.61Z"
+            fill="black"/>
+    </Svg>
+)
 
-export {HamburgerIcon, BookIcon, EggIcon, DiningIcon, FridgeIcon, BasketIcon, SearchIcon, FridgeCardIcon, BasketCardIcon}
+export {
+    HamburgerIcon,
+    BookIcon,
+    EggIcon,
+    DiningIcon,
+    FridgeIcon,
+    BasketIcon,
+    SearchIcon,
+    FridgeCardIcon,
+    BasketCardIcon,
+    FilterIcon
+}

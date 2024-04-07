@@ -1,15 +1,14 @@
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import Svg, {G, Path} from "react-native-svg";
 import {BasketIcon, DiningIcon, EggIcon, FridgeIcon} from "../assets/icons";
 
-export default function TopNavigationBar () {
+export default function BottomNavigationBar ({ selected }) {
 
     return (
         <View style={styles.bottomBar}>
             <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */
             }}>
                 <View style={styles.bottomBarButton}>
-                    <View style={[styles.bottomBarIcon, styles.enabled]}>
+                    <View style={[styles.bottomBarIcon, isSelected(selected, "ingredients")]}>
                         <EggIcon/>
                     </View>
                     <Text style={[styles.textCenter, styles.fontSmallBold]}>Ingredients</Text>
@@ -19,7 +18,7 @@ export default function TopNavigationBar () {
             <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */
             }}>
                 <View style={styles.bottomBarButton}>
-                    <View style={styles.bottomBarIcon}>
+                    <View style={[styles.bottomBarIcon, isSelected(selected, "recipes")]}>
                         <DiningIcon/>
                     </View>
                     <Text style={styles.fontSmall}>Recipes</Text>
@@ -29,7 +28,7 @@ export default function TopNavigationBar () {
             <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */
             }}>
                 <View style={styles.bottomBarButton}>
-                    <View style={styles.bottomBarIcon}>
+                    <View style={[styles.bottomBarIcon, isSelected(selected, "fridge")]}>
                         <FridgeIcon/>
                     </View>
                     <Text style={styles.fontSmall}>Fridge</Text>
@@ -39,7 +38,7 @@ export default function TopNavigationBar () {
             <TouchableOpacity style={styles.center} onPress={() => {/* Handle onPress */
             }}>
                 <View style={styles.bottomBarButton}>
-                    <View style={styles.bottomBarIcon}>
+                    <View style={[styles.bottomBarIcon, isSelected(selected, "shopping")]}>
                         <BasketIcon/>
                     </View>
                     <Text style={styles.fontSmall}>Shopping list</Text>
@@ -47,6 +46,10 @@ export default function TopNavigationBar () {
             </TouchableOpacity>
         </View>
     )};
+
+function isSelected (selected, current) {
+    return selected === current ? styles.enabled : {};
+}
 
 const styles = StyleSheet.create({
     bottomBar: {
