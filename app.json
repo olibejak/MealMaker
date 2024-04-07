@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a32e955c-4e35-46ff-aa5a-f1c3215c64d8"
+      }
+    },
+    "owner": "pechabar"
   }
 }
