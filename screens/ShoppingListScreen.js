@@ -6,7 +6,7 @@ import BottomNavigationBar from "../components/BottomNavigationBar";
 export default function ShoppingListScreen () {
     const title = "Shopping list";
     const filtersOn = false;
-    const selectedBottomBar = "shopping";
+    const selectedBottomBar = "ShoppingList";
     const fridgeButtonOn = true;
     const cartButtonOn = true;
 

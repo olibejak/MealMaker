@@ -5,7 +5,7 @@ import Card from "../components/Card";
 
 export default function FridgeScreen () {
     const title = "My fridge";
-    const selectedBottomBar = "fridge";
+    const selectedBottomBar = "Fridge";
     const fridgeButtonOn = true;
     const cartButtonOn = false;
 

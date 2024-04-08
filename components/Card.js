@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.50,
         shadowRadius: 2,
         // Android shadow (uniform, no direction control)
-        elevation: 5,
+        // TODO: fix shadow being cut off on Android
+        elevation: 4,
     },
     cardTextContent: {
         // width: '100%',

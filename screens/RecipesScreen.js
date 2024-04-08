@@ -6,7 +6,7 @@ import SearchBar from "../components/SearchBar";
 export default function RecipesScreen () {
     const title = "Recipe book";
     const filtersOn = false;
-    const selectedBottomBar = "recipes";
+    const selectedBottomBar = "Recipes";
     const fridgeButtonOn = true;
     const cartButtonOn = true;
 

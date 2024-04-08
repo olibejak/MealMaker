@@ -7,7 +7,7 @@ import Card from "../components/Card";
 export default function IngredientsScreen () {
     const title = "Ingredients";
     const filtersOn = false;
-    const selectedBottomBar = "ingredients";
+    const selectedBottomBar = "Ingredients";
     const fridgeButtonOn = true;
     const cartButtonOn = true;
 
