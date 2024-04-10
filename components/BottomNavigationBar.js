@@ -56,7 +56,7 @@ export default function BottomNavigationBar() {
 const styles = StyleSheet.create({
     bottomBar: {
         backgroundColor: '#F2EDF6',
-        height: 116,
+        height: 100,
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'space-evenly',
