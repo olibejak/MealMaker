@@ -1,4 +1,4 @@
-import {View, StyleSheet,ScrollView} from "react-native";
+import {View, StyleSheet, ScrollView, ActivityIndicator} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
@@ -14,6 +14,8 @@ export default function IngredientsScreen () {
 
     // Fetch ingredients from the API
     const [ingredients, setIngredients] = useState([]);
+    // Loading state
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchIngredients = async () => {
@@ -34,6 +36,9 @@ export default function IngredientsScreen () {
             } catch (error) {
                 console.error("Failed to fetch ingredients or request timed out:", error);
             }
+            finally {
+                setIsLoading(false); // End loading
+            }
         };
 
         fetchIngredients();
@@ -42,23 +47,25 @@ export default function IngredientsScreen () {
 
     return (
         <View style={styles.screen}>
-            <View>
-                <TopNavigationBar title={title}/>
-            </View>
-            <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                <SearchBar filtersOn={filtersOn}/>
-                {ingredients.map((ingredient, index) => (
-                    <Card
-                        key={index}
-                        text={ingredient.strIngredient}
-                        fridgeButtonOn={fridgeButtonOn}
-                        cartButtonOn={cartButtonOn}
-                    />
-                ))}
-            </ScrollView>
-            <View>
-                <BottomNavigationBar selected={selectedBottomBar} />
-            </View>
+            <TopNavigationBar title={title} />
+            {isLoading ? (
+                <View style={styles.center}>
+                    <ActivityIndicator size="large" />
+                </View>
+            ) : (
+                <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
+                    <SearchBar filtersOn={filtersOn} />
+                    {ingredients.map((ingredient, index) => (
+                        <Card
+                            key={index}
+                            text={ingredient.strIngredient}
+                            fridgeButtonOn={fridgeButtonOn}
+                            cartButtonOn={cartButtonOn}
+                        />
+                    ))}
+                </ScrollView>
+            )}
+            <BottomNavigationBar selected={selectedBottomBar} />
         </View>
     )
 };
