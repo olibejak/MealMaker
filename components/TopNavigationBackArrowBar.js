@@ -1,24 +1,22 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {BookIcon, HamburgerIcon} from "../assets/icons";
+import {BackArrowIcon} from "../assets/icons";
 import { useNavigation } from '@react-navigation/native';
 
-export default function TopNavigationBar ({ title }) {
+export default function TopNavigationBackArrowBar ({ title }) {
     const navigation = useNavigation();
     const state = navigation.getState();
 
     return (
-            <View style={styles.topNavigationBar}>
-                <View style={styles.topBarContent}>
-                    <TouchableOpacity style={styles.icon}>
-                        <HamburgerIcon/>
-                    </TouchableOpacity>
-                    <Text style={styles.fontLarge}>{title}</Text>
-                    <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('NewDiaryEntry')}>
-                        <BookIcon/>
-                    </TouchableOpacity>
-                </View>
+        <View style={styles.topNavigationBar}>
+            <View style={styles.topBarContent}>
+                <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Ingredients')}>
+                    <BackArrowIcon/>
+                </TouchableOpacity>
+                <Text style={styles.fontLarge}>{title}</Text>
+                <View width={48}></View>
             </View>
+        </View>
     )};
 
 const styles = StyleSheet.create({

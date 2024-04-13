@@ -4,6 +4,8 @@ import IngredientsScreen from "./screens/IngredientsScreen";
 import {NavigationContainer} from "@react-navigation/native";
 import RecipesScreen from "./screens/RecipesScreen";
 import FridgeScreen from "./screens/FridgeScreen";
+//import DiaryScreen from "./screens/DiaryScreen";
+import NewDiaryEntryScreen from "./screens/NewDiaryEntryScreen";
 import ShoppingListScreen from "./screens/ShoppingListScreen";
 import {createStackNavigator} from "@react-navigation/stack";
 
@@ -31,8 +33,8 @@ export default function App() {
             <Tab.Screen name="Recipes" component={RecipesScreen} />
             <Tab.Screen name="Fridge" component={FridgeScreen} />
             <Tab.Screen name="ShoppingList" component={ShoppingListScreen} />
+            <Tab.Screen name="NewDiaryEntry" component={NewDiaryEntryScreen} />
         </Tab.Navigator>
-
     </NavigationContainer>
   );
 }
