@@ -98,6 +98,23 @@ const FilterIcon = () => (
     </Svg>
 )
 
+const BackArrowIcon = () => (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <Path
+            d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
+            fill="#000000"
+        />
+    </Svg>
+);
+
+const CheckmarkIcon = () => (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <Path
+            d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"
+            fill="black"/>
+    </Svg>
+);
+
 export {
     HamburgerIcon,
     BookIcon,
@@ -108,5 +125,7 @@ export {
     SearchIcon,
     FridgeCardIcon,
     BasketCardIcon,
-    FilterIcon
+    FilterIcon,
+    BackArrowIcon,
+    CheckmarkIcon
 }
