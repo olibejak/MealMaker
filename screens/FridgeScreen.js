@@ -1,13 +1,77 @@
-import {View, StyleSheet,ScrollView} from "react-native";
+import {View, StyleSheet, ScrollView} from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import Card from "../components/Card";
+import {useEffect, useState} from "react";
 
 export default function FridgeScreen () {
     const title = "My fridge";
     const selectedBottomBar = "Fridge";
     const fridgeButtonOn = true;
     const cartButtonOn = false;
+    const [fridgeContent, setFridgeContent] = useState([]);
+
+    const initializeFridgeStorage = async () => {
+        try {
+            const existingContent = await AsyncStorage.getItem("fridgeContent");
+            if (existingContent === null) {
+                await AsyncStorage.setItem("fridgeContent", JSON.stringify([]));
+            }
+        } catch (error) {
+            console.error("Error initializing fridge storage:", error);
+        }
+    }
+
+    const addToFridge = async (ingredient) => {
+        try {
+            // Get existing fridge content
+            const existingContent = await AsyncStorage.getItem("fridgeContent");
+            let newContent = [];
+            if (existingContent !== null) {
+                newContent = JSON.parse(existingContent);
+            }
+            // Add new ingredient
+            newContent.push(ingredient);
+            // Save updated fridge content
+            await AsyncStorage.setItem("fridgeContent", JSON.stringify(newContent));
+            setFridgeContent(newContent);
+        } catch (error) {
+            console.error("Error adding to fridge:", error);
+        }
+    };
+    /**
+     * add / remove TODO
+    const removeFromFridge = async (ingredient) => {
+        try {
+            const existingContent = await AsyncStorage.getItem("fridgeContent");
+            if (existingContent !== null) {
+                existingContent.;
+                await AsyncStorage.setItem("fridgeContent", JSON.stringify(existingContent));
+            }
+        } catch (error) {
+            console.error("Error removing from fridge storage:", error);
+        }
+    }
+
+ */
+
+    useEffect(() => {
+        const loadFridgeContent = async () => {
+            try {
+                // Initialize fridge storage if not already initialized
+                await initializeFridgeStorage();
+                // Load fridge content
+                const content = await AsyncStorage.getItem("fridgeContent");
+                if (content !== null) {
+                    setFridgeContent(JSON.parse(content));
+                }
+            } catch (error) {
+                console.error("Error loading fridge content:", error);
+            }
+        };
+        loadFridgeContent();
+    }, []);
 
     return (
         <View style={styles.screen}>
@@ -15,10 +79,10 @@ export default function FridgeScreen () {
                 <TopNavigationBar title={title}/>
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                {Array.from({ length: 15 }).map((_, index) => (
+                {fridgeContent.map((ingredient, index) => (
                     <Card
                         key={index}
-                        text={"White Wine Vinegar"}
+                        text={ingredient.name}
                         fridgeButtonOn={fridgeButtonOn}
                         cartButtonOn={cartButtonOn}
                     />

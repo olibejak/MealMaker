@@ -1,7 +1,9 @@
 import { View, StyleSheet, ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useEffect, useState} from "react";
+import Card from "../components/Card";
 
 export default function ShoppingListScreen () {
     const title = "Shopping list";
@@ -9,6 +11,57 @@ export default function ShoppingListScreen () {
     const selectedBottomBar = "ShoppingList";
     const fridgeButtonOn = true;
     const cartButtonOn = true;
+    const [shoppingListContent, setShoppingListContent] = useState([]);
+
+    const initializeShoppingListStorage = async () => {
+        try {
+            const existingContent = await AsyncStorage.getItem("shoppingListContent");
+            if (existingContent === null) {
+                await AsyncStorage.setItem("shoppingListContent", JSON.stringify([]));
+            }
+        } catch (error) {
+            console.error("Error initializing shopping list storage:", error);
+        }
+    }
+
+    const addToShoppingList = async (ingredient) => {
+        try {
+            // Get existing fridge content
+            const existingContent = await AsyncStorage.getItem("shoppingListContent");
+            let newContent = [];
+            if (existingContent !== null) {
+                newContent = JSON.parse(existingContent);
+            }
+            // Add new ingredient
+            newContent.push(ingredient);
+            // Save updated fridge content
+            await AsyncStorage.setItem("shoppingListContent", JSON.stringify(newContent));
+            setShoppingListContent(newContent);
+        } catch (error) {
+            console.error("Error adding to shopping list:", error);
+        }
+    }
+
+    const moveToFridge = async () => {
+
+    }
+
+    useEffect(() => {
+        const loadShoppingListContent = async () => {
+            try {
+                // Initialize fridge storage if not already initialized
+                await initializeShoppingListStorage();
+                // Load fridge content
+                const content = await AsyncStorage.getItem("shoppingListContent");
+                if (content !== null) {
+                    setShoppingListContent(JSON.parse(content));
+                }
+            } catch (error) {
+                console.error("Error loading shopping list content:", error);
+            }
+        };
+        loadShoppingListContent();
+    }, []);
 
     return (
         <View style={styles.screen}>
@@ -16,7 +69,14 @@ export default function ShoppingListScreen () {
                 <TopNavigationBar title={title}/>
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-
+                {shoppingListContent.map((ingredient, index) => (
+                    <Card
+                        key={index}
+                        text={ingredient.name}
+                        fridgeButtonOn={fridgeButtonOn}
+                        cartButtonOn={cartButtonOn}
+                    />
+                ))}
             </ScrollView>
             <View>
                 <BottomNavigationBar selected={selectedBottomBar}/>
