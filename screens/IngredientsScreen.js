@@ -1,9 +1,8 @@
-import {View, StyleSheet,ScrollView} from "react-native";
+import {View, StyleSheet, ScrollView, ActivityIndicator} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
-import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import {BookIcon, HamburgerIcon} from "../assets/icons";
 
@@ -54,11 +53,6 @@ export default function IngredientsScreen ( {navigation} ) {
     return (
         <View style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
-            {isLoading ? (
-                <View style={styles.center}>
-                    <ActivityIndicator size="large" />
-                </View>
-            ) : (
                 <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                     <SearchBar filtersOn={filtersOn} />
                     {ingredients.map((ingredient, index) => (
@@ -72,7 +66,6 @@ export default function IngredientsScreen ( {navigation} ) {
                     ))}
                     {isLoading ? <ActivityIndicator size="large"/> : null}
                 </ScrollView>
-            )}
             <BottomNavigationBar selected={selectedBottomBar} />
         </View>
     )
