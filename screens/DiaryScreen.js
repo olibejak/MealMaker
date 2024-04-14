@@ -65,7 +65,7 @@ export default function MyDiaryScreen() {
                 '\n' +
                 'I shredded the pork, its fibers soaking up the spicy, sweet juices, and piled it high on freshly baked buns. A scoop of coleslaw, crisp and zesty with its cider vinegar dressing, topped each slider, adding a refreshing contrast.\n' +
                 '\n' +
-                'As we bit into the sliders, the combination of soft, succulent pork and the sharp, crunchy slaw created a symphony of textures and tastes. It was more than a meal; it was a celebration, a gathering of friends and flavors around my humble table.\n' +
+                'As we bit into the sliders, the combination o f soft, succulent pork and the sharp, crunchy slaw created a symphony of textures and tastes. It was more than a meal; it was a celebration, a gathering of friends and flavors around my humble table.\n' +
                 '\n' +
                 'These sliders were not just food; they were tiny, delicious symbols of togetherness and joy, a reminder that sometimes, the simplest dishes can stir the deepest emotions. With that thought, I end today\'s entry, grateful for the simple pleasures that fill my life and my palate.',
             image: require('../assets/testing_images/recipe.jpg'),
@@ -75,9 +75,14 @@ export default function MyDiaryScreen() {
     return (
         <SafeAreaView style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={BackArrowIcon} />
-            <ScrollView style={styles.content}>
+            <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 100 }}>
                 {recipes.map((recipe) => (
-                    <RecipeCard key={recipe.id} {...recipe} onPress={() => navigation.navigate('DiaryEntryDetail')} />
+                    <RecipeCard
+                        key={recipe.id}
+                        {...recipe}
+                        onPressDetails={() => navigation.navigate('DiaryEntryDetail', { recipeId: recipe.id })}
+                        actionButton={'delete'}
+                    />
                 ))}
             </ScrollView>
             <BottomNavigationBar/>
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
         flex: 1 // Ensures that this view expands to fill available space minus what's needed for nav bars
     },
     content: {
-        padding: 10,
+        padding: 16,
     },
     fab: {
         // Position the floating action button if needed

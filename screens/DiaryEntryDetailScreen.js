@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image } from 'react-native';
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import TopNavigationBar from "../components/TopNavigationBar";
 import {BackArrowIcon, PencilIcon} from "../assets/icons";
@@ -8,24 +8,23 @@ import BottomRightCornerButton from "../components/BottomRightCornerButton";
 
 
 export default function DiaryEntryDetailScreen() {
-    const title = "My first Recipe"
+    const title = "My first Recipe";
     const navigation = useNavigation();
+    const image = require('../assets/testing_images/recipe.jpg')
 
     return (
         <View style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={BackArrowIcon}/>
-            {/* ScrollView and contentContainer should occupy all space above the BottomTabBar */}
-            <View style={styles.contentContainer}>
-                <ScrollView style={styles.content}>
-                    <View>
-                        <Text style={styles.heading}>Chicken Fajita Mac and Cheese</Text>
-                        <Text style={styles.bodyText}>
-                            Today, I dove into making Chicken Fajita Mac and Cheese...
-                            {/* Continue with the rest of the content text */}
-                        </Text>
-                    </View>
-                </ScrollView>
-            </View>
+            <ScrollView style={styles.content}>
+                <Image source={image} style={styles.image} />
+                <View style={styles.textContainer}>
+                    <Text style={styles.heading}>Chicken Fajita Mac and Cheese</Text>
+                    <Text style={styles.bodyText}>
+                        Today, I dove into making Chicken Fajita Mac and Cheese...
+                        {/* Continue with the rest of the content text */}
+                    </Text>
+                </View>
+            </ScrollView>
             <BottomRightCornerButton
                 IconComponent={PencilIcon}
                 onPress={() => navigation.navigate('NewDiaryEntry')}
@@ -42,7 +41,14 @@ const styles = StyleSheet.create({
     },
     content: {
         padding: 10,
-        marginBottom: 100, // Height of the BottomTabBar, adjust accordingly
+    },
+    image: {
+        width: '100%', // Take up all available width
+        height: 200, // Set a fixed height for the image
+        resizeMode: 'cover' // Cover the frame of the image view by resizing the image
+    },
+    textContainer: {
+        padding: 10,
     },
     heading: {
         fontSize: 24,
@@ -56,5 +62,5 @@ const styles = StyleSheet.create({
         color: '#333',
         // Add any additional styling for the body text
     },
-    // Additional styles if needed
+    // ... other styles as needed
 });

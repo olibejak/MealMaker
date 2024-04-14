@@ -1,7 +1,7 @@
 import {View, StyleSheet,ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import Card from "../components/Card";
+import IngredientCard from "../components/IngredientCard";
 import {BookIcon, HamburgerIcon} from "../assets/icons";
 
 export default function FridgeScreen () {
@@ -17,7 +17,7 @@ export default function FridgeScreen () {
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 {Array.from({ length: 15 }).map((_, index) => (
-                    <Card
+                    <IngredientCard
                         key={index}
                         text={"White Wine Vinegar"}
                         fridgeButtonOn={fridgeButtonOn}

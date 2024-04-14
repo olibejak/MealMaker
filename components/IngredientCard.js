@@ -2,7 +2,7 @@ import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native"
 import {BasketCardIcon, FilterIcon, FridgeCardIcon} from "../assets/icons";
 
 
-export default function Card ({ text, fridgeButtonOn, cartButtonOn }) {
+export default function IngredientCard ({ text, fridgeButtonOn, cartButtonOn }) {
 
     return (
         <TouchableOpacity style={styles.card}>

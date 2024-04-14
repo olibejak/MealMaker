@@ -1,9 +1,40 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import {PotIcon, GarbageIcon} from "../assets/icons";
 
-const RecipeCard = ({ title, date, description, image, onPress }) => {
+const RecipeCard = ({
+                        title,
+                        date,
+                        description,
+                        image,
+                        onPressDetails,
+                        onPressSecondary,
+                        actionButton // 'cook' or 'delete'
+                    }) => {
+    const renderActionButton = () => {
+        switch (actionButton) {
+            case 'cook':
+                return (
+                    <TouchableOpacity style={styles.detailsButton} onPress={onPressSecondary}>
+                        <PotIcon/>
+                        <Text style={styles.detailsButtonText}>Cook</Text>
+                    </TouchableOpacity>
+                );
+            case 'delete':
+                return (
+                    <TouchableOpacity style={styles.detailsButton} onPress={onPressSecondary}>
+                        <GarbageIcon/>
+                        <Text style={styles.detailsButtonText}>Delete</Text>
+                    </TouchableOpacity>
+                );
+            default:
+                // If no action button is specified, return null
+                return null;
+        }
+    };
+
     return (
-        <TouchableOpacity style={styles.card} onPress={onPress}>
+        <View style={styles.card}>
             <Image source={image} style={styles.cardImage} />
             <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>{title}</Text>
@@ -11,17 +42,24 @@ const RecipeCard = ({ title, date, description, image, onPress }) => {
                 <Text style={styles.cardDescription} numberOfLines={2}>
                     {description}
                 </Text>
+                <View style={styles.buttonContainer}>
+                    {renderActionButton()}
+                    <TouchableOpacity style={styles.detailsButton} onPress={onPressDetails}>
+                        <Text style={styles.detailsButtonText}>Details</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </TouchableOpacity>
+        </View>
     );
 };
+
 
 const styles = StyleSheet.create({
     card: {
         backgroundColor: 'white',
         borderRadius: 20,
         overflow: 'hidden',
-        marginBottom: 16,
+        marginTop: 8,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -30,10 +68,15 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.23,
         shadowRadius: 2.62,
         elevation: 4,
+        minHeight: 250,
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
     },
     cardImage: {
         width: '100%',
-        height: 200, // Adjust the height as necessary
+        height: 160, // Adjust the height as necessary
         resizeMode: 'cover',
     },
     cardContent: {
@@ -55,15 +98,19 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     detailsButton: {
-        backgroundColor: '#6200EE', // Use your app's theme color here
+        backgroundColor: '#F2EDF6',
         borderRadius: 20,
         paddingVertical: 8,
+        color: 'black',
         paddingHorizontal: 16,
         alignSelf: 'flex-start',
+        marginLeft: 20,
+        flexDirection: 'row',
+        alignItems: "center"
     },
     detailsButtonText: {
-        fontSize: 14,
-        color: 'white',
+        fontSize: 16,
+        color: 'black',
         fontWeight: 'bold',
     },
 });

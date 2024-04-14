@@ -2,7 +2,7 @@ import {View, StyleSheet,ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
-import Card from "../components/Card";
+import IngredientCard from "../components/IngredientCard";
 import {BookIcon, HamburgerIcon} from "../assets/icons";
 import {useNavigation} from "@react-navigation/native";
 
@@ -24,7 +24,7 @@ export default function IngredientsScreen () {
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 <SearchBar filtersOn={filtersOn}/>
                 {Array.from({ length: 15 }).map((_, index) => (
-                    <Card
+                    <IngredientCard
                         key={index}
                         text={"White Wine Vinegar"}
                         fridgeButtonOn={fridgeButtonOn}
@@ -57,7 +57,6 @@ const styles = StyleSheet.create({
         paddingBottom: 8,
         paddingRight: 16,
         paddingLeft: 16,
-
     },
     scrolling: {
         alignItems: 'center',
