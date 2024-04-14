@@ -1,4 +1,4 @@
-import {View, StyleSheet, ScrollView, ActivityIndicator} from "react-native";
+import {View, StyleSheet,ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
@@ -18,10 +18,6 @@ export default function IngredientsScreen ( {navigation} ) {
     const [ingredients, setIngredients] = useState([]);
     // Loading state
     const [isLoading, setIsLoading] = useState(true);
-
-    const navigateToIngredientDetails = (ingredient) => {
-        navigation.navigate("IngredientDetails", { ingredient });
-    };
 
     useEffect(() => {
             const fetchIngredients = async () => {
@@ -51,28 +47,27 @@ export default function IngredientsScreen ( {navigation} ) {
         }
         , []);
 
+
     return (
         <View style={styles.screen}>
-            <TopNavigationBar title={title} />
-            {isLoading ? (
-                <View style={styles.center}>
-                    <ActivityIndicator size="large" />
-                </View>
-            ) : (
-                <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                    <SearchBar filtersOn={filtersOn} />
-                    {ingredients.map((ingredient, index) => (
-                        <Card
-                            key={index}
-                            text={ingredient.strIngredient}
-                            fridgeButtonOn={fridgeButtonOn}
-                            cartButtonOn={cartButtonOn}
-                            onPress={() => navigateToIngredientDetails(ingredient)}
-                        />
-                    ))}
-                </ScrollView>
-            )}
-            <BottomNavigationBar selected={selectedBottomBar} />
+            <View>
+                <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon}/>
+            </View>
+            <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
+                <SearchBar filtersOn={filtersOn}/>
+                {ingredients.map((ingredient, index) => (
+                    <Card
+                        key={index}
+                        text={ingredient.strIngredient}
+                        fridgeButtonOn={fridgeButtonOn}
+                        cartButtonOn={cartButtonOn}
+                    />
+                ))}
+                {isLoading ? <ActivityIndicator size="large"/> : null}
+            </ScrollView>
+            <View>
+                <BottomNavigationBar selected={selectedBottomBar} />
+            </View>
         </View>
     )
 };
@@ -80,7 +75,7 @@ export default function IngredientsScreen ( {navigation} ) {
 const styles = StyleSheet.create({
     screen: {
         display: 'flex',
-        position: 'absolute',
+        position: 'absolute', // Changed from fixed to absolute for React Native
         justifyContent: 'space-between',
         alignItems: 'stretch',
         flexDirection: 'column',
