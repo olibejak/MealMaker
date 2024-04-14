@@ -80,7 +80,7 @@ export default function IngredientsScreen ( {navigation} ) {
 const styles = StyleSheet.create({
     screen: {
         display: 'flex',
-        position: 'absolute',
+        position: 'absolute', // Changed from fixed to absolute for React Native
         justifyContent: 'space-between',
         alignItems: 'stretch',
         flexDirection: 'column',
