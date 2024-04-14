@@ -4,16 +4,16 @@ import BottomNavigationBar from "../components/BottomNavigationBar";
 import Card from "../components/Card";
 import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
+import {BookIcon, BackArrowIcon} from "../assets/icons";
 
-export default function IngredientDetailsScreen ({ route }) {
+export default function IngredientDetailsScreen ({ route, navigation }) {
     const { ingredient } = route.params;
-    const navigation = useNavigation();
     const [imageUri, setImageData] = useState(null);
 
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={ingredient.strIngredient} navigation={navigation} />
+                <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon} RightIcon={BookIcon} />
             </View>
             <ScrollView style={styles.scrollableScreen} >
                 <View style={styles.imageContainer}>
@@ -28,10 +28,7 @@ export default function IngredientDetailsScreen ({ route }) {
                     <Text style={styles.fontRegular}>{ingredient.strDescription}</Text>
                 </View>
             </ScrollView>
-            <Button
-                title="Back to Ingredients"
-                onPress={() => navigation.navigate('Ingredients')}
-            />
+            <BottomNavigationBar selected={"Ingredients"} />
         </View>
     );
 };
@@ -54,7 +51,6 @@ const styles = StyleSheet.create({
         paddingBottom: 8,
         paddingRight: 16,
         paddingLeft: 16,
-
     },
     scrolling: {
         alignItems: 'center',

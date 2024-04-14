@@ -19,6 +19,10 @@ export default function IngredientsScreen ( {navigation} ) {
     // Loading state
     const [isLoading, setIsLoading] = useState(true);
 
+    const navigateToIngredientDetails = (ingredient) => {
+        navigation.navigate("IngredientDetails", { ingredient });
+    };
+
     useEffect(() => {
             const fetchIngredients = async () => {
                 // Setting a timeout for the fetch request
@@ -47,27 +51,29 @@ export default function IngredientsScreen ( {navigation} ) {
         }
         , []);
 
-
     return (
         <View style={styles.screen}>
-            <View>
-                <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon}/>
-            </View>
-            <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                <SearchBar filtersOn={filtersOn}/>
-                {ingredients.map((ingredient, index) => (
-                    <Card
-                        key={index}
-                        text={ingredient.strIngredient}
-                        fridgeButtonOn={fridgeButtonOn}
-                        cartButtonOn={cartButtonOn}
-                    />
-                ))}
-                {isLoading ? <ActivityIndicator size="large"/> : null}
-            </ScrollView>
-            <View>
-                <BottomNavigationBar selected={selectedBottomBar} />
-            </View>
+            <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
+            {isLoading ? (
+                <View style={styles.center}>
+                    <ActivityIndicator size="large" />
+                </View>
+            ) : (
+                <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
+                    <SearchBar filtersOn={filtersOn} />
+                    {ingredients.map((ingredient, index) => (
+                        <Card
+                            key={index}
+                            text={ingredient.strIngredient}
+                            fridgeButtonOn={fridgeButtonOn}
+                            cartButtonOn={cartButtonOn}
+                            onPress={() => navigateToIngredientDetails(ingredient)}
+                        />
+                    ))}
+                    {isLoading ? <ActivityIndicator size="large"/> : null}
+                </ScrollView>
+            )}
+            <BottomNavigationBar selected={selectedBottomBar} />
         </View>
     )
 };
