@@ -8,6 +8,7 @@ import FridgeScreen from "./screens/FridgeScreen";
 import NewDiaryEntryScreen from "./screens/NewDiaryEntryScreen";
 import ShoppingListScreen from "./screens/ShoppingListScreen";
 import {createStackNavigator} from "@react-navigation/stack";
+import IngredientDetailsScreen from "./screens/IngredientDetailsScreen";
 
 // TODO: fix that the navigation to Fridge takes too long (on Android)
 const Tab = createStackNavigator();
@@ -34,6 +35,7 @@ export default function App() {
             <Tab.Screen name="Fridge" component={FridgeScreen} />
             <Tab.Screen name="ShoppingList" component={ShoppingListScreen} />
             <Tab.Screen name="NewDiaryEntry" component={NewDiaryEntryScreen} />
+            <Tab.Screen name="IngredientDetails" component={IngredientDetailsScreen} />
         </Tab.Navigator>
     </NavigationContainer>
   );

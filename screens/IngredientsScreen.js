@@ -1,8 +1,10 @@
-import {View, StyleSheet,ScrollView} from "react-native";
+import {View, StyleSheet, ScrollView, TouchableOpacity} from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
+import {useEffect, useState} from "react";
 
 export default function IngredientsScreen () {
     const title = "Ingredients";
@@ -10,6 +12,27 @@ export default function IngredientsScreen () {
     const selectedBottomBar = "Ingredients";
     const fridgeButtonOn = true;
     const cartButtonOn = true;
+    const navigation = useNavigation();
+    const [ingredients, setIngredients] = useState([]);
+
+    const navigateToIngredientDetails = (ingredient) => {
+        navigation.navigate("IngredientDetails", { ingredient });
+    };
+
+    useEffect(() => {
+        const loadIngredients = async () => {
+            try {
+                const res = await fetch("https://www.themealdb.com/api/json/v1/1/list.php?i=list");
+                const data = await res.json();
+                if (data && data.meals) {
+                    setIngredients(data.meals);
+                }
+            } catch (error) {
+                console.error('Error loading ingredients:', error);
+            }
+        };
+        loadIngredients();
+    }, []);
 
     return (
         <View style={styles.screen}>
@@ -18,12 +41,13 @@ export default function IngredientsScreen () {
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 <SearchBar filtersOn={filtersOn}/>
-                {Array.from({ length: 15 }).map((_, index) => (
+                {ingredients.map((ingredient, index) => (
                     <Card
                         key={index}
-                        text={"White Wine Vinegar"}
+                        text={ingredient.strIngredient}
                         fridgeButtonOn={fridgeButtonOn}
                         cartButtonOn={cartButtonOn}
+                        onPress={() => navigateToIngredientDetails(ingredient)}
                     />
                 ))}
             </ScrollView>
