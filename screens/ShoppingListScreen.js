@@ -5,7 +5,7 @@ import {BookIcon, HamburgerIcon} from "../assets/icons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useEffect, useState} from "react";
-import Card from "../components/Card";
+import IngredientCard from "../components/IngredientCard";
 
 export default function ShoppingListScreen () {
     const title = "Shopping list";
@@ -72,7 +72,7 @@ export default function ShoppingListScreen () {
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 {shoppingListContent.map((ingredient, index) => (
-                    <Card
+                    <IngredientCard
                         key={index}
                         text={ingredient.name}
                         fridgeButtonOn={fridgeButtonOn}

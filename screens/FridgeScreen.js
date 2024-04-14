@@ -2,7 +2,7 @@ import {View, StyleSheet, ScrollView} from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import Card from "../components/Card";
+import IngredientCard from "../components/IngredientCard";
 import {BookIcon, HamburgerIcon} from "../assets/icons";
 import {useEffect, useState} from "react";
 
@@ -81,7 +81,7 @@ export default function FridgeScreen () {
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 {fridgeContent.map((ingredient, index) => (
-                    <Card
+                    <IngredientCard
                         key={index}
                         text={ingredient.name}
                         fridgeButtonOn={fridgeButtonOn}

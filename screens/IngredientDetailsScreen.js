@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet, ScrollView, Button, Image} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import Card from "../components/Card";
+import IngredientCard from "../components/IngredientCard";
 import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import {BookIcon, BackArrowIcon} from "../assets/icons";

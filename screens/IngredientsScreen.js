@@ -2,7 +2,7 @@ import {View, StyleSheet, ScrollView, ActivityIndicator} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
-import Card from "../components/Card";
+import IngredientCard from "../components/IngredientCard";
 import {useEffect, useState} from "react";
 import {BookIcon, HamburgerIcon} from "../assets/icons";
 
@@ -56,7 +56,7 @@ export default function IngredientsScreen ( {navigation} ) {
                 <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                     <SearchBar filtersOn={filtersOn} />
                     {ingredients.map((ingredient, index) => (
-                        <Card
+                        <IngredientCard
                             key={index}
                             text={ingredient.strIngredient}
                             fridgeButtonOn={fridgeButtonOn}
