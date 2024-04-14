@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, StyleSheet } from 'react-native';
 
 export default function BottomRightCornerButton({ IconComponent, onPress }) {
     return (
@@ -11,12 +11,13 @@ export default function BottomRightCornerButton({ IconComponent, onPress }) {
     );
 }
 
-const styles = {
+const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         right: 10,
-        bottom: 10,
-        padding: 15
+        bottom: 90,
+        padding: 15,
+        zIndex: 10, // Make sure it's above everything else
     },
     iconButton: {
         // Styles for the touchable opacity
@@ -31,4 +32,4 @@ const styles = {
         shadowOpacity: 0.1,
     },
     // ... add any other styles you might need here
-};
+});
