@@ -3,6 +3,8 @@ import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
+import {BookIcon, HamburgerIcon} from "../assets/icons";
+import {useNavigation} from "@react-navigation/native";
 
 export default function IngredientsScreen () {
     const title = "Ingredients";
@@ -11,10 +13,13 @@ export default function IngredientsScreen () {
     const fridgeButtonOn = true;
     const cartButtonOn = true;
 
+    const navigation = useNavigation();
+    const state = navigation.getState();
+
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={title}/>
+                <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 <SearchBar filtersOn={filtersOn}/>
