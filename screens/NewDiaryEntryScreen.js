@@ -19,11 +19,11 @@ export default function NewDiaryEntryScreen() {
                         style={styles.inputText}
                         multiline={true}
                     />
-                    <BottomRightCornerButton
-                        IconComponent={() => <Ionicons name="checkmark" size={24} color="black" />}
-                        onPress={() => console.log('Checkmark pressed')}
-                    />
                 </View>
+                <BottomRightCornerButton
+                    IconComponent={() => <Ionicons name="checkmark" size={24} color="black" />}
+                    onPress={() => console.log('Checkmark pressed')}
+                />
                 <View style={styles.photoButtons}>
                     <TouchableOpacity style={styles.photoButton}>
                         <Ionicons name="camera" size={24} color="black" />

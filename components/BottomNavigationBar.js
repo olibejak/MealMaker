@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         right: 0,            // Align to the right edge
         bottom: 0,           // Align to the bottom edge
         backgroundColor: '#F2EDF6',
-        height: 100,
+        height: 80,
         flexDirection: 'row',
         alignItems: 'center',  // Center items vertically
         justifyContent: 'space-evenly',

@@ -1,6 +1,6 @@
 // MyDiaryScreen.js
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import RecipeCard from "../components/RecipeCard";
 import BottomNavigationBar from "../components/BottomNavigationBar";
@@ -32,7 +32,7 @@ export default function MyDiaryScreen() {
                 'As the dish baked to a bubbly, golden-topped delight, I set the table, lit candles, and poured a glass of chilled white wine. The first bite was a revelation - a harmonious blend of textures and tastes, each forkful a story of comfort food meeting the zesty kick of Tex-Mex.\n' +
                 '\n' +
                 'I must say, cooking Chicken Fajita Mac and Cheese wasn\'t just about the flavors; it was about creating a moment, a delicious memory that I\'d look back on with a smile. And with that, I close today\'s entry, with a heart as full as my satisfied stomach.',
-            image: '../assets/testing_images/recipe.jpg',
+            image: require('../assets/testing_images/recipe.jpg'),
         },
         {
             id: '2',
@@ -51,7 +51,7 @@ export default function MyDiaryScreen() {
                 'As I served the shells, each laden with rich fillings and cloaked in tomato sauce, it was a celebration of textures and flavors, each bite a testament to the simple joys of Italian cooking.\n' +
                 '\n' +
                 'Tonight was not just about savoring a meal; it was about savoring life\'s delicious moments, crafting memories that linger long after the last bite. Diary, this is one recipe that will surely find its way into many more evenings filled with joy and laughter.',
-            image: '../assets/testing_images/recipe.jpg',
+            image: require('../assets/testing_images/recipe.jpg'),
         },
         {
             id: '3',
@@ -65,26 +65,29 @@ export default function MyDiaryScreen() {
                 '\n' +
                 'I shredded the pork, its fibers soaking up the spicy, sweet juices, and piled it high on freshly baked buns. A scoop of coleslaw, crisp and zesty with its cider vinegar dressing, topped each slider, adding a refreshing contrast.\n' +
                 '\n' +
-                'As we bit into the sliders, the combination of soft, succulent pork and the sharp, crunchy slaw created a symphony of textures and tastes. It was more than a meal; it was a celebration, a gathering of friends and flavors around my humble table.\n' +
+                'As we bit into the sliders, the combination o f soft, succulent pork and the sharp, crunchy slaw created a symphony of textures and tastes. It was more than a meal; it was a celebration, a gathering of friends and flavors around my humble table.\n' +
                 '\n' +
                 'These sliders were not just food; they were tiny, delicious symbols of togetherness and joy, a reminder that sometimes, the simplest dishes can stir the deepest emotions. With that thought, I end today\'s entry, grateful for the simple pleasures that fill my life and my palate.',
-            image: '../assets/testing_images/recipe.jpg',
+            image: require('../assets/testing_images/recipe.jpg'),
         }
     ];
 
     return (
-        <View style={styles.screen}>
+        <SafeAreaView style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={BackArrowIcon} />
-            <View style={styles.contentContainer}>
-                <ScrollView style={styles.content}>
-                    {recipes.map((recipe) => (
-                        <RecipeCard key={recipe.id} {...recipe} onPress={() => navigation.navigate('DiaryEntryDetail')} />
-                    ))}
-                </ScrollView>
-                <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => navigation.navigate('NewDiaryEntry')} />
-            </View>
+            <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 100 }}>
+                {recipes.map((recipe) => (
+                    <RecipeCard
+                        key={recipe.id}
+                        {...recipe}
+                        onPressDetails={() => navigation.navigate('DiaryEntryDetail', { recipeId: recipe.id })}
+                        actionButton={'delete'}
+                    />
+                ))}
+            </ScrollView>
             <BottomNavigationBar/>
-        </View>
+            <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => navigation.navigate('NewDiaryEntry')} />
+        </SafeAreaView>
     );
 }
 
@@ -97,8 +100,7 @@ const styles = StyleSheet.create({
         flex: 1 // Ensures that this view expands to fill available space minus what's needed for nav bars
     },
     content: {
-        padding: 10,
-        flex: 1
+        padding: 16,
     },
     fab: {
         // Position the floating action button if needed
