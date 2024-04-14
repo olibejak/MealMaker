@@ -2,6 +2,7 @@ import {View, StyleSheet,ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import Card from "../components/Card";
+import {BookIcon, HamburgerIcon} from "../assets/icons";
 
 export default function FridgeScreen () {
     const title = "My fridge";
@@ -12,7 +13,7 @@ export default function FridgeScreen () {
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={title}/>
+                <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 {Array.from({ length: 15 }).map((_, index) => (

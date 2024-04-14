@@ -1,25 +1,49 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {BookIcon, HamburgerIcon} from "../assets/icons";
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-export default function TopNavigationBar ({ title }) {
+export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
     const navigation = useNavigation();
     const state = navigation.getState();
 
+    const LeftAction = () => {
+        // Action for Left Icon
+        if (LeftIcon.name === 'HamburgerIcon') {
+            console.log('Hamburger icon pressed');
+        }
+        if (LeftIcon.name === 'BackArrowIcon') {
+            navigation.goBack()
+        }
+    };
+
+    const RightAction = () => {
+        // Action for Right Icon
+        if (RightIcon.name === 'BookIcon') {
+            navigation.navigate('Diary');
+        }
+        // More icons can be added with else if statements
+    };
+
     return (
-            <View style={styles.topNavigationBar}>
-                <View style={styles.topBarContent}>
-                    <TouchableOpacity style={styles.icon}>
-                        <HamburgerIcon/>
+        <View style={styles.topNavigationBar}>
+            <View style={styles.topBarContent}>
+                {/* Left Icon always exists */}
+                <TouchableOpacity style={styles.icon} onPress={LeftAction}>
+                    <LeftIcon />
+                </TouchableOpacity>
+                <Text style={styles.fontLarge}>{title}</Text>
+                {/* Conditional rendering for Right Icon or Spacer */}
+                {RightIcon ? (
+                    <TouchableOpacity style={styles.icon} onPress={RightAction}>
+                        <RightIcon />
                     </TouchableOpacity>
-                    <Text style={styles.fontLarge}>{title}</Text>
-                    <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('NewDiaryEntry')}>
-                        <BookIcon/>
-                    </TouchableOpacity>
-                </View>
+                ) : (
+                    <View style={styles.icon}></View> // This acts as a spacer when there is no Right Icon
+                )}
             </View>
-    )};
+        </View>
+    );
+}
 
 const styles = StyleSheet.create({
     topNavigationBar: {
@@ -58,5 +82,3 @@ const styles = StyleSheet.create({
         fontSize: 22,
     }
 });
-
-

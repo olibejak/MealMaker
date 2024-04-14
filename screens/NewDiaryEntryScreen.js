@@ -3,14 +3,15 @@
 import React from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons, MaterialIcons, } from '@expo/vector-icons';
-import CheckmarkIcon from "../assets/icons.js";
-import TopNavigationBackArrowBar from "../components/TopNavigationBackArrowBar";
+import {BackArrowIcon, CheckmarkIcon,} from "../assets/icons.js";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
+import TopNavigationBar from "../components/TopNavigationBar";
 
 export default function NewDiaryEntryScreen() {
+    const title = "New Entry"
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.screen}>
-            <TopNavigationBackArrowBar title="New Entry" />
+            <TopNavigationBar title={title} LeftIcon={BackArrowIcon} />
             <View style={styles.inputContainer}>
                 <View style={styles.inputWrapper}>
                     <TextInput

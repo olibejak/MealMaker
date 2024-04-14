@@ -2,6 +2,8 @@ import {View, StyleSheet,ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
+import {HamburgerIcon, BookIcon} from "../assets/icons";
+
 
 export default function RecipesScreen () {
     const title = "Recipe book";
@@ -13,7 +15,7 @@ export default function RecipesScreen () {
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={title}/>
+                <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 <SearchBar filtersOn={filtersOn}/>
