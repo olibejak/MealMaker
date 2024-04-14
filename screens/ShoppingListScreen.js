@@ -1,6 +1,7 @@
 import { View, StyleSheet, ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
+import {BookIcon, HamburgerIcon} from "../assets/icons";
 
 
 export default function ShoppingListScreen () {
@@ -13,7 +14,7 @@ export default function ShoppingListScreen () {
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={title}/>
+                <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
 

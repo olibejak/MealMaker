@@ -55,11 +55,17 @@ export default function BottomNavigationBar() {
 
 const styles = StyleSheet.create({
     bottomBar: {
+        position: 'absolute', // Set position to absolute
+        left: 0,             // Align to the left edge
+        right: 0,            // Align to the right edge
+        bottom: 0,           // Align to the bottom edge
         backgroundColor: '#F2EDF6',
         height: 100,
         flexDirection: 'row',
-        alignItems: 'flex-start',
+        alignItems: 'center',  // Center items vertically
         justifyContent: 'space-evenly',
+        borderTopWidth: 1,     // Optional: add a border on top for a separator
+        borderTopColor: '#DDD', // Optional: color of the top border
     },
     bottomBarButton: {
         display: 'flex',

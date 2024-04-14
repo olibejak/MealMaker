@@ -115,6 +115,27 @@ const CheckmarkIcon = () => (
     </Svg>
 );
 
+const PlusIcon = () => (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <Path
+            d="M12 5v14m7-7H5"
+            stroke="#000"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </Svg>
+);
+
+const PencilIcon = () => (
+    <Svg width="24" height="24" viewBox="0 -960 960 960" fill="none">
+        <Path
+            d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
+            fill="#49454F"
+        />
+    </Svg>
+);
+
 export {
     HamburgerIcon,
     BookIcon,
@@ -127,5 +148,7 @@ export {
     BasketCardIcon,
     FilterIcon,
     BackArrowIcon,
-    CheckmarkIcon
+    CheckmarkIcon,
+    PlusIcon,
+    PencilIcon
 }
