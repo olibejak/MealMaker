@@ -4,7 +4,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 const RecipeCard = ({ title, date, description, image, onPress }) => {
     return (
         <TouchableOpacity style={styles.card} onPress={onPress}>
-            <Image source={{ uri: image }} style={styles.cardImage} />
+            <Image source={image} style={styles.cardImage} />
             <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>{title}</Text>
                 <Text style={styles.cardDate}>{date}</Text>

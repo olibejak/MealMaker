@@ -25,11 +25,11 @@ export default function DiaryEntryDetailScreen() {
                         </Text>
                     </View>
                 </ScrollView>
+            </View>
             <BottomRightCornerButton
                 IconComponent={PencilIcon}
                 onPress={() => navigation.navigate('NewDiaryEntry')}
             />
-            </View>
             <BottomNavigationBar />
         </View>
     );
