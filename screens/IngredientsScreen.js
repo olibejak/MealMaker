@@ -19,32 +19,33 @@ export default function IngredientsScreen () {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchIngredients = async () => {
-            // Setting a timeout for the fetch request
-            const timeout = 10000; // Timeout in milliseconds (10 seconds)
-            const url = 'https://www.themealdb.com/api/json/v1/1/list.php?i=list';
+            const fetchIngredients = async () => {
+                // Setting a timeout for the fetch request
+                const timeout = 10000; // Timeout in milliseconds (10 seconds)
+                const url = 'https://www.themealdb.com/api/json/v1/1/list.php?i=list';
 
-            const timeoutPromise = new Promise((resolve, reject) => {
-                setTimeout(() => reject(new Error('Request timed out')), timeout);
-            });
+                const timeoutPromise = new Promise((resolve, reject) => {
+                    setTimeout(() => reject(new Error('Request timed out')), timeout);
+                });
 
-            const fetchPromise = fetch(url);
+                const fetchPromise = fetch(url);
 
-            try {
-                const response = await Promise.race([fetchPromise, timeoutPromise]);
-                const json = await response.json();
-                setIngredients(json.meals);
-            } catch (error) {
-                console.error("Failed to fetch ingredients or request timed out:", error);
-            }
-            finally {
-                setIsLoading(false); // End loading
-            }
-        };
+                try {
+                    const response = await Promise.race([fetchPromise, timeoutPromise]);
+                    const json = await response.json();
+                    setIngredients(json.meals);
+                } catch (error) {
+                    console.error("Failed to fetch ingredients or request timed out:", error);
+                }
+                finally {
+                    setIsLoading(false); // End loading
+                }
+            };
 
-        fetchIngredients();
-    }
-    , []);
+            fetchIngredients();
+        }
+        , []);
+
 
     return (
         <View style={styles.screen}>
@@ -53,14 +54,15 @@ export default function IngredientsScreen () {
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 <SearchBar filtersOn={filtersOn}/>
-                {Array.from({ length: 15 }).map((_, index) => (
+                {ingredients.map((ingredient, index) => (
                     <Card
                         key={index}
-                        text={"White Wine Vinegar"}
+                        text={ingredient.strIngredient}
                         fridgeButtonOn={fridgeButtonOn}
                         cartButtonOn={cartButtonOn}
                     />
                 ))}
+                {isLoading ? <ActivityIndicator size="large"/> : null}
             </ScrollView>
             <View>
                 <BottomNavigationBar selected={selectedBottomBar} />
