@@ -4,6 +4,7 @@ import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
 import {useEffect, useState} from "react";
+import {BookIcon, HamburgerIcon} from "../assets/icons";
 
 export default function IngredientsScreen () {
     const title = "Ingredients";
@@ -48,7 +49,7 @@ export default function IngredientsScreen () {
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={title}/>
+                <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon}/>
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 <SearchBar filtersOn={filtersOn}/>
