@@ -85,14 +85,12 @@ const styles = StyleSheet.create({
     },
     scrollableScreen: {
         backgroundColor: '#FFF',
-        paddingTop: 8,
-        paddingBottom: 8,
-        paddingRight: 16,
-        paddingLeft: 16,
-
+        paddingVertical: 8,
+        paddingHorizontal: 16,
     },
     scrolling: {
         alignItems: 'center',
+        overflow: 'visible',
     },
 
     iconSize: {
