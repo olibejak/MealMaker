@@ -28,13 +28,24 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
         return parsedString;
     }
 
-    const navigateToMealDetails = (idMeal) => {
-        navigation.navigate("RecipeDetails",  async () => {
-                const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`;
-                const response = await fetch(url);
-                return response.json();
+    const navigateToMealDetails = async(idMeal) => {
+        const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`;
+        try {
+            const response = await fetch(url);
+            const json = await response.json();
+            const meals = json.meals;
 
-            } );
+            if (meals && meals.length > 0) {
+                const meal = meals[0];
+                navigation.navigate("RecipeDetails", { recipe: meal });
+            } else {
+                // Handle case where meal data is empty or undefined
+                console.error("Meal data is empty or undefined.");
+            }
+        } catch (error) {
+            // Handle fetch or JSON parsing errors
+            console.error("Error fetching meal data:", error);
+        }
     };
 
     useEffect(() => {
@@ -94,6 +105,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 <ScrollView style={styles.mealsContainer} horizontal={true}>
                     {mealsFromIngredient.map((meal, index) => (
                         <MealMiniature
+                            key={index}
                             mealName={meal.strMeal}
                             mealThumb={meal.strMealThumb}
                             onPress={() => navigateToMealDetails(meal.idMeal)}

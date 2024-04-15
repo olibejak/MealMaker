@@ -6,69 +6,16 @@ import {
     BackArrowIcon,
     BasketCardIcon,
     BookIcon,
-    FridgeCardIcon,
+    FridgeCardIcon, PotIcon,
     StarFilledIcon,
     StarOutlineIcon
 } from "../assets/icons";
 import MealMiniature from "../components/MealMiniature";
+import {useNavigation} from "@react-navigation/native";
 import IngredientsScreen from "./IngredientsScreen";
 
-export default function RecipeDetailsScreen ( {  navigation} ) {
-    const  recipe   = {
-        "idMeal": "52771",
-        "strMeal": "Spicy Arrabiata Penne",
-        "strDrinkAlternate": null,
-        "strCategory": "Vegetarian",
-        "strArea": "Italian",
-        "strInstructions": "Bring a large pot of water to a boil. Add kosher salt to the boiling water, then add the pasta. Cook according to the package instructions, about 9 minutes.\r\nIn a large skillet over medium-high heat, add the olive oil and heat until the oil starts to shimmer. Add the garlic and cook, stirring, until fragrant, 1 to 2 minutes. Add the chopped tomatoes, red chile flakes, Italian seasoning and salt and pepper to taste. Bring to a boil and cook for 5 minutes. Remove from the heat and add the chopped basil.\r\nDrain the pasta and add it to the sauce. Garnish with Parmigiano-Reggiano flakes and more basil and serve warm.",
-        "strMealThumb": "https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg",
-        "strTags": "Pasta,Curry",
-        "strYoutube": "https://www.youtube.com/watch?v=1IszT_guI08",
-        "strIngredient1": "penne rigate",
-        "strIngredient2": "olive oil",
-        "strIngredient3": "garlic",
-        "strIngredient4": "chopped tomatoes",
-        "strIngredient5": "red chile flakes",
-        "strIngredient6": "italian seasoning",
-        "strIngredient7": "basil",
-        "strIngredient8": "Parmigiano-Reggiano",
-        "strIngredient9": "",
-        "strIngredient10": "",
-        "strIngredient11": "",
-        "strIngredient12": "",
-        "strIngredient13": "",
-        "strIngredient14": "",
-        "strIngredient15": "",
-        "strIngredient16": null,
-        "strIngredient17": null,
-        "strIngredient18": null,
-        "strIngredient19": null,
-        "strIngredient20": null,
-        "strMeasure1": "1 pound",
-        "strMeasure2": "1/4 cup",
-        "strMeasure3": "3 cloves",
-        "strMeasure4": "1 tin ",
-        "strMeasure5": "1/2 teaspoon",
-        "strMeasure6": "1/2 teaspoon",
-        "strMeasure7": "6 leaves",
-        "strMeasure8": "spinkling",
-        "strMeasure9": "",
-        "strMeasure10": "",
-        "strMeasure11": "",
-        "strMeasure12": "",
-        "strMeasure13": "",
-        "strMeasure14": "",
-        "strMeasure15": "",
-        "strMeasure16": null,
-        "strMeasure17": null,
-        "strMeasure18": null,
-        "strMeasure19": null,
-        "strMeasure20": null,
-        "strSource": null,
-        "strImageSource": null,
-        "strCreativeCommonsConfirmed": null,
-        "dateModified": null
-    } //route.params;
+export default function RecipeDetailsScreen ( { route, navigation } ) {
+    const {recipe} = route.params;
     const [isLoading, setIsLoading] = useState(true);
     const [recipeIngredients, setRecipeIngredients] = useState([]);
     const [ingredientMap, setIngredientMap] = useState(new Map());
@@ -79,13 +26,8 @@ export default function RecipeDetailsScreen ( {  navigation} ) {
         return str.replace(/\b\w/g, char => char.toUpperCase());
     }
 
-    const navigateToIngredientDetails = (idMeal) => {
-        navigation.navigate("IngredientDetails",  async () => {
-            const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`;
-            const response = await fetch(url);
-            return response.json();
-
-        } );
+    const navigateToIngredientDetails = (ingredient) => {
+        navigation.navigate("IngredientDetails",  {ingredient} );
     };
 
     useEffect(() => {
@@ -143,19 +85,16 @@ export default function RecipeDetailsScreen ( {  navigation} ) {
                 </View>
                 <View style={styles.textContainer}>
                     <Text style={styles.fontLarge}>Ingredients</Text>
-                    <Text style={styles.fontRegular}>
-                        {(() => {
-                            let result = "";
-                            ingredientMap.forEach((value, key) => {
-                                result += `${value} ${key} `;
-                            });
-                            return result;
-                        })()}
-                    </Text>
+                    {!isLoading && (
+                        <Text style={styles.fontRegular}>
+                            {Array.from(ingredientMap).map(([key, value]) => `${value} ${key}`).join(' ')}
+                        </Text>
+                    )}{isLoading ? <ActivityIndicator size="large"/> : null}
                 </View>
                 <ScrollView style={styles.ingredientContainer} horizontal={true}>
                     {recipeIngredients.map((ingredient, index) => (
                         <MealMiniature
+                            key={index}
                             mealName={ingredient.strIngredient}
                             mealThumb={`https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png`}
                             onPress={() => navigateToIngredientDetails(ingredient)}
@@ -164,11 +103,15 @@ export default function RecipeDetailsScreen ( {  navigation} ) {
                     {isLoading ? <ActivityIndicator size="large"/> : null}
                 </ScrollView>
                 <View style={[styles.textContainer, {marginBottom: 100}]}>
-                    <Text style={styles.fontLarge}>Categories</Text>
+                    <Text style={styles.fontLarge}>Instructions</Text>
                     <Text style={styles.fontRegular}>{recipe.strInstructions}</Text>
                 </View>
             </ScrollView>
             <BottomNavigationBar selected={"Ingredients"} />
+            {/* Floating button */}
+            <TouchableOpacity style={styles.floatingButton} >
+                <PotIcon />
+            </TouchableOpacity>
         </View>
     );
 };
@@ -182,6 +125,7 @@ const styles = StyleSheet.create({
     },
     screen: {
         display: 'flex',
+        flex: 1,
         position: 'absolute', // Changed from fixed to absolute for React Native
         justifyContent: 'space-between',
         alignItems: 'stretch',
@@ -210,6 +154,28 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         padding: 12,
         marginTop: 12,
+    },
+    floatingButton: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: '#E8DEF8',
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 6, // Increase the height to spread the shadow more vertically
+        },
+        shadowOpacity: 0.3, // You can increase the opacity for a more pronounced shadow
+        shadowRadius: 6, // Increase the radius for a wider shadow spread
+        elevation: 6,
+        position: 'absolute',
+        bottom: 100,
+        right: 28,
+        width: 40,
+        height: 40,
+        padding: 8
     },
     addToButtonsContainer: {
         display: 'flex',
