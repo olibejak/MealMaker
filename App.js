@@ -9,6 +9,7 @@ import ShoppingListScreen from "./screens/ShoppingListScreen";
 import DiaryEntryDetailScreen from "./screens/DiaryEntryDetailScreen";
 import {createStackNavigator} from "@react-navigation/stack";
 import IngredientDetailsScreen from "./screens/IngredientDetailsScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 import DiaryScreen from "./screens/DiaryScreen";
 
 const Tab = createStackNavigator();
@@ -38,6 +39,7 @@ export default function App() {
             <Tab.Screen name="IngredientDetails" component={IngredientDetailsScreen} />
             <Tab.Screen name="DiaryEntryDetail" component={DiaryEntryDetailScreen} />
             <Tab.Screen name="Diary" component={DiaryScreen} />
+            <Tab.Screen name="Settings" component={SettingsScreen} />
         </Tab.Navigator>
     </NavigationContainer>
   );
