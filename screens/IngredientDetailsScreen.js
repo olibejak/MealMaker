@@ -20,7 +20,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     }
 
     const navigateToMealDetails = (idMeal) => {
-        navigation.navigate("MealDetails",  async () => {
+        navigation.navigate("RecipeDetails",  async () => {
                 const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`;
                 const response = await fetch(url);
                 return response.json();
@@ -66,11 +66,11 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 </View>
                 <View style={styles.addToButtonsContainer}>
                     <TouchableOpacity style={styles.addToButton}>
-                        <text style={styles.fontRegularMedium}>Add to</text>
+                        <Text style={styles.fontRegularMedium}>Add to</Text>
                         <FridgeCardIcon/>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.addToButton}>
-                        <text style={styles.fontRegularMedium}>Add to</text>
+                        <Text style={styles.fontRegularMedium}>Add to</Text>
                         <BasketCardIcon />
                     </TouchableOpacity>
                 </View>
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     mealsContainer: {
         display: 'flex',
         flexDirection: 'row',
+        marginBottom: 100,
     },
     screen: {
         display: 'flex',
