@@ -4,7 +4,14 @@ import BottomNavigationBar from "../components/BottomNavigationBar";
 import IngredientCard from "../components/IngredientCard";
 import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
-import {BookIcon, BackArrowIcon, FridgeCardIcon, BasketCardIcon} from "../assets/icons";
+import {
+    BookIcon,
+    BackArrowIcon,
+    FridgeCardIcon,
+    BasketCardIcon,
+    StarOutlineIcon,
+    StarFilledIcon
+} from "../assets/icons";
 import MealMiniature from "../components/MealMiniature";
 
 export default function IngredientDetailsScreen ({ route, navigation }) {
@@ -12,6 +19,8 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     const [imageUri, setImageData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [mealsFromIngredient, setMealsFromIngredient] = useState([]);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
 
     const parsedIngredientName = () => {
         let parsedString = ingredient.strIngredient.toLowerCase();
@@ -19,13 +28,24 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
         return parsedString;
     }
 
-    const navigateToMealDetails = (idMeal) => {
-        navigation.navigate("MealDetails",  async () => {
-                const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`;
-                const response = await fetch(url);
-                return response.json();
+    const navigateToMealDetails = async(idMeal) => {
+        const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`;
+        try {
+            const response = await fetch(url);
+            const json = await response.json();
+            const meals = json.meals;
 
-            } );
+            if (meals && meals.length > 0) {
+                const meal = meals[0];
+                navigation.navigate("RecipeDetails", { recipe: meal });
+            } else {
+                // Handle case where meal data is empty or undefined
+                console.error("Meal data is empty or undefined.");
+            }
+        } catch (error) {
+            // Handle fetch or JSON parsing errors
+            console.error("Error fetching meal data:", error);
+        }
     };
 
     useEffect(() => {
@@ -58,7 +78,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon} RightIcon={BookIcon} />
+                <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon} RightIcon={starIconToRender} />
             </View>
             <ScrollView style={styles.scrollableScreen}>
                 <View style={styles.imageContainer}>
@@ -66,11 +86,11 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 </View>
                 <View style={styles.addToButtonsContainer}>
                     <TouchableOpacity style={styles.addToButton}>
-                        <text style={styles.fontRegularMedium}>Add to</text>
+                        <Text style={styles.fontRegularMedium}>Add to</Text>
                         <FridgeCardIcon/>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.addToButton}>
-                        <text style={styles.fontRegularMedium}>Add to</text>
+                        <Text style={styles.fontRegularMedium}>Add to</Text>
                         <BasketCardIcon />
                     </TouchableOpacity>
                 </View>
@@ -85,6 +105,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 <ScrollView style={styles.mealsContainer} horizontal={true}>
                     {mealsFromIngredient.map((meal, index) => (
                         <MealMiniature
+                            key={index}
                             mealName={meal.strMeal}
                             mealThumb={meal.strMealThumb}
                             onPress={() => navigateToMealDetails(meal.idMeal)}
@@ -102,6 +123,7 @@ const styles = StyleSheet.create({
     mealsContainer: {
         display: 'flex',
         flexDirection: 'row',
+        marginBottom: 100,
     },
     screen: {
         display: 'flex',
@@ -146,7 +168,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: '#E8DEF8',
-        borderRadius: 12,
+        borderRadius: 20,
         padding: 12,
         marginTop: 12,
         gap: 10,
