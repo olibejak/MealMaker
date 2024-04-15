@@ -9,7 +9,7 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
     const LeftAction = () => {
         // Action for Left Icon
         if (LeftIcon.name === 'HamburgerIcon') {
-            navigation.navigate('Settings');
+            navigation.navigate('About');
         }
         if (LeftIcon.name === 'BackArrowIcon') {
             navigation.goBack()
