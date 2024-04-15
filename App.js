@@ -30,7 +30,7 @@ export default function App() {
   return (
 
     <NavigationContainer>
-        <Tab.Navigator initialRouteName="RecipeDetails" screenOptions={{ headerShown: false, animationEnabled: false}}  >
+        <Tab.Navigator initialRouteName="Ingredients" screenOptions={{ headerShown: false, animationEnabled: false}}  >
             <Tab.Screen name="Ingredients" component={IngredientsScreen} />
             <Tab.Screen name="Recipes" component={RecipesScreen} />
             <Tab.Screen name="Fridge" component={FridgeScreen} />

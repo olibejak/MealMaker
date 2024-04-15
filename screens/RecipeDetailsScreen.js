@@ -2,7 +2,14 @@ import {ActivityIndicator, Dimensions, Image, ScrollView, StyleSheet, Text, Touc
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import {useEffect, useState} from "react";
-import {BackArrowIcon, BasketCardIcon, BookIcon, FridgeCardIcon} from "../assets/icons";
+import {
+    BackArrowIcon,
+    BasketCardIcon,
+    BookIcon,
+    FridgeCardIcon,
+    StarFilledIcon,
+    StarOutlineIcon
+} from "../assets/icons";
 import MealMiniature from "../components/MealMiniature";
 import IngredientsScreen from "./IngredientsScreen";
 
@@ -65,6 +72,8 @@ export default function RecipeDetailsScreen ( {  navigation} ) {
     const [isLoading, setIsLoading] = useState(true);
     const [recipeIngredients, setRecipeIngredients] = useState([]);
     const [ingredientMap, setIngredientMap] = useState(new Map());
+    const [isFavorite, setIsFavorite] = useState(false);
+    const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
 
     function capitalizeFirstLetter(str) {
         return str.replace(/\b\w/g, char => char.toUpperCase());
@@ -116,7 +125,7 @@ export default function RecipeDetailsScreen ( {  navigation} ) {
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={recipe.strMeal} LeftIcon={BackArrowIcon} RightIcon={BookIcon} />
+                <TopNavigationBar title={recipe.strMeal} LeftIcon={BackArrowIcon} RightIcon={starIconToRender} />
             </View>
             <ScrollView style={styles.scrollableScreen}>
                 <View style={styles.imageContainer}>
@@ -214,7 +223,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: '#E8DEF8',
-        borderRadius: 12,
+        borderRadius: 20,
         padding: 12,
         marginTop: 12,
         gap: 10,

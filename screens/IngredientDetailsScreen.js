@@ -4,7 +4,14 @@ import BottomNavigationBar from "../components/BottomNavigationBar";
 import IngredientCard from "../components/IngredientCard";
 import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
-import {BookIcon, BackArrowIcon, FridgeCardIcon, BasketCardIcon} from "../assets/icons";
+import {
+    BookIcon,
+    BackArrowIcon,
+    FridgeCardIcon,
+    BasketCardIcon,
+    StarOutlineIcon,
+    StarFilledIcon
+} from "../assets/icons";
 import MealMiniature from "../components/MealMiniature";
 
 export default function IngredientDetailsScreen ({ route, navigation }) {
@@ -12,6 +19,8 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     const [imageUri, setImageData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [mealsFromIngredient, setMealsFromIngredient] = useState([]);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
 
     const parsedIngredientName = () => {
         let parsedString = ingredient.strIngredient.toLowerCase();
@@ -58,7 +67,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon} RightIcon={BookIcon} />
+                <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon} RightIcon={starIconToRender} />
             </View>
             <ScrollView style={styles.scrollableScreen}>
                 <View style={styles.imageContainer}>
@@ -147,7 +156,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: '#E8DEF8',
-        borderRadius: 12,
+        borderRadius: 20,
         padding: 12,
         marginTop: 12,
         gap: 10,
