@@ -11,8 +11,8 @@ export default function IngredientCard ({ text, fridgeButtonOn, cartButtonOn, on
         </TouchableOpacity>
     )};
 
-//TODO. fix this, it's not working
-function RenderButtons (fridgeButtonOn, cartButtonOn) {
+//works: Check ingredients screen
+function RenderButtons({fridgeButtonOn, cartButtonOn}) {
     return (
         <View style={styles.cardIcons}>
             {fridgeButtonOn ? (
@@ -38,7 +38,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginTop: 8,
+        marginTop: 12,
+        marginHorizontal: 8,
+        overflow: 'visible',
 
         //  Shadow
         shadowColor: "#000",
@@ -47,9 +49,9 @@ const styles = StyleSheet.create({
             height: 2, // Downward shadow
         },
         shadowOpacity: 0.50,
-        shadowRadius: 2,
+        shadowRadius: 1,
         // Android shadow (uniform, no direction control)
-        // TODO: fix shadow being cut off on Android
+        //  TODO: fix shadow being cut off on Android
         elevation: 4,
     },
     cardTextContent: {
