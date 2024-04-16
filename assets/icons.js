@@ -115,6 +115,14 @@ const CheckmarkIcon = () => (
     </Svg>
 );
 
+const CheckmarkIconWhite = () => (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <Path
+            d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"
+            fill="white"/>
+    </Svg>
+);
+
 const PlusIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <Path
@@ -137,11 +145,10 @@ const PencilIcon = () => (
 );
 
 const PotIcon = () => (
-    <Svg width="24" height="24" viewBox="0 -960 960 960" fill="none">
+    <Svg width="26" height="26" viewBox="0 0 26 26" fill="none">
         <Path
-            d="M120-640h720v360q0 50-35 85t-85 35H240q-50 0-85-35t-35-85v-360Zm80 80v280q0 17 11.5 28.5T240-240h480q17 0 28.5-11.5T760-280v-280H200Zm-80-120v-80h240v-40q0-17 11.5-28.5T400-840h160q17 0 28.5 11.5T600-800v40h240v80H120Zm360 280Z"
-            fill="#49454F"
-        />
+            d="M4 10H22V19C22 19.8333 21.7083 20.5417 21.125 21.125C20.5417 21.7083 19.8333 22 19 22H7C6.16667 22 5.45833 21.7083 4.875 21.125C4.29167 20.5417 4 19.8333 4 19V10ZM6 12V19C6 19.2833 6.09583 19.5208 6.2875 19.7125C6.47917 19.9042 6.71667 20 7 20H19C19.2833 20 19.5208 19.9042 19.7125 19.7125C19.9042 19.5208 20 19.2833 20 19V12H6ZM4 9V7H10V6C10 5.71667 10.0958 5.47917 10.2875 5.2875C10.4792 5.09583 10.7167 5 11 5H15C15.2833 5 15.5208 5.09583 15.7125 5.2875C15.9042 5.47917 16 5.71667 16 6V7H22V9H4Z"
+            fill="black"/>
     </Svg>
 )
 
@@ -155,17 +162,29 @@ const GarbageIcon = () => (
 )
 
 const StarOutlineIcon = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+    <Svg height="24" viewBox="0 -960 960 960" width="24">
         <Path
             d="m354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z"/>
     </Svg>
 )
 const StarFilledIcon = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+    <Svg height="24" viewBox="0 -960 960 960" width="24">
         <Path
             d="m354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z"
             fill="#49454F"
         />
+    </Svg>
+)
+const TimerIcon = () => (
+    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <Path
+            d="M15 1.5H9V3.5H15V1.5ZM11 14.5H13V8.5H11V14.5ZM19.03 7.89L20.45 6.47C20.02 5.96 19.55 5.48 19.04 5.06L17.62 6.48C16.07 5.24 14.12 4.5 12 4.5C7.03 4.5 3 8.53 3 13.5C3 18.47 7.02 22.5 12 22.5C16.98 22.5 21 18.47 21 13.5C21 11.38 20.26 9.43 19.03 7.89ZM12 20.5C8.13 20.5 5 17.37 5 13.5C5 9.63 8.13 6.5 12 6.5C15.87 6.5 19 9.63 19 13.5C19 17.37 15.87 20.5 12 20.5Z"
+            fill="black"/>
+    </Svg>
+)
+const ArrowDropDown = () => (
+    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <Path d="M7 10L12 15L17 10H7Z" fill="#49454F"/>
     </Svg>
 )
 export {
@@ -186,5 +205,8 @@ export {
     PotIcon,
     GarbageIcon,
     StarOutlineIcon,
-    StarFilledIcon
+    StarFilledIcon,
+    TimerIcon,
+    ArrowDropDown,
+    CheckmarkIconWhite
 }
