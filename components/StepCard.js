@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
         letterSpacing: 0.5,
-        fontWeight: 'bold',
+        fontWeight: "400",
     },
     fontRegular: {
         fontFamily: 'Roboto-Regular',
