@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         paddingTop: 8,
         paddingBottom: 8,
-        marginBottom: 80
     },
     scrolling: {
         alignItems: 'center',
