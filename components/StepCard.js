@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     },
     checkBoxChecked: {
         backgroundColor: "#6750A4",
+        borderColor: "#6750A4",
         width: 20,
         height: 20,
         borderWidth: 1,
@@ -58,13 +59,14 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     fontRegularMedium: {
-        fontFamily: 'Roboto-Medium',
+        fontFamily: 'Roboto-Regular',
         fontSize: 16,
         letterSpacing: 0.5,
+        fontWeight: 'bold',
     },
     fontRegular: {
         fontFamily: 'Roboto-Regular',
-        fontSize: 16,
+        fontSize: 14,
         letterSpacing: 0.5,
     },
     arrow: {
