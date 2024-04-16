@@ -2,7 +2,7 @@ import {StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
 import {FilterIcon, SearchIcon} from "../assets/icons";
 
 
-export default function SearchBar ({ filtersOn }) {
+export default function SearchBar () {
 
     return (
         <TouchableOpacity style={styles.searchBar}>
@@ -15,20 +15,13 @@ export default function SearchBar ({ filtersOn }) {
                 <TextInput placeholder={"Search ingredients"} returnKeyType="search" onChangeText={() => {/* Handle change */
                 }} style={styles.fontRegular}></TextInput>
             </View>
-            <RenderFilters filtersOn={filtersOn}/>
+            <View style={styles.searchIcon}>
+                <View style={styles.center}>
+                    <FilterIcon/>
+                </View>
+            </View>
         </TouchableOpacity>
 )};
-
-
-function RenderFilters (filtersOn) {
-    return filtersOn ? (
-        <View style={styles.searchIcon}>
-            <View style={styles.center}>
-                <FilterIcon/>
-            </View>
-        </View>
-    ) : null;
-}
 
 const styles = StyleSheet.create({
     searchBar: {

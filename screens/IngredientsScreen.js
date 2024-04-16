@@ -8,7 +8,6 @@ import {BookIcon, HamburgerIcon} from "../assets/icons";
 
 export default function IngredientsScreen ( {navigation} ) {
     const title = "Ingredients";
-    const filtersOn = false;
     const selectedBottomBar = "Ingredients";
     const fridgeButtonOn = true;
     const cartButtonOn = true;
@@ -54,7 +53,7 @@ export default function IngredientsScreen ( {navigation} ) {
         <View style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
                 <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                    <SearchBar filtersOn={filtersOn} />
+                    <SearchBar />
                     {ingredients.map((ingredient, index) => (
                         <IngredientCard
                             key={index}
