@@ -5,10 +5,12 @@ import {BasketCardIcon, FilterIcon, FridgeCardIcon} from "../assets/icons";
 export default function IngredientCard ({ text, fridgeButtonOn, cartButtonOn, onPress }) {
 
     return (
-        <TouchableOpacity style={styles.card} onPress={onPress}>
-            <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>{text}</Text>
-                <RenderButtons fridgeButtonOn={fridgeButtonOn} cartButtonOn={cartButtonOn}/>
-        </TouchableOpacity>
+        <View style={styles.shadowContainer}>
+            <TouchableOpacity style={styles.card} onPress={onPress}>
+                <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>{text}</Text>
+                    <RenderButtons fridgeButtonOn={fridgeButtonOn} cartButtonOn={cartButtonOn}/>
+            </TouchableOpacity>
+        </View>
     )};
 
 //works: Check ingredients screen
@@ -29,6 +31,10 @@ function RenderButtons({fridgeButtonOn, cartButtonOn}) {
 )}
 
 const styles = StyleSheet.create({
+    shadowContainer: {
+        padding: 4,
+        backgroundColor: 'transparent'
+    },
     card: {
         width: '100%',
         borderRadius: 12,
@@ -38,7 +44,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginTop: 8,
         overflow: 'visible',
 
         //  Shadow
@@ -50,8 +55,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.50,
         shadowRadius: 1,
         // Android shadow (uniform, no direction control)
-        //  TODO: fix shadow being cut off on Android
         elevation: 4,
+
     },
     cardTextContent: {
         // width: '100%',

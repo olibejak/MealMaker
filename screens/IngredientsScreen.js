@@ -53,7 +53,9 @@ export default function IngredientsScreen ( {navigation} ) {
         <View style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
                 <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                    <SearchBar />
+                    <View style={styles.smallMargin}>
+                        <SearchBar />
+                    </View>
                     {ingredients.map((ingredient, index) => (
                         <IngredientCard
                             key={index}
@@ -133,5 +135,8 @@ const styles = StyleSheet.create({
     },
     textCenter: {
         textAlign: 'center',
+    },
+    smallMargin: {
+        marginBottom: 8,
     },
 });

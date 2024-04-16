@@ -56,18 +56,11 @@ const RecipeCard = ({
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: 'white',
+        backgroundColor: '#F7F2FA',
         borderRadius: 20,
-        overflow: 'hidden',
-        marginTop: 8,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.23,
-        shadowRadius: 2.62,
-        elevation: 4,
+        overflow: 'visible',
+        marginTop: 16,
+
         minHeight: 250,
     },
     buttonContainer: {
@@ -78,13 +71,14 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 160, // Adjust the height as necessary
         resizeMode: 'cover',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     },
     cardContent: {
         padding: 16,
     },
     cardTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
+        fontSize: 20,
         marginBottom: 4,
     },
     cardDate: {
@@ -98,7 +92,7 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     detailsButton: {
-        backgroundColor: '#F2EDF6',
+        backgroundColor: '#E8DEF8',
         borderRadius: 20,
         paddingVertical: 8,
         color: 'black',
