@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Regular',
         fontSize: 22,
         textAlign: 'left',
+        marginBottom: 8,
     },
     fontSmallBold: {
         fontFamily: 'Roboto-Bold',
