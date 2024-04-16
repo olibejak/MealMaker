@@ -5,7 +5,9 @@ export default function MealMiniature({mealName, mealThumb, onPress}) {
         <TouchableOpacity style={styles.container} onPress={onPress}>
             <View style={styles.rounded}>
                 <Image style={styles.image} source={{uri: `${mealThumb}`}}/>
-                <Text style={styles.text}>{mealName}</Text>
+                <View style={styles.textContainer}>
+                    <Text style={styles.text}>{mealName}</Text>
+                </View>
             </View>
         </TouchableOpacity>
     );
@@ -18,9 +20,10 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: 'column',
         alignItems: "flex-start",
-        maxWidth: 150,
-        minHeight: 150,
+        maxWidth: 160,
+        minHeight: 160,
         marginTop: 12,
+        marginBottom: 12,
         marginHorizontal: 12,
         padding: 0,
         borderRadius: 10,
@@ -33,13 +36,21 @@ const styles = StyleSheet.create({
 
     image: {
         resizeMode: 'stretch',
-        height: 150,
-        width: 150,
-        marginBottom: 8,
+        height: 160,
+        width: 160,
     },
+    textContainer: {
+        width: 160,
+        height: 80,
+        display: 'flex',
+        justifyContent: 'center',
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+
     text: {
-        textAlign: 'center',
+        textAlign: 'left',
         fontFamily: 'Roboto-Regular',
-        fontSize: 16,
+        fontSize: 18,
     },
 });
