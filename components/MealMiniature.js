@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         minHeight: 160,
         marginTop: 12,
         marginBottom: 12,
-        marginHorizontal: 12,
+        marginRight: 12,
         padding: 0,
         borderRadius: 10,
     },

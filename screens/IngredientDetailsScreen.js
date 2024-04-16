@@ -111,7 +111,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                             onPress={() => navigateToMealDetails(meal.idMeal)}
                         />
                     ))}
-                    {isLoading ? <ActivityIndicator style={styles.indicator} size="large"/> : null}
+                    {isLoading ? <ActivityIndicator style={styles.loadingContainer} size="large"/> : null}
                 </ScrollView>
             </ScrollView>
             <BottomNavigationBar selected={"Ingredients"} />
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
         height: 200,
         resizeMode: 'stretch',
     },
-    indicator: {
+    loadingContainer: {
         margin: 8,
     },
 });

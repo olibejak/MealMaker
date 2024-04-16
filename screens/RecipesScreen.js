@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     },
     scrolling: {
         alignItems: 'stretch',
-        paddingBottom: 100 ,
+        paddingBottom: 16 ,
     },
     iconSize: {
         width: 24,

@@ -52,6 +52,12 @@ export default function IngredientsScreen ( {navigation} ) {
     return (
         <View style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
+            {isLoading ? (
+                <View style={styles.loadingScreen}>
+                    <ActivityIndicator size="large" />
+                </View>
+            ) : (
+
                 <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                     <View style={styles.smallMargin}>
                         <SearchBar />
@@ -65,8 +71,7 @@ export default function IngredientsScreen ( {navigation} ) {
                             onPress={() => navigateToIngredientDetails(ingredient)}
                         />
                     ))}
-                    {isLoading ? <ActivityIndicator size="large"/> : null}
-                </ScrollView>
+                </ScrollView> )}
             <BottomNavigationBar selected={selectedBottomBar} />
         </View>
     )
@@ -83,6 +88,7 @@ const styles = StyleSheet.create({
         height: '100%',
         top: 0,
         bottom: 0,
+        backgroundColor: '#FFF',
     },
     scrollableScreen: {
         backgroundColor: '#FFF',
@@ -99,10 +105,11 @@ const styles = StyleSheet.create({
         height: 24,
         padding: 8,
     },
-    center: {
+    loadingScreen: {
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: 'rgba(255,255,255,0)',
+        justifyContent: 'center',
+        backgroundColor: '#FFF',
         padding: 0,
     },
     roundCorners: {

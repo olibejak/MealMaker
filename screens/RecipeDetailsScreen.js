@@ -81,18 +81,18 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                 </View>
                 <View style={styles.addToButtonsContainer}>
                     <TouchableOpacity style={styles.addToButton}>
-                        <Text style={styles.fontRegularMedium}>Add Ingredients to</Text>
+                        <Text style={styles.fontButton}>Add Ingredients to</Text>
                         <BasketCardIcon />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.fontLarge}>Categories</Text>
-                    <Text style={styles.fontRegular}>{recipe.strCategory}</Text>
+                    <Text style={styles.cardTitle}>Categories</Text>
+                    <Text style={styles.cardContent}>{recipe.strCategory}</Text>
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.fontLarge}>Ingredients</Text>
+                    <Text style={styles.cardTitle}>Ingredients</Text>
                     {!isLoading && (
-                        <Text style={styles.fontRegular}>
+                        <Text style={styles.cardContent}>
                             {Array.from(ingredientMap).map(([key, value]) => `${value} ${key}`).join(' ')}
                         </Text>
                     )}{isLoading ? <ActivityIndicator size="large"/> : null}
@@ -106,11 +106,11 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                             onPress={() => navigateToIngredientDetails(ingredient)}
                         />
                     ))}
-                    {isLoading ? <ActivityIndicator size="large"/> : null}
+                    {isLoading ? <ActivityIndicator style={styles.loadingContainer} size="large"/> : null}
                 </ScrollView>
-                <View style={[styles.textContainer, {marginBottom: 100}]}>
-                    <Text style={styles.fontLarge}>Instructions</Text>
-                    <Text style={styles.fontRegular}>{recipe.strInstructions}</Text>
+                <View style={[styles.textContainer, {marginBottom: 16}]}>
+                    <Text style={styles.cardTitle}>Instructions</Text>
+                    <Text style={styles.cardContent}>{recipe.strInstructions}</Text>
                 </View>
             </ScrollView>
             <BottomRightCornerButton
@@ -252,5 +252,25 @@ const styles = StyleSheet.create({
         resizeMode: 'stretch',
         borderRadius: 12,
         overflow: "hidden",
+    },
+    fontButton: {
+        fontFamily: 'Roboto-Medium',
+        fontSize: 16,
+        letterSpacing: 0.5,
+        marginLeft: 5,
+    },
+    cardTitle: {
+        fontFamily: 'Roboto-Medium',
+        fontSize: 18,
+        marginBottom: 8,
+    },
+    cardContent: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 16,
+        color: '#666',
+        lineHeight: 24,
+    },
+    loadingContainer: {
+        margin: 8,
     },
 });
