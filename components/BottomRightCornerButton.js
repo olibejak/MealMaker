@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         right: 10,
-        bottom: 100,
+        bottom: 105,
         padding: 15,
         zIndex: 10, // Make sure it's above everything else
     },

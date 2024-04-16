@@ -94,10 +94,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                         <BasketCardIcon />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.cardTitle}>Type</Text>
-                    <Text style={styles.cardContent}>{ingredient.strType}</Text>
-                </View>
+                <IngredientDetails ingredient={ingredient} />
                 <View style={styles.textContainer}>
                     <Text style={styles.cardTitle}>Description</Text>
                     <Text style={styles.cardContent}>{ingredient.strDescription}</Text>
@@ -119,6 +116,19 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     );
 };
 
+const IngredientDetails = ({ ingredient }) => {
+    if (ingredient.strType) {  // Checks if strType is not empty, undefined, or null
+        return (
+            <View style={styles.textContainer}>
+                <Text style={styles.cardTitle}>Type</Text>
+                <Text style={styles.cardContent}>{ingredient.strType}</Text>
+            </View>
+        );
+    } else {
+        return null;  // Returns null if strType is empty, which means nothing will be rendered
+    }
+};
+
 const styles = StyleSheet.create({
     mealsContainer: {
         display: 'flex',
@@ -138,10 +148,8 @@ const styles = StyleSheet.create({
     },
     scrollableScreen: {
         backgroundColor: '#FFF',
-        paddingTop: 8,
-        paddingBottom: 8,
-        paddingRight: 16,
-        paddingLeft: 16,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
     },
     scrolling: {
         alignItems: 'center',
