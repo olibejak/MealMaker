@@ -6,10 +6,12 @@ import { Ionicons, MaterialIcons, } from '@expo/vector-icons';
 import {BackArrowIcon, CheckmarkIcon,} from "../assets/icons.js";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import TopNavigationBar from "../components/TopNavigationBar";
+import BottomNavigationBar from "../components/BottomNavigationBar";
 
 export default function NewDiaryEntryScreen() {
     const title = "New Entry"
     return (
+        <View style={styles.screen}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={BackArrowIcon} />
             <View style={styles.inputContainer}>
@@ -24,18 +26,20 @@ export default function NewDiaryEntryScreen() {
                     IconComponent={() => <Ionicons name="checkmark" size={24} color="black" />}
                     onPress={() => console.log('Checkmark pressed')}
                 />
-                <View style={styles.photoButtons}>
-                    <TouchableOpacity style={styles.photoButton}>
+                <View style={styles.buttonsContainer}>
+                    <TouchableOpacity style={styles.button}>
                         <Ionicons name="camera" size={24} color="black" />
-                        <Text>Take a photo</Text>
+                        <Text style={styles.fontButton}>Take a photo</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.photoButton}>
+                    <TouchableOpacity style={styles.button}>
                         <MaterialIcons name="photo-library" size={24} color="black" />
-                        <Text>Upload photo</Text>
+                        <Text style={styles.fontButton}>Upload photo</Text>
                     </TouchableOpacity>
                 </View>
             </View>
         </KeyboardAvoidingView>
+        <BottomNavigationBar />
+        </View>
     );
 };
 
@@ -43,6 +47,7 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         justifyContent: 'space-between',
+        backgroundColor: '#FFF',
     },
     fontLarge: {
         fontSize: 22,
@@ -58,15 +63,17 @@ const styles = StyleSheet.create({
     },
     inputText: {
         flex: 1,
-        borderColor: 'gray',
         textAlignVertical: 'top',
-        borderWidth: 1,
         padding: 10,
         borderRadius: 10,
         marginTop: 10,
         marginBottom: 10,
         paddingLeft: 10,
-        paddingTop: 10
+        paddingTop: 10,
+        backgroundColor: '#FEF7FF',
+        fontFamily: 'Roboto-Regular',
+        fontSize: 16,
+        letterSpacing: 0.5,
     },
     checkButton: {
         position: 'absolute',
@@ -74,20 +81,28 @@ const styles = StyleSheet.create({
         bottom: 20,
         backgroundColor: '#E8DEF8',
         borderRadius: 15,
+
     },
-    photoButtons: {
+    buttonsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         paddingBottom: 10,
     },
-    photoButton: {
+    button: {
         alignItems: 'center',
         justifyContent: 'center',
         width: 170,
         height: 50,
-        backgroundColor: '#E8DEF8',
+        backgroundColor: '#E6DEF6',
         borderRadius: 25,
         flexDirection: "row",
         padding: 5,
+
+    },
+    fontButton: {
+        fontFamily: 'Roboto-Medium',
+        fontSize: 16,
+        letterSpacing: 0.5,
+        marginLeft: 5,
     },
 });

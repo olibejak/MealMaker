@@ -12,7 +12,7 @@ export default function AboutScreen() {
         },
         {
             title: 'Creation',
-            content: 'The app was developed in 2024 by students Barbora Pečachůčková, Jan Höfer, and Jakub Olíberius for their project in the subject PDA at CTU FEE.'
+            content: 'The app was developed in 2024 by students Barbora Pecháčková, Jan Höfer, and Jakub Oliberius for their project in the subject PDA at CTU FEE.'
         },
         {
             title: 'API',
@@ -39,14 +39,20 @@ export default function AboutScreen() {
 
 function AboutSectionCard({ title, content }) {
     return (
-        <View style={styles.card}>
-            <Text style={[styles.cardTitle, styles.fontRegularMedium]}>{title}</Text>
-            <Text style={styles.cardContent}>{content}</Text>
+        <View style={styles.shadowContainer}>
+            <View style={styles.card}>
+                <Text style={[styles.cardTitle, styles.fontRegularMedium]}>{title}</Text>
+                <Text style={styles.cardContent}>{content}</Text>
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    shadowContainer: {
+        padding: 4,
+        backgroundColor: 'transparent'
+    },
     screen: {
         flex: 1,
         backgroundColor: '#FFF',
@@ -55,12 +61,13 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
     },
     scrollViewContent: {
-        paddingBottom: 100, // Adjust this as needed to prevent the shadow from being cut off
+        paddingTop: 4,
+        paddingBottom: 16,
     },
     card: {
         backgroundColor: '#F6F2F9',
         borderRadius: 12,
-        marginTop: 12,
+        marginTop: 4,
         padding: 16,
         shadowColor: "#000",
         shadowOffset: {

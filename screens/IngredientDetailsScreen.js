@@ -86,21 +86,21 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 </View>
                 <View style={styles.addToButtonsContainer}>
                     <TouchableOpacity style={styles.addToButton}>
-                        <Text style={styles.fontRegularMedium}>Add to</Text>
+                        <Text style={styles.fontButton}>Add to</Text>
                         <FridgeCardIcon/>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.addToButton}>
-                        <Text style={styles.fontRegularMedium}>Add to</Text>
+                        <Text style={styles.fontButton}>Add to</Text>
                         <BasketCardIcon />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.fontLarge}>Type</Text>
-                    <Text style={styles.fontRegular}>{ingredient.strType}</Text>
+                    <Text style={styles.cardTitle}>Type</Text>
+                    <Text style={styles.cardContent}>{ingredient.strType}</Text>
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.fontLarge}>Description</Text>
-                    <Text style={styles.fontRegular}>{ingredient.strDescription}</Text>
+                    <Text style={styles.cardTitle}>Description</Text>
+                    <Text style={styles.cardContent}>{ingredient.strDescription}</Text>
                 </View>
                 <ScrollView style={styles.mealsContainer} horizontal={true}>
                     {mealsFromIngredient.map((meal, index) => (
@@ -111,7 +111,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                             onPress={() => navigateToMealDetails(meal.idMeal)}
                         />
                     ))}
-                    {isLoading ? <ActivityIndicator size="large"/> : null}
+                    {isLoading ? <ActivityIndicator style={styles.indicator} size="large"/> : null}
                 </ScrollView>
             </ScrollView>
             <BottomNavigationBar selected={"Ingredients"} />
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     mealsContainer: {
         display: 'flex',
         flexDirection: 'row',
-        marginBottom: 100,
+        marginBottom: 16,
     },
     screen: {
         display: 'flex',
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
         flexShrink: 0,
         backgroundColor: '#FEF7FF',
         borderRadius: 12,
-        padding: 12,
+        padding: 16,
         marginTop: 12,
     },
     addToButtonsContainer: {
@@ -167,11 +167,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#E8DEF8',
-        borderRadius: 20,
+        backgroundColor: '#E6DEF6',
+        borderRadius: 25,
         padding: 12,
         marginTop: 12,
-        gap: 10,
+        gap: 8,
     },
     iconSize: {
         width: 24,
@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
         letterSpacing: 0.5,
+        lineHeight: 20,
     },
     fontLarge: {
         fontFamily: 'Roboto-Regular',
@@ -204,6 +205,23 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Medium',
         fontSize: 16,
         letterSpacing: 0.5,
+    },
+    cardTitle: {
+        fontFamily: 'Roboto-Medium',
+        fontSize: 18,
+        marginBottom: 8,
+    },
+    cardContent: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 16,
+        color: '#666',
+        lineHeight: 24,
+    },
+    fontButton: {
+        fontFamily: 'Roboto-Medium',
+        fontSize: 16,
+        letterSpacing: 0.5,
+        marginLeft: 5,
     },
     fontSmall: {
         fontFamily: 'Roboto-Regular',
@@ -222,5 +240,8 @@ const styles = StyleSheet.create({
         width: 200,
         height: 200,
         resizeMode: 'stretch',
+    },
+    indicator: {
+        margin: 8,
     },
 });

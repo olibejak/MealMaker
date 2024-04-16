@@ -36,7 +36,7 @@ const RecipeCard = ({
     return (
         <View style={styles.card}>
             <Image source={image} style={styles.cardImage} />
-            <View style={styles.cardContent}>
+            <View style={styles.cardContainer}>
                 <Text style={styles.cardTitle}>{title}</Text>
                 <Text style={styles.cardDate}>{date}</Text>
                 <Text style={styles.cardDescription} numberOfLines={2}>
@@ -60,36 +60,39 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         overflow: 'visible',
         marginTop: 16,
-
         minHeight: 250,
     },
     buttonContainer: {
+        marginTop: 16,
         flexDirection: 'row',
         justifyContent: 'flex-end',
     },
     cardImage: {
         width: '100%',
-        height: 160, // Adjust the height as necessary
+        height: 200, // Adjust the height as necessary
         resizeMode: 'cover',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
     },
-    cardContent: {
+    cardContainer: {
         padding: 16,
     },
     cardTitle: {
         fontSize: 20,
         marginBottom: 4,
+        fontFamily: 'Roboto-Regular',
     },
     cardDate: {
-        fontSize: 14,
-        color: '#666',
-        marginBottom: 8,
-    },
-    cardDescription: {
-        fontSize: 14,
+        fontSize: 16,
         color: '#666',
         marginBottom: 16,
+        fontFamily: 'Roboto-Regular',
+    },
+    cardDescription: {
+        fontSize: 16,
+        color: '#666',
+        marginBottom: 16,
+        fontFamily: 'Roboto-Regular',
     },
     detailsButton: {
         backgroundColor: '#E8DEF8',

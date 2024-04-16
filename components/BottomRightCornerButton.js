@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         right: 10,
-        bottom: 90,
+        bottom: 100,
         padding: 15,
         zIndex: 10, // Make sure it's above everything else
     },
@@ -23,13 +23,13 @@ const styles = StyleSheet.create({
         // Styles for the touchable opacity
         padding: 10,
         borderRadius: 12,
-        backgroundColor: '#E8DEF8',
+        backgroundColor: '#E8DDFC',
         alignItems: 'center',
         justifyContent: 'center',
-        elevation: 2, // for Android shadow
-        shadowOffset: { width: 0, height: 1 }, // for iOS shadow
-        shadowRadius: 2,
-        shadowOpacity: 0.1,
+        elevation: 4, // for Android shadow
+        shadowOffset: { width: 2, height: 2 }, // for iOS shadow
+        shadowRadius: 1,
+        shadowOpacity: 0.5,
     },
     // ... add any other styles you might need here
 });

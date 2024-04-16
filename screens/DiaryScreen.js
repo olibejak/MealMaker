@@ -75,7 +75,7 @@ export default function MyDiaryScreen() {
     return (
         <View style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={BackArrowIcon} />
-            <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 100 }}>
+            <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 {recipes.map((recipe) => (
                     <RecipeCard
                         key={recipe.id}
@@ -103,17 +103,13 @@ const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
     },
-    contentContainer: {
-        flex: 1 // Ensures that this view expands to fill available space minus what's needed for nav bars
+    scrollableScreen: {
+        backgroundColor: '#FFF',
+        paddingVertical: 0,
+        paddingHorizontal: 16,
     },
-    content: {
-        padding: 16,
+    scrolling: {
+        alignItems: 'stretch',
+        paddingBottom: 16 ,
     },
-    fab: {
-        // Position the floating action button if needed
-    },
-    tabBar: {
-        // Additional styling for the tab bar if needed
-    },
-    // You may no longer need styles for the RecipeCard here if they're defined within the RecipeCard component file.
 });

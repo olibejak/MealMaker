@@ -5,6 +5,7 @@ import TopNavigationBar from "../components/TopNavigationBar";
 import {BackArrowIcon, PencilIcon} from "../assets/icons";
 import {useNavigation} from "@react-navigation/native";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
+import image from "../assets/testing_images/recipe.jpg";
 
 
 export default function DiaryEntryDetailScreen() {
@@ -15,14 +16,16 @@ export default function DiaryEntryDetailScreen() {
     return (
         <View style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={BackArrowIcon}/>
-            <ScrollView style={styles.content}>
-                <Image source={image} style={styles.image} />
-                <View style={styles.textContainer}>
-                    <Text style={styles.heading}>Chicken Fajita Mac and Cheese</Text>
-                    <Text style={styles.bodyText}>
-                        Today, I dove into making Chicken Fajita Mac and Cheese...
-                        {/* Continue with the rest of the content text */}
-                    </Text>
+            <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
+                <View style={styles.contentContainer}>
+                    <View style={styles.textContainer}>
+                        <Text style={styles.cardTitle}>Chicken Fajita Mac and Cheese</Text>
+                        <Text style={styles.cardContent}>
+                            Today, I dove into making Chicken Fajita Mac and Cheese...
+                            {/* Continue with the rest of the content text */}
+                        </Text>
+                    </View>
+                    <Image source={image} style={styles.image} />
                 </View>
             </ScrollView>
             <BottomRightCornerButton
@@ -36,31 +39,58 @@ export default function DiaryEntryDetailScreen() {
 
 const styles = StyleSheet.create({
     screen: {
-        flex: 1,
-        backgroundColor: 'white',
+        display: 'flex',
+        position: 'absolute',
+        justifyContent: 'space-between',
+        alignItems: 'stretch',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        bottom: 0,
     },
-    content: {
-        padding: 10,
+    scrollableScreen: {
+        backgroundColor: '#FFF',
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+    },
+    scrolling: {
+        alignItems: 'center',
+        overflow: 'visible',
     },
     image: {
-        width: '100%', // Take up all available width
-        height: 200, // Set a fixed height for the image
-        resizeMode: 'cover' // Cover the frame of the image view by resizing the image
+        width: '100%',
+        height: 200, // Adjust the height as necessary
+        resizeMode: 'cover',
+        borderRadius: 12,
+    },
+    cardTitle: {
+        fontFamily: 'Roboto-Medium',
+        fontSize: 18,
+        marginBottom: 8,
+    },
+    cardContent: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 16,
+        color: '#666',
+        lineHeight: 24,
     },
     textContainer: {
-        padding: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        textAlign: "justify",
+        flexShrink: 0,
+        backgroundColor: '#FEF7FF',
+        borderRadius: 12,
+        padding: 16,
     },
-    heading: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 8,
-        // Add any additional styling for the heading
-    },
-    bodyText: {
-        fontSize: 16,
-        lineHeight: 24,
-        color: '#333',
-        // Add any additional styling for the body text
-    },
-    // ... other styles as needed
+    contentContainer: {
+        backgroundColor: '#FEF7FF',
+        borderRadius: 12,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+        width: '100%',
+    }
+
 });
