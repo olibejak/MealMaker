@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import {PotIcon, GarbageIcon} from "../assets/icons";
+import {PotIcon, GarbageIcon, FridgeCardIcon, BasketCardIcon} from "../assets/icons";
 
 const RecipeCard = ({
                         title,
@@ -15,16 +15,16 @@ const RecipeCard = ({
         switch (actionButton) {
             case 'cook':
                 return (
-                    <TouchableOpacity style={styles.detailsButton} onPress={onPressSecondary}>
+                    <TouchableOpacity style={styles.buttonSecondary} onPress={onPressSecondary}>
                         <PotIcon/>
-                        <Text style={styles.detailsButtonText}>Cook</Text>
+                        <Text style={styles.fontButton}>Cook</Text>
                     </TouchableOpacity>
                 );
             case 'delete':
                 return (
-                    <TouchableOpacity style={styles.detailsButton} onPress={onPressSecondary}>
+                    <TouchableOpacity style={styles.buttonSecondary} onPress={onPressSecondary}>
                         <GarbageIcon/>
-                        <Text style={styles.detailsButtonText}>Delete</Text>
+                        <Text style={styles.fontButton}>Delete</Text>
                     </TouchableOpacity>
                 );
             default:
@@ -44,14 +44,25 @@ const RecipeCard = ({
                 </Text>
                 <View style={styles.buttonContainer}>
                     {renderActionButton()}
-                    <TouchableOpacity style={styles.detailsButton} onPress={onPressDetails}>
-                        <Text style={styles.detailsButtonText}>Details</Text>
+                    <TouchableOpacity style={styles.buttonPrimary} onPress={onPressDetails}>
+                        <Text style={styles.fontButton}>Details</Text>
                     </TouchableOpacity>
                 </View>
             </View>
         </View>
     );
 };
+
+// <View style={styles.addToButtonsContainer}>
+//     <TouchableOpacity style={styles.addToButton}>
+//         <Text style={styles.fontButton}>Add to</Text>
+//         <FridgeCardIcon/>
+//     </TouchableOpacity>
+//     <TouchableOpacity style={styles.addToButton}>
+//         <Text style={styles.fontButton}>Add to</Text>
+//         <BasketCardIcon />
+//     </TouchableOpacity>
+// </View>
 
 
 const styles = StyleSheet.create({
@@ -66,6 +77,7 @@ const styles = StyleSheet.create({
         marginTop: 16,
         flexDirection: 'row',
         justifyContent: 'flex-end',
+        gap: 8,
     },
     cardImage: {
         width: '100%',
@@ -108,10 +120,38 @@ const styles = StyleSheet.create({
         height: 40,
         width: 100,
     },
-    detailsButtonText: {
+    fontButton: {
+        fontFamily: 'Roboto-Medium',
         fontSize: 16,
-        color: 'black',
-        fontWeight: 'bold',
+        letterSpacing: 0.5,
+    },
+    buttonPrimary: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: '#E6DEF6',
+        borderRadius: 25,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        marginTop: 12,
+        gap: 6,
+    },
+    buttonSecondary: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'transparent',
+        borderRadius: 25,
+        paddingLeft: 16,
+        paddingRight: 20,
+        paddingVertical: 10,
+        marginTop: 12,
+        gap: 6,
+        borderStyle: 'solid',
+        borderColor: 'rgba(0,0,0,0.6)',
+        borderWidth: 1,
     },
 });
 

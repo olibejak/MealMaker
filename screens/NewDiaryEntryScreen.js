@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         flex: 1,
-        padding: 10,
+        padding: 16,
     },
     inputWrapper: {
         position: 'relative',
@@ -64,12 +64,10 @@ const styles = StyleSheet.create({
     inputText: {
         flex: 1,
         textAlignVertical: 'top',
-        padding: 10,
-        borderRadius: 10,
-        marginTop: 10,
-        marginBottom: 10,
-        paddingLeft: 10,
-        paddingTop: 10,
+        borderRadius: 12,
+        marginBottom: 16,
+        paddingLeft: 16,
+        paddingTop: 16,
         backgroundColor: '#FEF7FF',
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
@@ -85,7 +83,7 @@ const styles = StyleSheet.create({
     },
     buttonsContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         paddingBottom: 10,
     },
     button: {
@@ -96,8 +94,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#E6DEF6',
         borderRadius: 25,
         flexDirection: "row",
-        padding: 5,
-
+        paddingHorizontal: 16,
+        paddingVertical: 12,
     },
     fontButton: {
         fontFamily: 'Roboto-Medium',
