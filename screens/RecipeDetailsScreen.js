@@ -8,11 +8,12 @@ import {
     BookIcon,
     FridgeCardIcon, PotIcon,
     StarFilledIcon,
-    StarOutlineIcon
+    StarOutlineIcon, TimerIcon
 } from "../assets/icons";
 import MealMiniature from "../components/MealMiniature";
 import {useNavigation} from "@react-navigation/native";
 import IngredientsScreen from "./IngredientsScreen";
+import BottomRightCornerButton from "../components/BottomRightCornerButton";
 
 export default function RecipeDetailsScreen ( { route, navigation } ) {
     const {recipe} = route.params;
@@ -29,6 +30,11 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
     const navigateToIngredientDetails = (ingredient) => {
         navigation.navigate("IngredientDetails",  {ingredient} );
     };
+
+    const navigateToStepByStepRecipeScreen = () => {
+        navigation.navigate("StepByStepRecipe", {recipe: recipe} );
+    }
+
 
     useEffect(() => {
             const fetchMealsFromIngredient = async () => {
@@ -107,11 +113,11 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                     <Text style={styles.fontRegular}>{recipe.strInstructions}</Text>
                 </View>
             </ScrollView>
+            <BottomRightCornerButton
+                IconComponent={PotIcon}
+                onPress={navigateToStepByStepRecipeScreen}
+            />
             <BottomNavigationBar selected={"Ingredients"} />
-            {/* Floating button */}
-            <TouchableOpacity style={styles.floatingButton} >
-                <PotIcon />
-            </TouchableOpacity>
         </View>
     );
 };
