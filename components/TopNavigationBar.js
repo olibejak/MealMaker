@@ -47,7 +47,7 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
 
 const styles = StyleSheet.create({
     topNavigationBar: {
-        height: 100,
+        height: 116,
         backgroundColor: '#FDF7FE',
         display: 'flex',
         alignItems: 'flex-end',

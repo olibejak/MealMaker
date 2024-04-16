@@ -73,7 +73,7 @@ export default function MyDiaryScreen() {
     ];
 
     return (
-        <SafeAreaView style={styles.screen}>
+        <View style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={BackArrowIcon} />
             <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 100 }}>
                 {recipes.map((recipe) => (
@@ -87,14 +87,21 @@ export default function MyDiaryScreen() {
             </ScrollView>
             <BottomNavigationBar/>
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => navigation.navigate('NewDiaryEntry')} />
-        </SafeAreaView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     screen: {
-        flex: 1,
-        backgroundColor: '#f2f2f2',
+        display: 'flex',
+        position: 'absolute',
+        justifyContent: 'space-between',
+        alignItems: 'stretch',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        bottom: 0,
     },
     contentContainer: {
         flex: 1 // Ensures that this view expands to fill available space minus what's needed for nav bars

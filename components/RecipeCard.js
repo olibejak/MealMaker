@@ -106,7 +106,10 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         marginLeft: 20,
         flexDirection: 'row',
-        alignItems: "center"
+        alignItems: "center",
+        justifyContent: "center",
+        height: 40,
+        width: 100,
     },
     detailsButtonText: {
         fontSize: 16,
