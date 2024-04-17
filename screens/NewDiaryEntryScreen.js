@@ -83,14 +83,12 @@ const styles = StyleSheet.create({
     },
     buttonsContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         paddingBottom: 10,
     },
     button: {
         alignItems: 'center',
         justifyContent: 'center',
-        width: 170,
-        height: 50,
         backgroundColor: '#E6DEF6',
         borderRadius: 25,
         flexDirection: "row",

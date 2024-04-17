@@ -48,7 +48,7 @@ function RenderText({text, amount}) {
 const styles = StyleSheet.create({
     shadowContainer: {
         paddingHorizontal: 4,
-        paddingVertical: 5,
+        paddingVertical: 4,
         backgroundColor: 'transparent'
     },
     card: {

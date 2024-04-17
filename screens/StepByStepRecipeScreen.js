@@ -3,7 +3,7 @@ import TopNavigationBar from "../components/TopNavigationBar";
 import {BackArrowIcon, PencilIcon, StarFilledIcon, StarOutlineIcon, TimerIcon} from "../assets/icons";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import {useEffect, useState} from "react";
-import StepCard from "../components/StepCard";
+import ListItem from "../components/ListItem";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 
 export default function StepByStepRecipeScreen ( { route, navigation} ) {
@@ -29,11 +29,12 @@ export default function StepByStepRecipeScreen ( { route, navigation} ) {
         </View>
         <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
             {stepByStep.map((step, index) => (
-                <StepCard
+                <ListItem
                     key={index}
-                    stepNum={index + 1}
-                    step={step.trim()}>
-                </StepCard>
+                    title={'Step ' + (index + 1)}
+                    content={step.trim()}
+                    dividers={'True'}>
+                </ListItem>
             ))}
         </ScrollView>
         <BottomRightCornerButton

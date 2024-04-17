@@ -3,8 +3,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import IngredientCard from "../components/IngredientCard";
-import {BookIcon, HamburgerIcon} from "../assets/icons";
+import {BookIcon, HamburgerIcon, PlusIcon} from "../assets/icons";
 import {useEffect, useState} from "react";
+import BottomRightCornerButton from "../components/BottomRightCornerButton";
 
 export default function FridgeScreen () {
     const title = "My fridge";
@@ -91,9 +92,8 @@ export default function FridgeScreen () {
                     />
                 ))}
             </ScrollView>
-            <View>
-                <BottomNavigationBar selected={selectedBottomBar}/>
-            </View>
+            <BottomRightCornerButton IconComponent={PlusIcon}/>
+            <BottomNavigationBar selected={selectedBottomBar}/>
         </View>
     )
 };

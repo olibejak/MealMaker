@@ -1,29 +1,41 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import {TouchableOpacity, View, Text, StyleSheet} from "react-native";
 import {ArrowDropDown, CheckmarkIconWhite} from "../assets/icons";
 
-export default function StepCard({stepNum, step}) {
+export default function ListItem({ title, content, dividers, IconComponent }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const arrowIcon = isCollapsed ? <ArrowDropDown/> : <ArrowDropDown/>;
+    const arrowIcon = isCollapsed ? <ArrowDropUp /> : <ArrowDropDown />;
     const [checked, setChecked] = useState(false);
 
+    const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+
     return (
-        <View style={styles.container}>
-            <TouchableOpacity onPress={() => checked ? setChecked(false) : setChecked(true)}>
+        <View style={dividers === 'True' ? [styles.container, styles.divider] : [styles.container]}>
+            <TouchableOpacity onPress={() => setChecked(!checked)}>
                 <View style={checked ? styles.checkBoxChecked : styles.checkBoxUnchecked}>
                     {checked ? <CheckmarkIconWhite /> : null}
                 </View>
             </TouchableOpacity>
             <View style={{ flex: 1 }}>
-                <Text style={styles.title}>Step {stepNum}</Text>
-                {!isCollapsed && <Text style={styles.content}>{step}</Text>}
+                <Text style={styles.title}>{title}</Text>
+                {!isCollapsed && <Text style={styles.content}>{content}</Text>}
             </View>
-            <TouchableOpacity onPress={() => setIsCollapsed(!isCollapsed)} style={styles.arrow}>
-                {arrowIcon}
-            </TouchableOpacity>
+            <RenderTrailingElement IconComponent={IconComponent} isCollapsed={isCollapsed} toggleCollapse={toggleCollapse} arrowIcon={arrowIcon} />
         </View>
     );
-};
+}
+
+function RenderTrailingElement({ IconComponent, isCollapsed, arrowIcon, toggleCollapse }) {
+    return IconComponent === undefined ? (
+        <TouchableOpacity onPress={toggleCollapse}>
+            {arrowIcon}
+        </TouchableOpacity>
+    ) : (
+        <TouchableOpacity style={styles.icon}>
+            <IconComponent />
+        </TouchableOpacity>
+    );
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -32,11 +44,14 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         alignSelf: 'stretch',
         paddingVertical: 20,
-        borderBottomColor: "#C9C4CF",
-        borderBottomWidth: 1,
         paddingRight: 24,
         paddingLeft: 24,
         gap: 16,
+    },
+    divider: {
+        borderBottomColor: "#C9C4CF",
+        borderBottomWidth: 1,
+        width: '100%',
     },
     checkBoxUnchecked: {
         backgroundColor: "#FFFFFF",
@@ -84,5 +99,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#48454E',
         lineHeight: 24,
+    },
+    icon: {
+        alignSelf: 'center',
+        padding: 16,
     },
 });

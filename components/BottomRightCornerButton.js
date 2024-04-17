@@ -14,7 +14,7 @@ export default function BottomRightCornerButton({ IconComponent, onPress }) {
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
-        right: 10,
+        right: 25,
         bottom: 105,
         padding: 15,
         zIndex: 10, // Make sure it's above everything else

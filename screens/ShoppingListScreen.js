@@ -1,11 +1,13 @@
 import { View, StyleSheet, ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import {BookIcon, HamburgerIcon} from "../assets/icons";
+import {BookIcon, EditIcon, HamburgerIcon, PlusIcon} from "../assets/icons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useEffect, useState} from "react";
 import IngredientCard from "../components/IngredientCard";
+import ListItem from "../components/ListItem";
+import BottomRightCornerButton from "../components/BottomRightCornerButton";
 
 export default function ShoppingListScreen () {
     const title = "Shopping list";
@@ -73,18 +75,18 @@ export default function ShoppingListScreen () {
             </View>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 {shoppingListContent.map((ingredient, index) => (
-                    <IngredientCard
+                    <ListItem
                         key={index}
-                        text={ingredient.name}
-                        amount={ingredient.amount}
-                        fridgeButtonOn={fridgeButtonOn}
-                        cartButtonOn={cartButtonOn}
-                    />
+                        title={ingredient.name}
+                        content={ingredient.amount}
+                        dividers={'False'}
+                        IconComponent={EditIcon}>
+                    </ListItem>
                 ))}
             </ScrollView>
-            <View>
-                <BottomNavigationBar selected={selectedBottomBar}/>
-            </View>
+            {/*TODO: add the cart icon as well*/}
+            <BottomRightCornerButton IconComponent={PlusIcon}/>
+            <BottomNavigationBar selected={selectedBottomBar}/>
         </View>
     )
 };
@@ -103,11 +105,8 @@ const styles = StyleSheet.create({
     },
     scrollableScreen: {
         backgroundColor: '#FFF',
-        paddingTop: 8,
+        paddingTop: 16,
         paddingBottom: 8,
-        paddingRight: 16,
-        paddingLeft: 16,
-
     },
     scrolling: {
         alignItems: 'center',
