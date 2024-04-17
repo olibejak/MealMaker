@@ -9,7 +9,9 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
     const LeftAction = () => {
         // Action for Left Icon
         if (LeftIcon.name === 'HamburgerIcon') {
-            navigation.navigate('About');
+            // TODO: change to dropdown menu
+            // navigation.navigate('About');
+            navigation.navigate('Settings');
         }
         if (LeftIcon.name === 'BackArrowIcon') {
             navigation.goBack()

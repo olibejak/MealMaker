@@ -65,12 +65,15 @@ const CustomSwitch = ({ value, onValueChange }) => {
     );
 };
 
-const SettingsCard = ({ title, description, value, onValueChange }) => {
+const SettingsCard = ({ title, description, value, onValueChange, IconComponent }) => {
     return (
         <View style={styles.cardContainer}>
+            <View>
+                <IconComponent />
+            </View>
             <View style={styles.textContainer}>
                 <Text style={styles.title}>{title}</Text>
-                <Text style={styles.description}>{description}</Text>
+                <Text style={styles.content}>{description}</Text>
             </View>
             <CustomSwitch value={value} onValueChange={onValueChange} />
         </View>
@@ -79,23 +82,30 @@ const SettingsCard = ({ title, description, value, onValueChange }) => {
 
 const styles = StyleSheet.create({
     cardContainer: {
+        backgroundColor: '#FEF7FF',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 16,
+        paddingLeft: 24,
+        paddingRight: 24,
+        paddingVertical: 16,
         borderBottomWidth: 1,
         borderBottomColor: '#E2E2E2',
     },
     textContainer: {
         flex: 1,
+        paddingHorizontal: 24
     },
     title: {
+        fontFamily: 'Roboto-Regular',
         fontSize: 18,
-        fontWeight: 'bold',
+        marginBottom: 4,
     },
-    description: {
-        fontSize: 14,
+    content: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 16,
         color: '#48454E',
+        lineHeight: 24,
     },
     track: {
         width: 48,
