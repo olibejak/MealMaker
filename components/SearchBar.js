@@ -6,26 +6,20 @@ export default function SearchBar () {
 
     return (
         <TouchableOpacity style={styles.searchBar}>
-            <View style={styles.searchIcon}>
-                <View style={styles.center}>
-                    <SearchIcon/>
-                </View>
+            <View style={[styles.searchIcon, styles.center]}>
+                <SearchIcon/>
             </View>
             <View style={styles.searchContent}>
                 <TextInput placeholder={"Search ingredients"} returnKeyType="search" onChangeText={() => {/* Handle change */}} style={styles.input}></TextInput>
             </View>
-            <View style={styles.searchIcon}>
-                <View style={styles.center}>
-                    <FilterIcon/>
-                </View>
+            <View style={[styles.searchIcon, styles.center]}>
+                <FilterIcon/>
             </View>
         </TouchableOpacity>
 )};
 
 const styles = StyleSheet.create({
     searchBar: {
-        paddingTop: 8,
-        paddingBottom: 8,
         height: 60,
         backgroundColor: '#EBE6EF',
         borderRadius: 28,
@@ -64,6 +58,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
         width: '100%',
         height: '100%',
+        paddingLeft: 4,
     },
 });
 

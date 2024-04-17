@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     mainText: {
         fontFamily: 'Roboto-Regular',
         fontSize: 22,
-        width: '67%',
+        flexGrow: 1,
         textAlign: 'center',
     }
 });

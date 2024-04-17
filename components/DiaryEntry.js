@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 
+// TODO: delete this, it is not used anywhere
 const DiaryEntry = ({ date, title, excerpt, image, onPressDetails }) => {
     return (
         <View style={styles.screen}>
@@ -33,17 +34,8 @@ const styles = StyleSheet.create({
     },
     entryContainer: {
         borderRadius: 12,
-        backgroundColor: '#FFFFFF', // White background, might need changing
         marginBottom: 16,
         overflow: 'hidden',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
     },
     entryImage: {
         width: '100%',

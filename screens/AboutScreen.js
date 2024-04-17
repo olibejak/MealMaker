@@ -57,12 +57,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFF',
     },
-    scrollView: {
-        marginHorizontal: 16,
-    },
+
     scrollViewContent: {
         paddingTop: 4,
         paddingBottom: 8,
+        paddingHorizontal: 16,
     },
     card: {
         backgroundColor: '#F6F2F9',
@@ -76,7 +75,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.50,
         shadowRadius: 1,
-        elevation: 4,
+        elevation: 3,
     },
     cardTitle: {
         fontFamily: 'Roboto-Medium',

@@ -63,15 +63,12 @@ const styles = StyleSheet.create({
         overflow: 'visible',
 
         //  Shadow
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 2, // Rightward shadow
-            height: 2, // Downward shadow
-        },
-        shadowOpacity: 0.50,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
         shadowRadius: 1,
-        // Android shadow (uniform, no direction control)
-        elevation: 4,
+        // Android elevation
+        elevation: 3,
 
     },
     textContainer: {

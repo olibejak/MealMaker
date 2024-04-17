@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
         height: 200, // Adjust the height as necessary
         resizeMode: 'cover',
         borderRadius: 12,
+        marginBottom: 16,
     },
     cardTitle: {
         fontFamily: 'Roboto-Medium',
