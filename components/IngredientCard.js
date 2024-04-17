@@ -32,7 +32,8 @@ function RenderButtons({fridgeButtonOn, cartButtonOn}) {
 
 const styles = StyleSheet.create({
     shadowContainer: {
-        padding: 4,
+        paddingHorizontal: 4,
+        paddingVertical: 5,
         backgroundColor: 'transparent'
     },
     card: {

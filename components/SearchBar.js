@@ -12,8 +12,7 @@ export default function SearchBar () {
                 </View>
             </View>
             <View style={styles.searchContent}>
-                <TextInput placeholder={"Search ingredients"} returnKeyType="search" onChangeText={() => {/* Handle change */
-                }} style={styles.fontRegular}></TextInput>
+                <TextInput placeholder={"Search ingredients"} returnKeyType="search" onChangeText={() => {/* Handle change */}} style={styles.input}></TextInput>
             </View>
             <View style={styles.searchIcon}>
                 <View style={styles.center}>
@@ -59,10 +58,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255,255,255,0)',
         padding: 0,
     },
-    fontRegular: {
+    input: {
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
         letterSpacing: 0.5,
+        width: '100%',
+        height: '100%',
     },
 });
 

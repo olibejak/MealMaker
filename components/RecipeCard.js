@@ -39,7 +39,7 @@ const RecipeCard = ({
             <View style={styles.cardContainer}>
                 <Text style={styles.cardTitle}>{title}</Text>
                 <Text style={styles.cardDate}>{date}</Text>
-                <Text style={styles.cardDescription} numberOfLines={2}>
+                <Text style={styles.cardDescription} numberOfLines={2} ellipsizeMode="tail">
                     {description}
                 </Text>
                 <View style={styles.buttonContainer}>

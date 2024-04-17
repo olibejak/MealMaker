@@ -31,7 +31,7 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
                 <TouchableOpacity style={styles.icon} onPress={LeftAction}>
                     <LeftIcon />
                 </TouchableOpacity>
-                <Text style={styles.fontLarge}>{title}</Text>
+                <Text style={styles.mainText} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
                 {/* Conditional rendering for Right Icon or Spacer */}
                 {RightIcon ? (
                     <TouchableOpacity style={styles.icon} onPress={RightAction}>
@@ -75,10 +75,12 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 0,
+        padding: 32,
     },
-    fontLarge: {
+    mainText: {
         fontFamily: 'Roboto-Regular',
         fontSize: 22,
+        width: '67%',
+        textAlign: 'center',
     }
 });
