@@ -12,7 +12,7 @@ export default function StepByStepRecipeScreen ( { route, navigation} ) {
     const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
     const [stepByStep, setStepByStep] = useState([]);
 
-    //TODO repair parsing
+    //TODO repair parsing (parser away stuff like '1' or 'STEP 1' etc.)
     useEffect(() => {
         const sentenceRegex = /[.!?]+/g;
 
@@ -27,12 +27,12 @@ export default function StepByStepRecipeScreen ( { route, navigation} ) {
         <View>
             <TopNavigationBar title={recipe.strMeal} LeftIcon={BackArrowIcon} RightIcon={starIconToRender} />
         </View>
-        <ScrollView style={styles.scrollableScreen}>
+        <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
             {stepByStep.map((step, index) => (
                 <StepCard
-                key={index}
-                stepNum={index + 1}
-                step={step}>
+                    key={index}
+                    stepNum={index + 1}
+                    step={step.trim()}>
                 </StepCard>
             ))}
         </ScrollView>
@@ -63,12 +63,11 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
     scrollableScreen: {
-        backgroundColor: '#FFF',
-        paddingTop: 8,
-        paddingBottom: 8,
+        paddingVertical: 16,
     },
     scrolling: {
-        alignItems: 'center',
+        alignItems: 'stretch',
+        paddingBottom: 16,
     },
     floatingButton: {
         display: 'flex',

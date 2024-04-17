@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     },
     scrollViewContent: {
         paddingTop: 4,
-        paddingBottom: 16,
+        paddingBottom: 8,
     },
     card: {
         backgroundColor: '#F6F2F9',
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     cardContent: {
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
-        color: '#666',
+        color: '#48454E',
         lineHeight: 24,
     },
     fontRegularMedium: {

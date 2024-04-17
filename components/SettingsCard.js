@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     },
     description: {
         fontSize: 14,
-        color: '#666',
+        color: '#48454E',
     },
     track: {
         width: 48,

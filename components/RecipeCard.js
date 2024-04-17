@@ -96,13 +96,13 @@ const styles = StyleSheet.create({
     },
     cardDate: {
         fontSize: 16,
-        color: '#666',
+        color: '#48454E',
         marginBottom: 16,
         fontFamily: 'Roboto-Regular',
     },
     cardDescription: {
         fontSize: 16,
-        color: '#666',
+        color: '#48454E',
         marginBottom: 16,
         fontFamily: 'Roboto-Regular',
     },

@@ -110,6 +110,6 @@ const styles = StyleSheet.create({
     },
     scrolling: {
         alignItems: 'stretch',
-        paddingBottom: 16 ,
+        paddingBottom: 8,
     },
 });

@@ -96,8 +96,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     scrolling: {
-        alignItems: 'center',
+        alignItems: 'stretch',
         overflow: 'visible',
+        paddingBottom: 16,
     },
 
     iconSize: {

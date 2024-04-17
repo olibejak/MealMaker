@@ -143,10 +143,8 @@ const styles = StyleSheet.create({
     },
     scrollableScreen: {
         backgroundColor: '#FFF',
-        paddingTop: 8,
-        paddingBottom: 8,
-        paddingRight: 16,
-        paddingLeft: 16,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
     },
     scrolling: {
         alignItems: 'center',
@@ -268,7 +266,7 @@ const styles = StyleSheet.create({
     cardContent: {
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
-        color: '#666',
+        color: '#48454E',
         lineHeight: 24,
     },
     loadingContainer: {

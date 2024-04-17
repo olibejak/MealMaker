@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     scrolling: {
         alignItems: 'center',
         overflow: 'visible',
+        paddingBottom: 16,
     },
     image: {
         width: '100%',
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
     cardContent: {
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
-        color: '#666',
+        color: '#48454E',
         lineHeight: 24,
     },
     textContainer: {

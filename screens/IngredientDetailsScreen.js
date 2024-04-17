@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     cardContent: {
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
-        color: '#666',
+        color: '#48454E',
         lineHeight: 24,
     },
     fontButton: {
