@@ -67,6 +67,7 @@ export default function FridgeScreen () {
                 if (content !== null) {
                     setFridgeContent(JSON.parse(content));
                 }
+                await addToFridge({name: "Milk", amount: "2l"})
             } catch (error) {
                 console.error("Error loading fridge content:", error);
             }
@@ -84,6 +85,7 @@ export default function FridgeScreen () {
                     <IngredientCard
                         key={index}
                         text={ingredient.name}
+                        amount={ingredient.amount}
                         fridgeButtonOn={fridgeButtonOn}
                         cartButtonOn={cartButtonOn}
                     />
@@ -118,6 +120,7 @@ const styles = StyleSheet.create({
     },
     scrolling: {
         alignItems: 'center',
+        paddingBottom: 16,
     },
 
     iconSize: {

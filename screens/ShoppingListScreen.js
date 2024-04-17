@@ -58,6 +58,7 @@ export default function ShoppingListScreen () {
                 if (content !== null) {
                     setShoppingListContent(JSON.parse(content));
                 }
+                await addToShoppingList({name: "Milk", amount: "1l"})
             } catch (error) {
                 console.error("Error loading shopping list content:", error);
             }
@@ -75,6 +76,7 @@ export default function ShoppingListScreen () {
                     <IngredientCard
                         key={index}
                         text={ingredient.name}
+                        amount={ingredient.amount}
                         fridgeButtonOn={fridgeButtonOn}
                         cartButtonOn={cartButtonOn}
                     />
@@ -109,6 +111,7 @@ const styles = StyleSheet.create({
     },
     scrolling: {
         alignItems: 'center',
+        paddingBottom: 16,
     },
 
     iconSize: {

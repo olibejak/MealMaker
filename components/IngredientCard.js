@@ -2,18 +2,18 @@ import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native"
 import {BasketCardIcon, FilterIcon, FridgeCardIcon} from "../assets/icons";
 
 
-export default function IngredientCard ({ text, fridgeButtonOn, cartButtonOn, onPress }) {
+export default function IngredientCard ({ text, amount, fridgeButtonOn, cartButtonOn, onPress }) {
 
     return (
         <View style={styles.shadowContainer}>
             <TouchableOpacity style={styles.card} onPress={onPress}>
-                <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>{text}</Text>
+                <RenderText text={text} amount={amount}/>
                     <RenderButtons fridgeButtonOn={fridgeButtonOn} cartButtonOn={cartButtonOn}/>
             </TouchableOpacity>
         </View>
     )};
 
-//works: Check ingredients screen
+
 function RenderButtons({fridgeButtonOn, cartButtonOn}) {
     return (
         <View style={styles.cardIcons}>
@@ -30,6 +30,21 @@ function RenderButtons({fridgeButtonOn, cartButtonOn}) {
         </View>
 )}
 
+function RenderText({text, amount}) {
+    return (
+        amount === undefined ? (
+            <View style={styles.textContainer}>
+                <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>{text}</Text>
+            </View>
+        ) : (
+            <View style={styles.textContainer}>
+                <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>{text}</Text>
+                <Text style={[styles.cardTextContent, styles.fontRegular]}>{amount}</Text>
+            </View>
+        )
+    );
+}
+
 const styles = StyleSheet.create({
     shadowContainer: {
         paddingHorizontal: 4,
@@ -40,7 +55,7 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: 12,
         backgroundColor: '#F6F2F9',
-        height: 90,
+        height: 95,
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -59,12 +74,21 @@ const styles = StyleSheet.create({
         elevation: 4,
 
     },
+    textContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+
+    },
     cardTextContent: {
         // width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        padding: 16,
+        paddingLeft: 16,
+        paddingBottom: 4,
+        paddingTop: 4,
     },
     cardIcons: {
         paddingTop: 20,
@@ -93,6 +117,11 @@ const styles = StyleSheet.create({
     },
     fontRegularMedium: {
         fontFamily: 'Roboto-Medium',
+        fontSize: 16,
+        letterSpacing: 0.5,
+    },
+    fontRegular: {
+        fontFamily: 'Roboto-Regular',
         fontSize: 16,
         letterSpacing: 0.5,
     },

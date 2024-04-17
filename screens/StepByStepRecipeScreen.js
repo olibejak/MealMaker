@@ -69,26 +69,4 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
         paddingBottom: 16,
     },
-    floatingButton: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: '#E8DEF8',
-        borderRadius: 12,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 6, // Increase the height to spread the shadow more vertically
-        },
-        shadowOpacity: 0.3, // You can increase the opacity for a more pronounced shadow
-        shadowRadius: 6, // Increase the radius for a wider shadow spread
-        elevation: 6,
-        position: 'absolute',
-        bottom: 100,
-        right: 28,
-        width: 40,
-        height: 40,
-        padding: 8
-    },
     });
