@@ -14,6 +14,7 @@ import DiaryScreen from "./screens/DiaryScreen";
 import RecipeDetailsScreen from "./screens/RecipeDetailsScreen";
 import StepByStepRecipeScreen from "./screens/StepByStepRecipeScreen";
 import AboutScreen from "./screens/AboutScreen";
+import TimerScreen from "./screens/TimerScreen";
 
 const Tab = createStackNavigator();
 
@@ -46,6 +47,7 @@ export default function App() {
             <Tab.Screen name="Settings" component={SettingsScreen} />
             <Tab.Screen name="About" component={AboutScreen} />
             <Tab.Screen name="StepByStepRecipe" component={StepByStepRecipeScreen} />
+            <Tab.Screen name="Timer" component={TimerScreen} />
         </Tab.Navigator>
     </NavigationContainer>
   );

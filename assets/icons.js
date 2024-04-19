@@ -1,4 +1,4 @@
-import Svg, {G, Path} from "react-native-svg";
+import Svg, {G, Path, Rect} from "react-native-svg";
 
 const HamburgerIcon = () =>(
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -332,5 +332,5 @@ export {
     ReloadIcon,
     CloseIcon,
     PlayIcon,
-    PauseIcon
+    PauseIcon,
 }
