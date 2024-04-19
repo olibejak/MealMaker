@@ -1,4 +1,4 @@
-import {View, StyleSheet, FlatList, ActivityIndicator, InteractionManager} from "react-native";
+import { View, StyleSheet, FlatList, ActivityIndicator, InteractionManager } from "react-native";
 import React, { useEffect, useState } from "react";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
@@ -8,6 +8,9 @@ import { BookIcon, HamburgerIcon } from "../assets/icons";
 
 export default function IngredientsScreen({ navigation }) {
     const [ingredients, setIngredients] = useState([]);
+    const [displayedIngredients, setDisplayedIngredients] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
@@ -17,8 +20,12 @@ export default function IngredientsScreen({ navigation }) {
                     const response = await fetch(url);
                     const json = await response.json();
                     setIngredients(json.meals);
+                    setDisplayedIngredients(json.meals.slice(0, 10)); // Initially display only the first 10 items
+                    setCurrentIndex(10);
                 } catch (error) {
                     console.error("Failed to fetch ingredients:", error);
+                } finally {
+                    setIsLoading(false);
                 }
             };
 
@@ -26,9 +33,17 @@ export default function IngredientsScreen({ navigation }) {
         });
     }, []);
 
-    const renderItem = ({ item, index }) => (
+    const loadMoreIngredients = () => {
+        if (currentIndex < ingredients.length) {
+            const newIndex = currentIndex + 10;
+            const newItems = ingredients.slice(currentIndex, newIndex);
+            setDisplayedIngredients([...displayedIngredients, ...newItems]);
+            setCurrentIndex(newIndex);
+        }
+    };
+
+    const renderItem = ({ item }) => (
         <IngredientCard
-            key={index}
             text={item.strIngredient}
             fridgeButtonOn={true}
             cartButtonOn={true}
@@ -40,7 +55,7 @@ export default function IngredientsScreen({ navigation }) {
         <View style={styles.screen}>
             <TopNavigationBar title="Ingredients" LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             <FlatList
-                data={ingredients}
+                data={displayedIngredients}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={<SearchBar />}
@@ -51,7 +66,9 @@ export default function IngredientsScreen({ navigation }) {
                         <ActivityIndicator size="large" />
                     </View>
                 }
-
+                onEndReached={loadMoreIngredients}
+                onEndReachedThreshold={0.7}
+                initialNumToRender={10}
             />
             <BottomNavigationBar selected="Ingredients" />
         </View>
