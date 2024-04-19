@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform } from 'react-native';
-import { Ionicons, MaterialIcons, } from '@expo/vector-icons';
-import {BackArrowIcon} from "../assets/icons.js";
+import {BackArrowIcon, CameraIcon, CheckmarkIconBlack, ImageIcon} from "../assets/icons.js";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
@@ -21,16 +20,16 @@ export default function NewDiaryEntryScreen() {
                     />
                 </View>
                 <BottomRightCornerButton
-                    IconComponent={() => <Ionicons name="checkmark" size={24} color="black" />}
+                    IconComponent={() => <CheckmarkIconBlack/>}
                     onPress={() => console.log('Checkmark pressed')}
                 />
                 <View style={styles.buttonsContainer}>
                     <TouchableOpacity style={styles.button}>
-                        <Ionicons name="camera" size={24} color="black" />
+                        <CameraIcon color="black" />
                         <Text style={styles.fontButton}>Take a photo</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button}>
-                        <MaterialIcons name="photo-library" size={24} color="black" />
+                        <ImageIcon color="black" />
                         <Text style={styles.fontButton}>Upload photo</Text>
                     </TouchableOpacity>
                 </View>
