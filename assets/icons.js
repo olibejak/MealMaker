@@ -1,4 +1,4 @@
-import Svg, {G, Path} from "react-native-svg";
+import Svg, {G, Path, Rect} from "react-native-svg";
 
 const HamburgerIcon = () =>(
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -123,13 +123,6 @@ const CheckmarkIconWhite = () => (
     </Svg>
 );
 
-const CheckmarkIconBlack = () => (
-    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path d="M8.99991 16.17L4.82991 12L3.40991 13.41L8.99991 19L20.9999 7.00003L19.5899 5.59003L8.99991 16.17Z"
-              fill="black"/>
-    </Svg>
-)
-
 const PlusIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <Path
@@ -245,33 +238,6 @@ const PhoneLinkIcon = () => (
     </Svg>
 )
 
-const CameraIcon = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 18 18" fill="none">
-        <Path
-            d="M9 12.15C10.3255 12.15 11.4 11.0755 11.4 9.75C11.4 8.42452 10.3255 7.35 9 7.35C7.67452 7.35 6.6 8.42452 6.6 9.75C6.6 11.0755 7.67452 12.15 9 12.15Z"
-            fill="black"/>
-        <Path
-            d="M6.75 2.25L5.3775 3.75H3C2.175 3.75 1.5 4.425 1.5 5.25V14.25C1.5 15.075 2.175 15.75 3 15.75H15C15.825 15.75 16.5 15.075 16.5 14.25V5.25C16.5 4.425 15.825 3.75 15 3.75H12.6225L11.25 2.25H6.75ZM9 13.5C6.93 13.5 5.25 11.82 5.25 9.75C5.25 7.68 6.93 6 9 6C11.07 6 12.75 7.68 12.75 9.75C12.75 11.82 11.07 13.5 9 13.5Z"
-            fill="black"/>
-    </Svg>
-)
-
-const ImageIcon = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 18 18" fill="none">
-        <Path
-            d="M15.75 14.25V3.75C15.75 2.925 15.075 2.25 14.25 2.25H3.75C2.925 2.25 2.25 2.925 2.25 3.75V14.25C2.25 15.075 2.925 15.75 3.75 15.75H14.25C15.075 15.75 15.75 15.075 15.75 14.25ZM6.375 10.125L8.25 12.3825L10.875 9L14.25 13.5H3.75L6.375 10.125Z"
-            fill="black"/>
-    </Svg>
-)
-
-const ShoppingCartIcon = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path
-            d="M8 18C6.9 18 6.01 18.9 6.01 20C6.01 21.1 6.9 22 8 22C9.1 22 10 21.1 10 20C10 18.9 9.1 18 8 18ZM18 18C16.9 18 16.01 18.9 16.01 20C16.01 21.1 16.9 22 18 22C19.1 22 20 21.1 20 20C20 18.9 19.1 18 18 18ZM9.1 13H16.55C17.3 13 17.96 12.59 18.3 11.97L22 4.96L20.25 4L16.55 11H9.53L5.27 2H2V4H4L7.6 11.59L6.25 14.03C5.52 15.37 6.48 17 8 17H20V15H8L9.1 13ZM13 2L17 6L13 10L11.59 8.59L13.17 7H9V5H13.17L11.58 3.41L13 2Z"
-            fill="black"/>
-    </Svg>
-)
-
 
 export {
     HamburgerIcon,
@@ -300,9 +266,5 @@ export {
     VolumeIcon,
     VibrationIcon,
     FlashlightIcon,
-    PhoneLinkIcon,
-    CameraIcon,
-    ImageIcon,
-    CheckmarkIconBlack,
-    ShoppingCartIcon
+    PhoneLinkIcon
 }

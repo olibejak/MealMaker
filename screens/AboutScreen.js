@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Linking } from 'react-native';
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import { BookIcon, HamburgerIcon } from "../assets/icons";
@@ -38,11 +38,31 @@ export default function AboutScreen() {
 }
 
 function AboutSectionCard({ title, content }) {
+    // Extract the URL from the content
+    const urlMatch = content.match(/https?:\/\/\S+/);
+    const url = urlMatch ? urlMatch[0] : null;
+    const textBeforeUrl = url ? content.split(url)[0] : content;
+    const textAfterUrl = url && content.split(url)[1] ? content.split(url)[1] : '';
+
+    const handlePress = () => {
+        if (url) {
+            Linking.openURL(url).catch(err => console.error("Failed to open URL:", err));
+        }
+    };
+
     return (
         <View style={styles.shadowContainer}>
             <View style={styles.card}>
                 <Text style={[styles.cardTitle, styles.fontRegularMedium]}>{title}</Text>
-                <Text style={styles.cardContent}>{content}</Text>
+                <Text style={styles.cardContent}>
+                    {textBeforeUrl}
+                    {url && (
+                        <Text onPress={handlePress} style={[styles.cardContent, styles.link]}>
+                            {url}
+                        </Text>
+                    )}
+                    {textAfterUrl}
+                </Text>
             </View>
         </View>
     );
@@ -57,7 +77,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFF',
     },
-
+    link: {
+        color: 'blue', // or any color that indicates tappable links
+        textDecorationLine: 'underline',
+    },
     scrollViewContent: {
         paddingTop: 4,
         paddingBottom: 8,

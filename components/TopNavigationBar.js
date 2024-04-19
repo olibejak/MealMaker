@@ -10,8 +10,9 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
         // Action for Left Icon
         if (LeftIcon.name === 'HamburgerIcon') {
             // TODO: change to dropdown menu
-            // navigation.navigate('About');
-            navigation.navigate('Settings');
+            //navigation.navigate('About');
+            //navigation.navigate('Settings');
+            navigation.navigate('Timer');
         }
         if (LeftIcon.name === 'BackArrowIcon') {
             navigation.goBack()
@@ -33,7 +34,7 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
                 <TouchableOpacity style={styles.icon} onPress={LeftAction}>
                     <LeftIcon />
                 </TouchableOpacity>
-                <Text style={styles.mainText} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
+                <Text style={styles.fontLarge}>{title}</Text>
                 {/* Conditional rendering for Right Icon or Spacer */}
                 {RightIcon ? (
                     <TouchableOpacity style={styles.icon} onPress={RightAction}>
@@ -49,7 +50,7 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
 
 const styles = StyleSheet.create({
     topNavigationBar: {
-        height: 116,
+        height: 100,
         backgroundColor: '#FDF7FE',
         display: 'flex',
         alignItems: 'flex-end',
@@ -77,12 +78,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 32,
+        padding: 0,
     },
-    mainText: {
+    fontLarge: {
         fontFamily: 'Roboto-Regular',
         fontSize: 22,
-        flexGrow: 1,
-        textAlign: 'center',
     }
 });
