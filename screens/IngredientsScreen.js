@@ -1,80 +1,78 @@
-import {View, StyleSheet, ScrollView, ActivityIndicator} from "react-native";
+import { View, StyleSheet, FlatList, ActivityIndicator, InteractionManager } from "react-native";
+import React, { useEffect, useState } from "react";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
 import IngredientCard from "../components/IngredientCard";
-import {useEffect, useState} from "react";
-import {BookIcon, HamburgerIcon} from "../assets/icons";
+import { BookIcon, HamburgerIcon } from "../assets/icons";
 
-export default function IngredientsScreen ( {navigation} ) {
-    const title = "Ingredients";
-    const selectedBottomBar = "Ingredients";
-    const fridgeButtonOn = true;
-    const cartButtonOn = true;
-
-    // Fetch ingredients from the API
+export default function IngredientsScreen({ navigation }) {
     const [ingredients, setIngredients] = useState([]);
-    // Loading state
+    const [displayedIngredients, setDisplayedIngredients] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-
-    const navigateToIngredientDetails = (ingredient) => {
-        navigation.navigate("IngredientDetails", { ingredient });
-    };
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
+        InteractionManager.runAfterInteractions(() => {
             const fetchIngredients = async () => {
-                // Setting a timeout for the fetch request
-                const timeout = 10000; // Timeout in milliseconds (10 seconds)
                 const url = 'https://www.themealdb.com/api/json/v1/1/list.php?i=list';
-
-                const timeoutPromise = new Promise((resolve, reject) => {
-                    setTimeout(() => reject(new Error('Request timed out')), timeout);
-                });
-
-                const fetchPromise = fetch(url);
-
                 try {
-                    const response = await Promise.race([fetchPromise, timeoutPromise]);
+                    const response = await fetch(url);
                     const json = await response.json();
                     setIngredients(json.meals);
+                    setDisplayedIngredients(json.meals.slice(0, 10)); // Initially display only the first 10 items
+                    setCurrentIndex(10);
                 } catch (error) {
-                    console.error("Failed to fetch ingredients or request timed out:", error);
-                }
-                finally {
-                    setIsLoading(false); // End loading
+                    console.error("Failed to fetch ingredients:", error);
+                } finally {
+                    setIsLoading(false);
                 }
             };
 
             fetchIngredients();
+        });
+    }, []);
+
+    const loadMoreIngredients = () => {
+        if (currentIndex < ingredients.length) {
+            const newIndex = currentIndex + 10;
+            const newItems = ingredients.slice(currentIndex, newIndex);
+            setDisplayedIngredients([...displayedIngredients, ...newItems]);
+            setCurrentIndex(newIndex);
         }
-        , []);
+    };
+
+    const renderItem = ({ item }) => (
+        <IngredientCard
+            text={item.strIngredient}
+            fridgeButtonOn={true}
+            cartButtonOn={true}
+            onPress={() => navigation.navigate("IngredientDetails", { ingredient: item })}
+        />
+    );
 
     return (
         <View style={styles.screen}>
-            <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
-            {isLoading ? (
-                <View style={styles.loadingScreen}>
-                    <ActivityIndicator size="large" />
-                </View>
-            ) : (
-
-                <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                    <View style={styles.smallMargin}>
-                        <SearchBar />
+            <TopNavigationBar title="Ingredients" LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
+            <FlatList
+                data={displayedIngredients}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+                ListHeaderComponent={<SearchBar />}
+                style={styles.scrollableScreen}
+                contentContainerStyle={styles.scrolling}
+                ListEmptyComponent={
+                    <View style={styles.loadingScreen}>
+                        <ActivityIndicator size="large" />
                     </View>
-                    {ingredients.map((ingredient, index) => (
-                        <IngredientCard
-                            key={index}
-                            text={ingredient.strIngredient}
-                            fridgeButtonOn={fridgeButtonOn}
-                            cartButtonOn={cartButtonOn}
-                            onPress={() => navigateToIngredientDetails(ingredient)}
-                        />
-                    ))}
-                </ScrollView> )}
-            <BottomNavigationBar selected={selectedBottomBar} />
+                }
+                onEndReached={loadMoreIngredients}
+                onEndReachedThreshold={0.7}
+                initialNumToRender={10}
+            />
+            <BottomNavigationBar selected="Ingredients" />
         </View>
-    )
+    );
 };
 
 const styles = StyleSheet.create({
@@ -107,6 +105,8 @@ const styles = StyleSheet.create({
         padding: 8,
     },
     loadingScreen: {
+        width: "100%",
+        height: "100%",
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

@@ -1,20 +1,16 @@
 import { View, StyleSheet, ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import {BookIcon, EditIcon, HamburgerIcon, PlusIcon} from "../assets/icons";
+import {BookIcon, EditIcon, HamburgerIcon, PlusIcon, ShoppingCartIcon} from "../assets/icons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useEffect, useState} from "react";
-import IngredientCard from "../components/IngredientCard";
 import ListItem from "../components/ListItem";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 
 export default function ShoppingListScreen () {
     const title = "Shopping list";
-    const filtersOn = false;
     const selectedBottomBar = "ShoppingList";
-    const fridgeButtonOn = true;
-    const cartButtonOn = true;
     const [shoppingListContent, setShoppingListContent] = useState([]);
 
     const initializeShoppingListStorage = async () => {
@@ -60,7 +56,7 @@ export default function ShoppingListScreen () {
                 if (content !== null) {
                     setShoppingListContent(JSON.parse(content));
                 }
-                await addToShoppingList({name: "Milk", amount: "1l"})
+                await addToShoppingList({name: "Butter", amount: "100g"})
             } catch (error) {
                 console.error("Error loading shopping list content:", error);
             }
@@ -84,8 +80,7 @@ export default function ShoppingListScreen () {
                     </ListItem>
                 ))}
             </ScrollView>
-            {/*TODO: add the cart icon as well*/}
-            <BottomRightCornerButton IconComponent={PlusIcon}/>
+            <BottomRightCornerButton IconComponent={ShoppingCartIcon} SecondIconComponent={PlusIcon}/>
             <BottomNavigationBar selected={selectedBottomBar}/>
         </View>
     )
@@ -110,7 +105,7 @@ const styles = StyleSheet.create({
     },
     scrolling: {
         alignItems: 'center',
-        paddingBottom: 16,
+        paddingBottom: 50,
     },
 
     iconSize: {

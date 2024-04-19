@@ -1,18 +1,26 @@
 import React from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
 
-export default function BottomRightCornerButton({ IconComponent, onPress }) {
+export default function BottomRightCornerButton({ IconComponent, SecondIconComponent, onPress }) {
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={onPress} style={styles.iconButton}>
                 <IconComponent />
             </TouchableOpacity>
+            {SecondIconComponent ?
+                <TouchableOpacity onPress={onPress} style={styles.iconButton}>
+                    <SecondIconComponent />
+                </TouchableOpacity>
+            : null}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 12,
         position: 'absolute',
         right: 25,
         bottom: 105,

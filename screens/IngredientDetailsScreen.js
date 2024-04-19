@@ -1,11 +1,8 @@
-import {View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Button, TouchableOpacity} from "react-native";
+import {View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, TouchableOpacity, FlatList} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import IngredientCard from "../components/IngredientCard";
-import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import {
-    BookIcon,
     BackArrowIcon,
     FridgeCardIcon,
     BasketCardIcon,
@@ -16,8 +13,6 @@ import MealMiniature from "../components/MealMiniature";
 
 export default function IngredientDetailsScreen ({ route, navigation }) {
     const { ingredient } = route.params;
-    const [imageUri, setImageData] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
     const [mealsFromIngredient, setMealsFromIngredient] = useState([]);
     const [isFavorite, setIsFavorite] = useState(false);
     const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
@@ -50,30 +45,29 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
 
     useEffect(() => {
             const fetchMealsFromIngredient = async () => {
-                // Setting a timeout for the fetch request
-                const timeout = 10000; // Timeout in milliseconds (10 seconds)
                 const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${parsedIngredientName()}`;
-
-                const timeoutPromise = new Promise((resolve, reject) => {
-                    setTimeout(() => reject(new Error('Request timed out')), timeout);
-                });
-
-                const fetchPromise = fetch(url);
-
                 try {
-                    const response = await Promise.race([fetchPromise, timeoutPromise]);
+                    const response = await fetch(url);
                     const json = await response.json();
                     setMealsFromIngredient(json.meals);
                 } catch (error) {
                     console.error("Failed to fetch ingredients or request timed out:", error);
                 }
-                finally {
-                    setIsLoading(false); // End loading
-                }
             };
             fetchMealsFromIngredient();
         }
         , []);
+
+    const renderMealMiniatures = ({item, index}) => {
+        return (
+            <MealMiniature
+                key={index}
+                mealName={item.strMeal}
+                mealThumb={item.strMealThumb}
+                onPress={() => navigateToMealDetails(item.idMeal)}
+            />
+        )
+    }
 
     return (
         <View style={styles.screen}>
@@ -99,17 +93,15 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                     <Text style={styles.cardTitle}>Description</Text>
                     <Text style={styles.cardContent}>{ingredient.strDescription}</Text>
                 </View>
-                <ScrollView style={styles.mealsContainer} horizontal={true}>
-                    {mealsFromIngredient.map((meal, index) => (
-                        <MealMiniature
-                            key={index}
-                            mealName={meal.strMeal}
-                            mealThumb={meal.strMealThumb}
-                            onPress={() => navigateToMealDetails(meal.idMeal)}
-                        />
-                    ))}
-                    {isLoading ? <ActivityIndicator style={styles.loadingContainer} size="large"/> : null}
-                </ScrollView>
+                <FlatList
+                    horizontal={true}
+                    data={mealsFromIngredient}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={renderMealMiniatures}
+                    style={styles.mealsContainer}
+                    contentContainerStyle={styles.scrolling}
+                    ListEmptyComponent={<ActivityIndicator style={styles.loadingContainer} size="large"/>}
+                />
             </ScrollView>
             <BottomNavigationBar selected={"Ingredients"} />
         </View>
