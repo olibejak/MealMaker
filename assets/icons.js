@@ -1,4 +1,4 @@
-import Svg, {G, Path} from "react-native-svg";
+import Svg, {G, Path, Rect} from "react-native-svg";
 
 const HamburgerIcon = () =>(
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -115,14 +115,6 @@ const CheckmarkIcon = () => (
     </Svg>
 );
 
-const CheckmarkIconWhite = () => (
-    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path
-            d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"
-            fill="white"/>
-    </Svg>
-);
-
 const PlusIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <Path
@@ -175,70 +167,6 @@ const StarFilledIcon = () => (
         />
     </Svg>
 )
-const TimerIcon = () => (
-    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path
-            d="M15 1.5H9V3.5H15V1.5ZM11 14.5H13V8.5H11V14.5ZM19.03 7.89L20.45 6.47C20.02 5.96 19.55 5.48 19.04 5.06L17.62 6.48C16.07 5.24 14.12 4.5 12 4.5C7.03 4.5 3 8.53 3 13.5C3 18.47 7.02 22.5 12 22.5C16.98 22.5 21 18.47 21 13.5C21 11.38 20.26 9.43 19.03 7.89ZM12 20.5C8.13 20.5 5 17.37 5 13.5C5 9.63 8.13 6.5 12 6.5C15.87 6.5 19 9.63 19 13.5C19 17.37 15.87 20.5 12 20.5Z"
-            fill="black"/>
-    </Svg>
-)
-const ArrowDropDown = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path d="M7 10L12 15L17 10H7Z" fill="#49454F"/>
-    </Svg>
-)
-const EditIcon = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path fill-rule="evenodd" clip-rule="evenodd"
-              d="M19.06 3.59L20.41 4.94C21.2 5.72 21.2 6.99 20.41 7.77L7.18 21H3V16.82L13.4 6.41L16.23 3.59C17.01 2.81 18.28 2.81 19.06 3.59ZM5 19L6.41 19.06L16.23 9.23L14.82 7.82L5 17.64V19Z"
-              fill="#49454F"/>
-    </Svg>
-)
-
-const NotificationIcon = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path
-            d="M12 21.75C13.1 21.75 14 20.85 14 19.75H10C10 20.85 10.9 21.75 12 21.75ZM18 15.75V10.75C18 7.68 16.37 5.11 13.5 4.43V3.75C13.5 2.92 12.83 2.25 12 2.25C11.17 2.25 10.5 2.92 10.5 3.75V4.43C7.64003 5.11 6.00003 7.67 6.00003 10.75V15.75L4.00003 17.75V18.75H20V17.75L18 15.75ZM16 16.75H8.00003V10.75C8.00003 8.27 9.51003 6.25 12 6.25C14.49 6.25 16 8.27 16 10.75V16.75ZM7.58003 3.83L6.15003 2.4C3.75003 4.23 2.17003 7.05 2.03003 10.25H4.03003C4.18003 7.6 5.54003 5.28 7.58003 3.83ZM19.97 10.25H21.97C21.82 7.05 20.24 4.23 17.85 2.4L16.43 3.83C18.45 5.28 19.82 7.6 19.97 10.25Z"
-            fill="black"/>
-    </Svg>
-)
-
-const VolumeIcon = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path
-            d="M3 9.00006V15.0001H7L12 20.0001V4.00006L7 9.00006H3ZM10 8.83006V15.1701L7.83 13.0001H5V11.0001H7.83L10 8.83006ZM16.5 12.0001C16.5 10.2301 15.48 8.71006 14 7.97006V16.0201C15.48 15.2901 16.5 13.7701 16.5 12.0001ZM14 3.23006V5.29006C16.89 6.15006 19 8.83006 19 12.0001C19 15.1701 16.89 17.8501 14 18.7101V20.7701C18.01 19.8601 21 16.2801 21 12.0001C21 7.72006 18.01 4.14006 14 3.23006Z"
-            fill="black"/>
-    </Svg>
-)
-
-const VibrationIcon = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path
-            d="M0 15.0001H2V9.00012H0V15.0001ZM3 17.0001H5V7.00012H3V17.0001ZM22 9.00012V15.0001H24V9.00012H22ZM19 17.0001H21V7.00012H19V17.0001ZM16.5 3.00012H7.5C6.67 3.00012 6 3.67012 6 4.50012V19.5001C6 20.3301 6.67 21.0001 7.5 21.0001H16.5C17.33 21.0001 18 20.3301 18 19.5001V4.50012C18 3.67012 17.33 3.00012 16.5 3.00012ZM16 19.0001H8V5.00012H16V19.0001Z"
-            fill="black"/>
-    </Svg>
-)
-
-const FlashlightIcon = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path
-            d="M18 2.00018H6V8.00018L8 11.0002V22.0002H16V11.0002L18 8.00018V2.00018ZM16 4.00018V5.00018H8V4.00018H16ZM14 10.4002V20.0002H10V10.3902L8 7.39018V7.00018H16V7.39018L14 10.4002Z"
-            fill="black"/>
-        <Path
-            d="M12 15.5002C12.8284 15.5002 13.5 14.8286 13.5 14.0002C13.5 13.1718 12.8284 12.5002 12 12.5002C11.1716 12.5002 10.5 13.1718 10.5 14.0002C10.5 14.8286 11.1716 15.5002 12 15.5002Z"
-            fill="black"/>
-    </Svg>
-)
-
-const PhoneLinkIcon = () => (
-    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path
-            d="M20.1125 7.70024L19.1125 8.70024C20.9125 10.5002 20.9125 13.3002 19.1125 15.2002L20.1125 16.2002C22.6125 13.9002 22.6125 10.1002 20.1125 7.70024ZM18.0125 9.80024L17.0125 10.8002C17.5125 11.5002 17.5125 12.4002 17.0125 13.1002L18.0125 14.1002C19.2125 12.9002 19.2125 11.1002 18.0125 9.80024ZM14.0125 1.00024H4.01245C2.91245 1.00024 2.01245 1.90024 2.01245 3.00024V21.0002C2.01245 22.1002 2.91245 23.0002 4.01245 23.0002H14.0125C15.1125 23.0002 16.0125 22.1002 16.0125 21.0002V3.00024C16.0125 1.90024 15.1125 1.00024 14.0125 1.00024ZM14.0125 20.0002H4.01245V4.00024H14.0125V20.0002Z"
-            fill="black"/>
-    </Svg>
-)
-
-
 export {
     HamburgerIcon,
     BookIcon,
@@ -257,14 +185,5 @@ export {
     PotIcon,
     GarbageIcon,
     StarOutlineIcon,
-    StarFilledIcon,
-    TimerIcon,
-    ArrowDropDown,
-    CheckmarkIconWhite,
-    EditIcon,
-    NotificationIcon,
-    VolumeIcon,
-    VibrationIcon,
-    FlashlightIcon,
-    PhoneLinkIcon
+    StarFilledIcon
 }
