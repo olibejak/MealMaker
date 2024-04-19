@@ -1,7 +1,7 @@
 import { View, StyleSheet, ScrollView} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import {BookIcon, EditIcon, HamburgerIcon, PlusIcon} from "../assets/icons";
+import {BookIcon, EditIcon, HamburgerIcon, PlusIcon, ShoppingCartIcon} from "../assets/icons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useEffect, useState} from "react";
@@ -80,8 +80,7 @@ export default function ShoppingListScreen () {
                     </ListItem>
                 ))}
             </ScrollView>
-            {/*TODO: add the cart icon as well*/}
-            <BottomRightCornerButton IconComponent={PlusIcon}/>
+            <BottomRightCornerButton IconComponent={ShoppingCartIcon} SecondIconComponent={PlusIcon}/>
             <BottomNavigationBar selected={selectedBottomBar}/>
         </View>
     )

@@ -1,4 +1,4 @@
-import { View, StyleSheet, FlatList, ActivityIndicator, InteractionManager } from "react-native";
+import {View, StyleSheet, FlatList, ActivityIndicator, InteractionManager} from "react-native";
 import React, { useEffect, useState } from "react";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
@@ -51,7 +51,7 @@ export default function IngredientsScreen({ navigation }) {
                     data={ingredients}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => index.toString()}
-                    ListHeaderComponent={<SearchBar />}
+                    ListHeaderComponent={<SearchBar/>}
                     style={styles.scrollableScreen}
                     contentContainerStyle={styles.scrolling}
                 />
