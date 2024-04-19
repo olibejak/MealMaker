@@ -1,6 +1,6 @@
 // MyDiaryScreen.js
 import React from 'react';
-import { View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { View, ScrollView, StyleSheet} from 'react-native';
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import RecipeCard from "../components/RecipeCard";
 import BottomNavigationBar from "../components/BottomNavigationBar";

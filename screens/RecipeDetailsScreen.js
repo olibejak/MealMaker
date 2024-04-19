@@ -5,14 +5,11 @@ import {useEffect, useState} from "react";
 import {
     BackArrowIcon,
     BasketCardIcon,
-    BookIcon,
-    FridgeCardIcon, PotIcon,
+    PotIcon,
     StarFilledIcon,
-    StarOutlineIcon, TimerIcon
+    StarOutlineIcon
 } from "../assets/icons";
 import MealMiniature from "../components/MealMiniature";
-import {useNavigation} from "@react-navigation/native";
-import IngredientsScreen from "./IngredientsScreen";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 
 export default function RecipeDetailsScreen ( { route, navigation } ) {
@@ -39,13 +36,8 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
     useEffect(() => {
             const fetchMealsFromIngredient = async () => {
                 // Setting a timeout for the fetch request
-                const timeout = 10000; // Timeout in milliseconds (10 seconds)
                 const url = 'https://www.themealdb.com/api/json/v1/1/list.php?i=list';
-                // const timeoutPromise = new Promise((resolve, reject) => {
-                //     setTimeout(() => reject(new Error('Request timed out')), timeout);
-                // });
 
-                const fetchPromise = fetch(url);
                 try {
                     for (let ingredientIndex = 1; ingredientIndex < 21; ++ingredientIndex) {
                         if (recipe[`strIngredient${ingredientIndex}`] === null ||

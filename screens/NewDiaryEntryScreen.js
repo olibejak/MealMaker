@@ -1,9 +1,7 @@
-// noinspection JSVoidFunctionReturnValueUsed
-
 import React from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons, MaterialIcons, } from '@expo/vector-icons';
-import {BackArrowIcon, CheckmarkIcon,} from "../assets/icons.js";
+import {BackArrowIcon} from "../assets/icons.js";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";

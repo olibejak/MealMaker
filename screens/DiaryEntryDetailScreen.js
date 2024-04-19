@@ -5,7 +5,6 @@ import TopNavigationBar from "../components/TopNavigationBar";
 import {BackArrowIcon, PencilIcon} from "../assets/icons";
 import {useNavigation} from "@react-navigation/native";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
-import image from "../assets/testing_images/recipe.jpg";
 
 
 export default function DiaryEntryDetailScreen() {

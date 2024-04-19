@@ -1,6 +1,6 @@
-import {ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
+import {ScrollView, StyleSheet, View} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
-import {BackArrowIcon, PencilIcon, StarFilledIcon, StarOutlineIcon, TimerIcon} from "../assets/icons";
+import {BackArrowIcon, StarFilledIcon, StarOutlineIcon, TimerIcon} from "../assets/icons";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import {useEffect, useState} from "react";
 import ListItem from "../components/ListItem";

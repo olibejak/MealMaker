@@ -1,11 +1,8 @@
-import {View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Button, TouchableOpacity} from "react-native";
+import {View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, TouchableOpacity} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import IngredientCard from "../components/IngredientCard";
-import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import {
-    BookIcon,
     BackArrowIcon,
     FridgeCardIcon,
     BasketCardIcon,

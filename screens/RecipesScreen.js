@@ -3,7 +3,6 @@ import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import RecipeCard from "../components/RecipeCard";
 import SearchBar from "../components/SearchBar";
-import IngredientCard from "../components/IngredientCard";
 import {BookIcon, HamburgerIcon} from "../assets/icons";
 import {useNavigation} from "@react-navigation/native";
 
