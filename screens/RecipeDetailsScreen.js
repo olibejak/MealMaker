@@ -1,4 +1,14 @@
-import {ActivityIndicator, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+    ActivityIndicator,
+    Dimensions,
+    FlatList,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import {useEffect, useState} from "react";
@@ -16,10 +26,21 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
     const {recipe} = route.params;
     const [isLoading, setIsLoading] = useState(true);
     const [recipeIngredients, setRecipeIngredients] = useState([]);
-    const [ingredientMap, setIngredientMap] = useState(new Map());
     const [isFavorite, setIsFavorite] = useState(false);
     const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
+    const ingredientKeys = Object.keys(recipe).filter(key => key.startsWith('strIngredient'));
+    const amountKeys = Object.keys(recipe).filter(key => key.startsWith('strMeasure'));
 
+    const ingredientsList = ingredientKeys.map((key, index) => {
+        const ingredient = recipe[key];
+        const amount = recipe[amountKeys[index]];
+
+        // Check if ingredient is not null or empty string
+        if (ingredient && ingredient.trim() !== '') {
+            return `${amount} ${ingredient}`;
+        }
+        return null; // Filter out null or empty ingredient
+    }).filter(item => item !== null).join(', ');
     function capitalizeFirstLetter(str) {
         return str.replace(/\b\w/g, char => char.toUpperCase());
     }
@@ -43,7 +64,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                         if (recipe[`strIngredient${ingredientIndex}`] === null ||
                             recipe[`strIngredient${ingredientIndex}`] === "") {break;}
                         const ingredientName = capitalizeFirstLetter(recipe[`strIngredient${ingredientIndex}`])
-                        ingredientMap.set(recipe[`strIngredient${ingredientIndex}`], recipe[`strMeasure${ingredientIndex}`])
+                        // ingredientMap.set(recipe[`strIngredient${ingredientIndex}`], recipe[`strMeasure${ingredientIndex}`])
                         const response = await fetch(url);
                         const json = await response.json();
                         if (json.meals.find(meal => meal.strIngredient === ingredientName)) {
@@ -61,6 +82,17 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
             fetchMealsFromIngredient();
         }
         , []);
+
+    const renderIngredientMiniatures = ({item, index}) => {
+        return (
+            <MealMiniature
+                key={index}
+                mealName={item.strIngredient}
+                mealThumb={`https://www.themealdb.com/images/ingredients/${item.strIngredient}.png`}
+                onPress={() => navigateToIngredientDetails(item)}
+            />
+        );
+    }
 
     return (
         <View style={styles.screen}>
@@ -83,23 +115,21 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                 </View>
                 <View style={styles.textContainer}>
                     <Text style={styles.cardTitle}>Ingredients</Text>
-                    {!isLoading && (
-                        <Text style={styles.cardContent}>
-                            {Array.from(ingredientMap).map(([key, value]) => `${value} ${key}`).join(' ')}
-                        </Text>
-                    )}{isLoading ? <ActivityIndicator size="large"/> : null}
+                    <Text style={styles.cardContent}>
+                        {ingredientsList}
+                    </Text>
                 </View>
-                <ScrollView style={styles.ingredientContainer} horizontal={true}>
-                    {recipeIngredients.map((ingredient, index) => (
-                        <MealMiniature
-                            key={index}
-                            mealName={ingredient.strIngredient}
-                            mealThumb={`https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png`}
-                            onPress={() => navigateToIngredientDetails(ingredient)}
-                        />
-                    ))}
-                    {isLoading ? <ActivityIndicator style={styles.loadingContainer} size="large"/> : null}
-                </ScrollView>
+                    <FlatList
+                        horizontal={true}
+                        data={recipeIngredients}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={renderIngredientMiniatures}
+                        style={styles.ingredientContainer}
+                        contentContainerStyle={styles.scrolling}
+                        ListEmptyComponent={
+                            <ActivityIndicator style={styles.loadingContainer} size="large"/>
+                        }
+                    />
                 <View style={[styles.textContainer, {marginBottom: 16}]}>
                     <Text style={styles.cardTitle}>Instructions</Text>
                     <Text style={styles.cardContent}>{recipe.strInstructions}</Text>

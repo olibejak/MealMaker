@@ -8,7 +8,6 @@ import { BookIcon, HamburgerIcon } from "../assets/icons";
 
 export default function IngredientsScreen({ navigation }) {
     const [ingredients, setIngredients] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
@@ -20,8 +19,6 @@ export default function IngredientsScreen({ navigation }) {
                     setIngredients(json.meals);
                 } catch (error) {
                     console.error("Failed to fetch ingredients:", error);
-                } finally {
-                    setIsLoading(false);
                 }
             };
 
@@ -42,20 +39,20 @@ export default function IngredientsScreen({ navigation }) {
     return (
         <View style={styles.screen}>
             <TopNavigationBar title="Ingredients" LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
-            {isLoading ? (
-                <View style={styles.loadingScreen}>
-                    <ActivityIndicator size="large" />
-                </View>
-            ) : (
-                <FlatList
-                    data={ingredients}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => index.toString()}
-                    ListHeaderComponent={<SearchBar/>}
-                    style={styles.scrollableScreen}
-                    contentContainerStyle={styles.scrolling}
-                />
-            )}
+            <FlatList
+                data={ingredients}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+                ListHeaderComponent={<SearchBar />}
+                style={styles.scrollableScreen}
+                contentContainerStyle={styles.scrolling}
+                ListEmptyComponent={
+                    <View style={styles.loadingScreen}>
+                        <ActivityIndicator size="large" />
+                    </View>
+                }
+
+            />
             <BottomNavigationBar selected="Ingredients" />
         </View>
     );
@@ -91,6 +88,8 @@ const styles = StyleSheet.create({
         padding: 8,
     },
     loadingScreen: {
+        width: "100%",
+        height: "100%",
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
