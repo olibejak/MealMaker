@@ -1,66 +1,69 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Animated } from 'react-native';
-import { PlayIcon, PauseIcon, GarbageIcon } from "../assets/icons";
-import { Swipeable } from 'react-native-gesture-handler';
+import React, { useState, useRef } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../assets/icons"; // Replace with actual icons
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
-export default function TimerCard({ time, onStartStop, onReset }) {
+export default function TimerCard({ label, time, onAddTime, onStartStop, onClose, onReload }) {
     const [isRunning, setIsRunning] = useState(false);
+    const circularProgressRef = useRef();
 
     const toggleTimer = () => {
-        if (isRunning) {
-            onReset();
-        } else {
-            onStartStop();
-        }
         setIsRunning(!isRunning);
-    };
-
-    const renderRightActions = (progress, dragX) => {
-        const scale = dragX.interpolate({
-            inputRange: [-100, 0],
-            outputRange: [1, 0],
-            extrapolate: 'clamp',
-        });
-        return (
-            <TouchableOpacity style={styles.deleteBox} onPress={onReset}>
-                <Animated.View style={{ transform: [{ scale }] }}>
-                    <GarbageIcon />
-                </Animated.View>
-            </TouchableOpacity>
-        );
+        onStartStop();
+        if (circularProgressRef.current) {
+            circularProgressRef.current.animate(100, 8000); // Fill the progress to 100% in 8 seconds
+        }
     };
 
     return (
-        <Swipeable renderRightActions={renderRightActions}>
-            <View style={styles.card}>
-                <View style={styles.timeContainer}>
-                    <Text style={styles.timeText}>{time}</Text>
-                </View>
-                <TouchableOpacity style={styles.iconBubble} onPress={toggleTimer}>
+        <View style={styles.card}>
+            <View style={styles.leftSection}>
+                <Text style={styles.label}>{label}</Text>
+                <AnimatedCircularProgress
+                    size={200}
+                    width={10}
+                    fill={100}
+                    tintColor="#cfbbfd"
+                    onAnimationComplete={() => console.log('onAnimationComplete')}
+                    backgroundColor="#cfbbfd">
+                    {
+                        (fill) => (
+                            <View style={styles.innerCircle}>
+                                <Text style={styles.timeText}>{time}</Text>
+                                <TouchableOpacity onPress={onReload} style={styles.reloadIcon}>
+                                    <ReloadIcon />
+                                </TouchableOpacity>
+                            </View>
+                        )
+                    }
+                </AnimatedCircularProgress>
+            </View>
+            <View style={styles.buttonGroup}>
+                <TouchableOpacity onPress={onAddTime} style={[styles.iconBubble, styles.addTimeButton]}>
+                    <PlusIcon />
+                    <Text style={styles.iconText}>1:00</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={toggleTimer} style={styles.iconBubble}>
                     {isRunning ? <PauseIcon /> : <PlayIcon />}
                 </TouchableOpacity>
             </View>
-        </Swipeable>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                <CloseIcon />
+            </TouchableOpacity>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    deleteBox: {
-        backgroundColor: 'red',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 100,
-        height: '100%',
-    },
     card: {
         backgroundColor: '#F6F2F9',
-        borderRadius: 10,
-        paddingVertical: 25,
-        paddingHorizontal: 20,
+        borderRadius: 20,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
         marginBottom: 16,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -69,23 +72,73 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.22,
         shadowRadius: 2.22,
         elevation: 3,
+        position: 'relative',
     },
-    timeContainer: {
-        flex: 1, // This will make the time text more flexible in sizing and positioning
-        justifyContent: 'center', // Center the text vertically
-        alignItems: 'center', // Center the text horizontally
+    leftSection: {
+        flex: 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 10,
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        shadowColor: "#6a6a6a",
+        elevation: 5,
     },
     timeText: {
-        fontSize: 52,
+        fontSize: 42, // Increased font size for larger text
+        fontWeight: 'bold',
         color: '#333',
+        textAlign: 'center',
+        marginBottom: 20, // Space between the text and the button
+    },
+    reloadIcon: {
+        // Additional styling for the button if needed
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    iconText: {
+        textAlign: 'center',
+        color: '#000',
+        fontSize: 18,
     },
     iconBubble: {
-        backgroundColor: '#e7ddf6',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#cfbbfd',
         borderRadius: 50,
         paddingVertical: 10,
-        paddingHorizontal: 30, // Further increase horizontal padding to make the bubble wider
-        // No need for alignItems and justifyContent here since we removed iconContainer
+        paddingHorizontal: 30,
+        width: 120,
+        marginVertical: 10,
     },
-    // You can remove iconContainer if it's not being used anymore
+    addTimeButton: {
+        backgroundColor: '#e7ddf6',
+    },
+    buttonGroup: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        alignSelf: 'stretch',
+    },
+    innerCircle: {
+        flex: 1,
+        justifyContent: 'center', // This will push the time text up and the button down
+        alignItems: 'center',
+        height: '100%', // Ensure the inner circle uses the full height of the circular progress
+    },
 });
-

@@ -19,8 +19,9 @@ export default function TimerScreen() {
                 style={styles.scrollView}
                 contentContainerStyle={styles.contentContainer}
             >
-                {timers.map((time, index) => (
+                {timers.map((time,index) => (
                     <TimerCard
+                        label={`Timer ${index + 1}`}
                         key={index}
                         time={time}
                         onStartStop={() => console.log('Start/Stop timer')}
@@ -28,7 +29,7 @@ export default function TimerScreen() {
                     />
                 ))}
             </ScrollView>
-            <BottomNavigationBar /* other props as needed */ />
+            <BottomNavigationBar />
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => console.log('Add new timer')} />
         </SafeAreaView>
     );
