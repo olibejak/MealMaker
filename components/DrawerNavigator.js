@@ -68,7 +68,7 @@ function DrawerNavigator() {
     return (
         <Drawer.Navigator
             backBehavior="history"
-            initialRouteName="About"
+            initialRouteName="Ingredients"
             screenOptions={{
                 headerShown: false,
                 drawerType: 'front',
