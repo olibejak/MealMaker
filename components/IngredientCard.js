@@ -1,32 +1,41 @@
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import {BasketCardIcon, FilterIcon, FridgeCardIcon} from "../assets/icons";
+import {BasketCardIcon, FilterIcon, FridgeCardIcon, PencilIcon} from "../assets/icons";
 
 
-export default function IngredientCard ({ text, amount, fridgeButtonOn, cartButtonOn, onPress }) {
+export default function IngredientCard ({ text, amount, fridgeButtonOn, cartButtonOn, editButtonOn,
+                                            onPress, onPressFridge, onPressCart }) {
 
     return (
         <View style={styles.shadowContainer}>
-            <TouchableOpacity style={styles.card} onPress={onPress}>
+            <TouchableOpacity onPress={onPress} style={styles.card}>
                 <RenderText text={text} amount={amount}/>
-                    <RenderButtons fridgeButtonOn={fridgeButtonOn} cartButtonOn={cartButtonOn}/>
+                    <RenderButtons
+                        fridgeButtonOn={fridgeButtonOn} cartButtonOn={cartButtonOn} editButtonOn={editButtonOn}
+                        onPressFridge={onPressFridge} onPressCart={onPressCart} />
             </TouchableOpacity>
         </View>
     )};
 
 
-function RenderButtons({fridgeButtonOn, cartButtonOn}) {
+function RenderButtons({fridgeButtonOn, cartButtonOn, editButtonOn, onPressFridge, onPressCart}) {
     return (
         <View style={styles.cardIcons}>
             {fridgeButtonOn ? (
-                <TouchableOpacity style={[styles.center, styles.cardButton]}>
+                <TouchableOpacity onPress={onPressFridge} style={[styles.center, styles.cardButton]}>
                     <FridgeCardIcon />
                 </TouchableOpacity>
             ) : null}
             {cartButtonOn ? (
-                <TouchableOpacity style={[styles.center, styles.cardButton]}>
+                <TouchableOpacity onPress={onPressCart} style={[styles.center, styles.cardButton]}>
                     <BasketCardIcon />
                 </TouchableOpacity>
             ) : null}
+            {editButtonOn ? (
+                <TouchableOpacity onPress={onPressCart} style={[styles.center, styles.cardButton]}>
+                    <PencilIcon />
+                </TouchableOpacity>
+            ) : null
+            }
         </View>
 )}
 
@@ -34,12 +43,12 @@ function RenderText({text, amount}) {
     return (
         amount === undefined ? (
             <View style={styles.textContainer}>
-                <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>{text}</Text>
+                <Text style={[styles.cardTextContent, styles.fontRegularMedium]} >{text}</Text>
             </View>
         ) : (
             <View style={styles.textContainer}>
-                <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>{text}</Text>
-                <Text style={[styles.cardTextContent, styles.fontRegular]}>{amount}</Text>
+                <Text style={[styles.cardTextContent, styles.fontRegularMedium]} numberOfLines={2} ellipsizeMode="tail">{text}</Text>
+                <Text style={[styles.cardTextContent, styles.fontRegular]} numberOfLines={2} ellipsizeMode="tail">{amount}</Text>
             </View>
         )
     );
@@ -72,6 +81,7 @@ const styles = StyleSheet.create({
 
     },
     textContainer: {
+        maxWidth: "80%",
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
@@ -79,7 +89,6 @@ const styles = StyleSheet.create({
 
     },
     cardTextContent: {
-        // width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-start',

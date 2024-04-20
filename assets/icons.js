@@ -194,6 +194,11 @@ const ArrowDropDown = () => (
         <Path d="M7 10L12 15L17 10H7Z" fill="#49454F"/>
     </Svg>
 )
+const ArrowDropUp = () => (
+    <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <Path d="M7 14L12 9L17 14H7Z" fill="#49454F"/>
+    </Svg>
+)
 const EditIcon = () => (
     <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
         <Path fillRule="evenodd" clipRule="evenodd"
@@ -331,6 +336,7 @@ export {
     StarFilledIcon,
     TimerIcon,
     ArrowDropDown,
+    ArrowDropUp,
     CheckmarkIconWhite,
     EditIcon,
     NotificationIcon,

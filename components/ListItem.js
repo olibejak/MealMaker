@@ -1,17 +1,19 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {TouchableOpacity, View, Text, StyleSheet} from "react-native";
-import {ArrowDropDown, CheckmarkIconWhite} from "../assets/icons";
+import {ArrowDropDown, CheckmarkIconWhite, ArrowDropUp} from "../assets/icons";
 
-export default function ListItem({ title, content, dividers, IconComponent }) {
+export default function ListItem({ title, content, dividers, IconComponent, onPress, isChecked }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const arrowIcon = isCollapsed ? <ArrowDropUp /> : <ArrowDropDown />;
-    const [checked, setChecked] = useState(false);
+    const [checked, setChecked] = useState(isChecked);
 
     const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
     return (
         <View style={dividers === 'True' ? [styles.container, styles.divider] : [styles.container]}>
-            <TouchableOpacity onPress={() => setChecked(!checked)}>
+            <TouchableOpacity onPress={() =>
+                    {setChecked(!checked);
+                    if(onPress) onPress()}}>
                 <View style={checked ? styles.checkBoxChecked : styles.checkBoxUnchecked}>
                     {checked ? <CheckmarkIconWhite /> : null}
                 </View>
