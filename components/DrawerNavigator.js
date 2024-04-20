@@ -67,7 +67,7 @@ function CustomDrawerContent(props) {
 function DrawerNavigator() {
     return (
         <Drawer.Navigator
-            initialRouteName="About"
+            initialRouteName="Ingredients"
             screenOptions={{
                 headerShown: false,
                 drawerType: 'front',
