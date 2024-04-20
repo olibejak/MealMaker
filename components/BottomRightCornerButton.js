@@ -1,14 +1,14 @@
 import React from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
 
-export default function BottomRightCornerButton({ IconComponent, SecondIconComponent, onPress }) {
+export default function BottomRightCornerButton({ IconComponent, SecondIconComponent, onPress, secondOnPress }) {
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={onPress} style={styles.iconButton}>
                 <IconComponent />
             </TouchableOpacity>
             {SecondIconComponent ?
-                <TouchableOpacity onPress={onPress} style={styles.iconButton}>
+                <TouchableOpacity onPress={secondOnPress} style={styles.iconButton}>
                     <SecondIconComponent />
                 </TouchableOpacity>
             : null}

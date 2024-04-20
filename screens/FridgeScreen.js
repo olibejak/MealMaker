@@ -1,11 +1,13 @@
-import {View, StyleSheet, ScrollView} from "react-native";
+import {View, StyleSheet, ScrollView, ActivityIndicator, FlatList} from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import IngredientCard from "../components/IngredientCard";
 import {BookIcon, HamburgerIcon, PlusIcon} from "../assets/icons";
-import {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
+import SearchBar from "../components/SearchBar";
+import {useIsFocused} from "@react-navigation/native";
 
 export default function FridgeScreen () {
     const title = "My fridge";
@@ -13,8 +15,9 @@ export default function FridgeScreen () {
     const fridgeButtonOn = true;
     const cartButtonOn = false;
     const [fridgeContent, setFridgeContent] = useState([]);
+    const isFocused = useIsFocused();
 
-    const initializeFridgeStorage = async () => {
+    const initializeFridgeStorage = useCallback(async () => {
         try {
             const existingContent = await AsyncStorage.getItem("fridgeContent");
             if (existingContent === null) {
@@ -23,7 +26,18 @@ export default function FridgeScreen () {
         } catch (error) {
             console.error("Error initializing fridge storage:", error);
         }
-    }
+    }, []);
+
+    const loadFridgeContent = useCallback(async () => {
+        try {
+            const content = await AsyncStorage.getItem("fridgeContent");
+            if (content !== null) {
+                setFridgeContent(JSON.parse(content));
+            }
+        } catch (error) {
+            console.error("Error loading fridge content:", error);
+        }
+    }, []);
 
     const addToFridge = async (ingredient) => {
         try {
@@ -33,10 +47,21 @@ export default function FridgeScreen () {
             if (existingContent !== null) {
                 newContent = JSON.parse(existingContent);
             }
-            // Add new ingredient
-            newContent.push(ingredient);
+
+            // Check if ingredient already exists in the fridge
+            const existingIngredientIndex = newContent.findIndex(item => item.name === ingredient.name);
+            if (existingIngredientIndex !== -1) {
+                // Ingredient already exists, update its amount by joining with the new amount
+                newContent[existingIngredientIndex].amount += `, ${ingredient.amount}`;
+            } else {
+                // Ingredient does not exist, add it to the fridge
+                newContent.push(ingredient);
+            }
+
             // Save updated fridge content
             await AsyncStorage.setItem("fridgeContent", JSON.stringify(newContent));
+
+            // Update state with new fridge content
             setFridgeContent(newContent);
         } catch (error) {
             console.error("Error adding to fridge:", error);
@@ -59,39 +84,37 @@ export default function FridgeScreen () {
  */
 
     useEffect(() => {
-        const loadFridgeContent = async () => {
-            try {
-                // Initialize fridge storage if not already initialized
-                await initializeFridgeStorage();
-                // Load fridge content
-                const content = await AsyncStorage.getItem("fridgeContent");
-                if (content !== null) {
-                    setFridgeContent(JSON.parse(content));
-                }
-                await addToFridge({name: "Milk", amount: "2l"})
-            } catch (error) {
-                console.error("Error loading fridge content:", error);
-            }
-        };
-        loadFridgeContent();
-    }, []);
+        initializeFridgeStorage();
+    }, [initializeFridgeStorage]);
+
+    useEffect(() => {
+        // reload fridge screen when storage changes
+        if (isFocused) {
+            loadFridgeContent();
+        }
+    }, [isFocused, loadFridgeContent]);
+
+    const renderItem = ({ item }) => (
+        <IngredientCard
+            text={item.name}
+            amount={item.amount}
+            fridgeButtonOn={fridgeButtonOn}
+            cartButtonOn={cartButtonOn}
+        />
+    );
 
     return (
         <View style={styles.screen}>
             <View>
                 <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             </View>
-            <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                {fridgeContent.map((ingredient, index) => (
-                    <IngredientCard
-                        key={index}
-                        text={ingredient.name}
-                        amount={ingredient.amount}
-                        fridgeButtonOn={fridgeButtonOn}
-                        cartButtonOn={cartButtonOn}
-                    />
-                ))}
-            </ScrollView>
+            <FlatList
+                data={fridgeContent}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+                style={styles.scrollableScreen}
+                contentContainerStyle={styles.scrolling}
+            />
             <BottomRightCornerButton IconComponent={PlusIcon}/>
             <BottomNavigationBar selected={selectedBottomBar}/>
         </View>
