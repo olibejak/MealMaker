@@ -1,64 +1,25 @@
-import { StyleSheet } from 'react-native';
-import {useFonts} from "expo-font";
-import IngredientsScreen from "./screens/IngredientsScreen";
-import {NavigationContainer} from "@react-navigation/native";
-import RecipesScreen from "./screens/RecipesScreen";
-import FridgeScreen from "./screens/FridgeScreen";
-import NewDiaryEntryScreen from "./screens/NewDiaryEntryScreen";
-import ShoppingListScreen from "./screens/ShoppingListScreen";
-import DiaryEntryDetailScreen from "./screens/DiaryEntryDetailScreen";
-import {createStackNavigator} from "@react-navigation/stack";
-import IngredientDetailsScreen from "./screens/IngredientDetailsScreen";
-import SettingsScreen from "./screens/SettingsScreen";
-import DiaryScreen from "./screens/DiaryScreen";
-import RecipeDetailsScreen from "./screens/RecipeDetailsScreen";
-import StepByStepRecipeScreen from "./screens/StepByStepRecipeScreen";
-import AboutScreen from "./screens/AboutScreen";
-import TimerScreen from "./screens/TimerScreen";
+// App.js
 
-const Tab = createStackNavigator();
+import * as React from 'react';
+import { useFonts } from "expo-font";
+import { NavigationContainer } from "@react-navigation/native";
+import DrawerNavigation from './components/DrawerNavigator'; // Import the new DrawerNavigation component
 
 export default function App() {
-  // Load fonts
-  const [fontsLoaded, error] = useFonts({
-    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
-    "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
-  });
+    const [fontsLoaded, error] = useFonts({
+        "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+        "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
+        "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+    });
 
-  if (!fontsLoaded && !error) {
-    return null;
-  }
+    if (!fontsLoaded && !error) {
+        return null;
+    }
 
-  // Render the app
-  return (
-
-    <NavigationContainer>
-        <Tab.Navigator initialRouteName="Ingredients" screenOptions={{ headerShown: false, animationEnabled: false}}  >
-            <Tab.Screen name="Ingredients" component={IngredientsScreen} />
-            <Tab.Screen name="Recipes" component={RecipesScreen} />
-            <Tab.Screen name="Fridge" component={FridgeScreen} />
-            <Tab.Screen name="ShoppingList" component={ShoppingListScreen} />
-            <Tab.Screen name="NewDiaryEntry" component={NewDiaryEntryScreen} />
-            <Tab.Screen name="IngredientDetails" component={IngredientDetailsScreen} />
-            <Tab.Screen name="RecipeDetails" component={RecipeDetailsScreen} />
-            <Tab.Screen name="DiaryEntryDetail" component={DiaryEntryDetailScreen} />
-            <Tab.Screen name="Diary" component={DiaryScreen} />
-            <Tab.Screen name="Settings" component={SettingsScreen} />
-            <Tab.Screen name="About" component={AboutScreen} />
-            <Tab.Screen name="StepByStepRecipe" component={StepByStepRecipeScreen} />
-            <Tab.Screen name="Timer" component={TimerScreen} />
-        </Tab.Navigator>
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+            <DrawerNavigation />
+        </NavigationContainer>
+    );
 }
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

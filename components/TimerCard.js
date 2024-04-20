@@ -23,9 +23,7 @@ export default function TimerCard({ label, time, onAddTime, onStartStop, onClose
                     size={200}
                     width={10}
                     fill={100}
-                    tintColor="#cfbbfd"
-                    onAnimationComplete={() => console.log('onAnimationComplete')}
-                    backgroundColor="#cfbbfd">
+                    tintColor="#cfbbfd">
                     {
                         (fill) => (
                             <View style={styles.innerCircle}>

@@ -4,44 +4,36 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
     const navigation = useNavigation();
-    const state = navigation.getState();
 
     const LeftAction = () => {
-        // Action for Left Icon
         if (LeftIcon.name === 'HamburgerIcon') {
-            // TODO: change to dropdown menu
-            //navigation.navigate('About');
-            //navigation.navigate('Settings');
-            navigation.navigate('Timer');
+            navigation.openDrawer();  // Opens the drawer when the hamburger icon is pressed
         }
         if (LeftIcon.name === 'BackArrowIcon') {
-            navigation.goBack()
+            navigation.goBack();  // Goes back to the previous screen when the back arrow is pressed
         }
     };
 
     const RightAction = () => {
-        // Action for Right Icon
-        if (RightIcon.name === 'BookIcon') {
-            navigation.navigate('Diary');
+        if (RightIcon && RightIcon.name === 'BookIcon') {
+            navigation.navigate('Diary');  // Navigates to the Diary screen if the book icon is pressed
         }
-        // More icons can be added with else if statements
+        // Additional icons and actions can be added here with else if statements
     };
 
     return (
         <View style={styles.topNavigationBar}>
             <View style={styles.topBarContent}>
-                {/* Left Icon always exists */}
                 <TouchableOpacity style={styles.icon} onPress={LeftAction}>
                     <LeftIcon />
                 </TouchableOpacity>
                 <Text style={styles.fontLarge}>{title}</Text>
-                {/* Conditional rendering for Right Icon or Spacer */}
                 {RightIcon ? (
                     <TouchableOpacity style={styles.icon} onPress={RightAction}>
                         <RightIcon />
                     </TouchableOpacity>
                 ) : (
-                    <View style={styles.icon}></View> // This acts as a spacer when there is no Right Icon
+                    <View style={styles.icon}></View> // Acts as a spacer when there is no Right Icon
                 )}
             </View>
         </View>
