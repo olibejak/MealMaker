@@ -9,24 +9,13 @@ import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import SearchBar from "../components/SearchBar";
 import {useIsFocused} from "@react-navigation/native";
 
-export default function FridgeScreen () {
+export default function FridgeScreen ({navigation}) {
     const title = "My fridge";
     const selectedBottomBar = "Fridge";
     const fridgeButtonOn = true;
     const cartButtonOn = false;
     const [fridgeContent, setFridgeContent] = useState([]);
     const isFocused = useIsFocused();
-
-    const initializeFridgeStorage = useCallback(async () => {
-        try {
-            const existingContent = await AsyncStorage.getItem("fridgeContent");
-            if (existingContent === null) {
-                await AsyncStorage.setItem("fridgeContent", JSON.stringify([]));
-            }
-        } catch (error) {
-            console.error("Error initializing fridge storage:", error);
-        }
-    }, []);
 
     const loadFridgeContent = useCallback(async () => {
         try {
@@ -39,36 +28,9 @@ export default function FridgeScreen () {
         }
     }, []);
 
-    const addToFridge = async (ingredient) => {
-        try {
-            // Get existing fridge content
-            const existingContent = await AsyncStorage.getItem("fridgeContent");
-            let newContent = [];
-            if (existingContent !== null) {
-                newContent = JSON.parse(existingContent);
-            }
 
-            // Check if ingredient already exists in the fridge
-            const existingIngredientIndex = newContent.findIndex(item => item.name === ingredient.name);
-            if (existingIngredientIndex !== -1) {
-                // Ingredient already exists, update its amount by joining with the new amount
-                newContent[existingIngredientIndex].amount += `, ${ingredient.amount}`;
-            } else {
-                // Ingredient does not exist, add it to the fridge
-                newContent.push(ingredient);
-            }
-
-            // Save updated fridge content
-            await AsyncStorage.setItem("fridgeContent", JSON.stringify(newContent));
-
-            // Update state with new fridge content
-            setFridgeContent(newContent);
-        } catch (error) {
-            console.error("Error adding to fridge:", error);
-        }
-    };
     /**
-     * add / remove TODO
+     * TODO remove
     const removeFromFridge = async (ingredient) => {
         try {
             const existingContent = await AsyncStorage.getItem("fridgeContent");
@@ -84,10 +46,6 @@ export default function FridgeScreen () {
  */
 
     useEffect(() => {
-        initializeFridgeStorage();
-    }, [initializeFridgeStorage]);
-
-    useEffect(() => {
         // reload fridge screen when storage changes
         if (isFocused) {
             loadFridgeContent();
@@ -96,10 +54,10 @@ export default function FridgeScreen () {
 
     const renderItem = ({ item }) => (
         <IngredientCard
-            text={item.name}
+            text={item.strIngredient}
             amount={item.amount}
-            fridgeButtonOn={fridgeButtonOn}
-            cartButtonOn={cartButtonOn}
+            editButtonOn={true}
+            onPress={() => navigation.navigate("IngredientDetails", { ingredient: item })}
         />
     );
 

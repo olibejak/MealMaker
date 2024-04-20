@@ -17,18 +17,6 @@ export default function ShoppingListScreen () {
     const [fridgeContent, setFridgeContent] = useState([]);
     const isFocused = useIsFocused();
 
-
-    const initializeShoppingListStorage = useCallback (async () => {
-        try {
-            const existingContent = await AsyncStorage.getItem("shoppingListContent");
-            if (existingContent === null) {
-                await AsyncStorage.setItem("shoppingListContent", JSON.stringify([]));
-            }
-        } catch (error) {
-            console.error("Error initializing shopping list storage:", error);
-        }
-    }, []);
-
     const loadShoppingListContent = useCallback (async () => {
         try {
             // Load fridge content
@@ -123,10 +111,6 @@ export default function ShoppingListScreen () {
     };
 
     useEffect(() => {
-        initializeShoppingListStorage();
-    }, [initializeShoppingListStorage]);
-
-    useEffect(() => {
         if (isFocused) {
             loadShoppingListContent();
         }
@@ -141,7 +125,7 @@ export default function ShoppingListScreen () {
                 {shoppingListContent.map((ingredient, index) => (
                     <ListItem
                         key={index}
-                        title={ingredient.name}
+                        title={ingredient.strIngredient}
                         content={ingredient.amount}
                         dividers={'False'}
                         IconComponent={EditIcon}

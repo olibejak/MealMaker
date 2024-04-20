@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {TouchableOpacity, View, Text, StyleSheet} from "react-native";
-import {ArrowDropDown, CheckmarkIconWhite} from "../assets/icons";
+import {ArrowDropDown, CheckmarkIconWhite, ArrowDropUp} from "../assets/icons";
 
 export default function ListItem({ title, content, dividers, IconComponent, onPress, isChecked }) {
     const [isCollapsed, setIsCollapsed] = useState(false);

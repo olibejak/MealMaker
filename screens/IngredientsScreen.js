@@ -5,6 +5,7 @@ import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
 import IngredientCard from "../components/IngredientCard";
 import { BookIcon, HamburgerIcon } from "../assets/icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function IngredientsScreen({ navigation }) {
     const [ingredients, setIngredients] = useState([]);
@@ -48,8 +49,36 @@ export default function IngredientsScreen({ navigation }) {
             fridgeButtonOn={true}
             cartButtonOn={true}
             onPress={() => navigation.navigate("IngredientDetails", { ingredient: item })}
+            onPressFridge={() => addIngredientToStorage(item, "fridgeContent")}
+            onPressCart={() => addIngredientToStorage(item, "shoppingListContent")}
         />
     );
+
+    const addIngredientToStorage = async (ingredient, storage) => {
+        ingredient.amount = "Great success!";
+        try {
+            // Get existing fridge content
+            const existingContent = await AsyncStorage.getItem(storage);
+            let newContent = [];
+            if (existingContent !== null) {
+                newContent = JSON.parse(existingContent);
+            }
+            // Check if ingredient already exists in the fridge
+            const existingIngredientIndex
+                = newContent.findIndex(item => item.strIngredient === ingredient.strIngredient)
+            if (existingIngredientIndex > -1) {
+                // Ingredient already exists, update its amount by joining with the new amount
+                newContent[existingIngredientIndex].amount += `, ${ingredient.amount}`;
+            } else {
+                // Ingredient does not exist, add it to the fridge
+                newContent.push(ingredient);
+            }
+            // Save updated fridge content
+            await AsyncStorage.setItem(storage, JSON.stringify(newContent));
+        } catch (error) {
+            console.error("Error adding to storage:", error);
+        }
+    }
 
     return (
         <View style={styles.screen}>
