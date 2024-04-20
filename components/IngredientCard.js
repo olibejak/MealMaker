@@ -34,12 +34,12 @@ function RenderText({text, amount}) {
     return (
         amount === undefined ? (
             <View style={styles.textContainer}>
-                <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>{text}</Text>
+                <Text style={[styles.cardTextContent, styles.fontRegularMedium]} >{text}</Text>
             </View>
         ) : (
             <View style={styles.textContainer}>
-                <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>{text}</Text>
-                <Text style={[styles.cardTextContent, styles.fontRegular]}>{amount}</Text>
+                <Text style={[styles.cardTextContent, styles.fontRegularMedium]} numberOfLines={2} ellipsizeMode="tail">{text}</Text>
+                <Text style={[styles.cardTextContent, styles.fontRegular]} numberOfLines={2} ellipsizeMode="tail">{amount}</Text>
             </View>
         )
     );
@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
 
     },
     textContainer: {
+        maxWidth: "80%",
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-start',
@@ -79,7 +80,6 @@ const styles = StyleSheet.create({
 
     },
     cardTextContent: {
-        // width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-start',
