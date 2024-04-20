@@ -67,6 +67,7 @@ function CustomDrawerContent(props) {
 function DrawerNavigator() {
     return (
         <Drawer.Navigator
+            backBehavior="history"
             initialRouteName="About"
             screenOptions={{
                 headerShown: false,
