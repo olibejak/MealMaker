@@ -70,7 +70,7 @@ export default function IngredientsScreen({ navigation }) {
                 onEndReachedThreshold={0.7}
                 initialNumToRender={10}
             />
-            <BottomNavigationBar selected="Ingredients" />
+            <BottomNavigationBar />
         </View>
     );
 };

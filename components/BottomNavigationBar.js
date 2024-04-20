@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {BasketIcon, DiningIcon, EggIcon, FridgeIcon} from "../assets/icons";
 import { useNavigation } from '@react-navigation/native';
@@ -6,17 +6,21 @@ import { useNavigation } from '@react-navigation/native';
 export default function BottomNavigationBar() {
     const navigation = useNavigation();
     const state = navigation.getState();
-    const selected = state.routes[state.index].name; // Dynamically get the current route name
+    const [selected, setSelected] = useState(null);
 
     function isSelected(current) {
         return selected === current ? styles.enabled : {};
     }
 
+    useEffect(() => {
+        setSelected(state.routes[state.index].name)
+    }, []);
+
     return (
         <View style={styles.bottomBar}>
             <TouchableOpacity style={styles.center} onPress={() => navigation.navigate('Ingredients')}>
                 <View style={styles.bottomBarButton}>
-                    <View style={[styles.bottomBarIcon, isSelected("Ingredients")]}>
+                    <View style={[styles.bottomBarIcon, selected !== "Ingredients" || styles.enabled]}>
                         <EggIcon/>
                     </View>
                     <Text style={[styles.textCenter, isSelected("Ingredients") ? styles.fontSmallBold : styles.fontSmall]}>Ingredients</Text>
