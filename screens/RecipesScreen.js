@@ -1,4 +1,4 @@
-import {View, StyleSheet, ScrollView, ActivityIndicator, FlatList} from "react-native";
+import {View, StyleSheet, ActivityIndicator, FlatList} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import RecipeCard from "../components/RecipeCard";
@@ -9,7 +9,7 @@ import React, {useEffect, useState} from "react";
 export default function RecipesScreen ({navigation}) {
     const title = "Recipes";
     const filtersOn = false;
-    const selectedBottomBar = "Ingredients";
+    const selectedBottomBar = "recipes";
     const [currentIndex, setCurrentIndex] = useState(0);
     const [recipes, setRecipes] = useState([]);
     const [displayedRecipes, setDisplayedRecipes] = useState([]);

@@ -1,12 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import {BasketIcon, DiningIcon, EggIcon, FridgeIcon} from "../assets/icons";
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { BasketIcon, DiningIcon, EggIcon, FridgeIcon } from "../assets/icons";
 import { useNavigation } from '@react-navigation/native';
 
 export default function BottomNavigationBar() {
     const navigation = useNavigation();
     const state = navigation.getState();
     const [selected, setSelected] = useState(null);
+    const [fridgeCount, setFridgeCount] = useState(3);  // Example count
+    const [shoppingListCount, setShoppingListCount] = useState(5);  // Example count
 
     function isSelected(current) {
         return selected === current ? styles.enabled : {};
@@ -14,19 +16,21 @@ export default function BottomNavigationBar() {
 
     useEffect(() => {
         setSelected(state.routes[state.index].name)
-    }, []);
+    }, [state]);
 
     return (
         <View style={styles.bottomBar}>
+            { /* Ingredients Button */ }
             <TouchableOpacity style={styles.center} onPress={() => navigation.navigate('Ingredients')}>
                 <View style={styles.bottomBarButton}>
-                    <View style={[styles.bottomBarIcon, selected !== "Ingredients" || styles.enabled]}>
+                    <View style={[styles.bottomBarIcon, isSelected("Ingredients")]}>
                         <EggIcon/>
                     </View>
                     <Text style={[styles.textCenter, isSelected("Ingredients") ? styles.fontSmallBold : styles.fontSmall]}>Ingredients</Text>
                 </View>
             </TouchableOpacity>
 
+            { /* Recipes Button */ }
             <TouchableOpacity style={styles.center} onPress={() => navigation.navigate('Recipes')}>
                 <View style={styles.bottomBarButton}>
                     <View style={[styles.bottomBarIcon, isSelected("Recipes")]}>
@@ -36,19 +40,23 @@ export default function BottomNavigationBar() {
                 </View>
             </TouchableOpacity>
 
+            { /* Fridge Button */ }
             <TouchableOpacity style={styles.center} onPress={() => navigation.navigate('Fridge')}>
                 <View style={styles.bottomBarButton}>
                     <View style={[styles.bottomBarIcon, isSelected("Fridge")]}>
                         <FridgeIcon/>
+                        {fridgeCount > 0 && <View style={styles.badge}><Text style={styles.badgeText}>{fridgeCount}</Text></View>}
                     </View>
                     <Text style={[styles.textCenter, isSelected("Fridge") ? styles.fontSmallBold : styles.fontSmall]}>Fridge</Text>
                 </View>
             </TouchableOpacity>
 
+            { /* Shopping List Button */ }
             <TouchableOpacity style={styles.center} onPress={() => navigation.navigate('ShoppingList')}>
                 <View style={styles.bottomBarButton}>
                     <View style={[styles.bottomBarIcon, isSelected("ShoppingList")]}>
                         <BasketIcon/>
+                        {shoppingListCount > 0 && <View style={styles.badge}><Text style={styles.badgeText}>{shoppingListCount}</Text></View>}
                     </View>
                     <Text style={[styles.textCenter, isSelected("ShoppingList") ? styles.fontSmallBold : styles.fontSmall]}>Shopping list</Text>
                 </View>
@@ -86,6 +94,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginTop: 12,
         marginBottom: 4,
+        position: 'relative', // Ensure this is here for badge positioning
     },
     center: {
         display: 'flex',
@@ -96,23 +105,25 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         backgroundColor: '#E6DEF6',
     },
-    fontRegular: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 16,
-        letterSpacing: 0.5,
+    badge: {
+        position: 'absolute',
+        right: 8, // Adjusted to move closer to the edge of the actual icon
+        top: -4, // Adjusted to raise the badge higher towards the top of the icon
+        backgroundColor: '#9c312a',
+        borderRadius: 8,
+        width: 16,
+        height: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    fontLarge: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 22,
+    badgeText: {
+        color: 'white',
+        fontSize: 10,
+        fontWeight: 'bold',
     },
     fontSmallBold: {
         fontFamily: 'Roboto-Bold',
         fontSize: 12,
-        letterSpacing: 0.5,
-    },
-    fontRegularMedium: {
-        fontFamily: 'Roboto-Medium',
-        fontSize: 16,
         letterSpacing: 0.5,
     },
     fontSmall: {
