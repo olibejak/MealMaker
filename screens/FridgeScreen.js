@@ -54,7 +54,7 @@ export default function FridgeScreen ({navigation}) {
 
     const renderItem = ({ item }) => (
         <IngredientCard
-            text={item.strIngredient}
+            text={item.name}
             amount={item.amount}
             editButtonOn={true}
             onPress={() => navigation.navigate("IngredientDetails", { ingredient: item })}

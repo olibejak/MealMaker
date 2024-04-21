@@ -1,56 +1,77 @@
-import {StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
-import {FilterIcon, SearchIcon} from "../assets/icons";
+import React, { useState } from "react";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { FilterIcon, SearchIcon } from "../assets/icons";
+import FilterCategories from './FilterCategories'; // Adjust the path according to your project structure
 
+// The SearchBar component with filter functionality
+export default function SearchBar({ onFilterPress, context }) {
+    const [filtersVisible, setFiltersVisible] = useState(false);
 
-export default function SearchBar () {
+    // Determine the placeholder based on the context
+    const placeholder = context === 'ingredients' ? "Search ingredients" : "Search recipes";
+
+    const handleFilterPress = () => {
+        setFiltersVisible(!filtersVisible);
+        if(onFilterPress) {
+            onFilterPress(!filtersVisible);
+        }
+    };
 
     return (
-        <TouchableOpacity style={styles.searchBar}>
-            <View style={[styles.searchIcon, styles.center]}>
-                <SearchIcon/>
-            </View>
-            <View style={styles.searchContent}>
-                <TextInput placeholder={"Search ingredients"} returnKeyType="search" onChangeText={() => {/* Handle change */}} style={styles.input}></TextInput>
-            </View>
-            <View style={[styles.searchIcon, styles.center]}>
-                <FilterIcon/>
-            </View>
-        </TouchableOpacity>
-)};
+        <View style={styles.mainContainer}>
+            <TouchableOpacity style={styles.searchBar}>
+                <View style={[styles.searchIcon, styles.center]}>
+                    <SearchIcon />
+                </View>
+                <View style={styles.searchContent}>
+                    <TextInput
+                        placeholder={placeholder}
+                        returnKeyType="search"
+                        onChangeText={() => {/* Handle change */}}
+                        style={styles.input}
+                    />
+                </View>
+                <TouchableOpacity style={[styles.searchIcon, styles.center]} onPress={handleFilterPress}>
+                    <FilterIcon />
+                </TouchableOpacity>
+            </TouchableOpacity>
+            <FilterCategories
+                visible={filtersVisible}
+                onSelectCategory={(category) =>
+                    console.log("Selected category:", category) // Placeholder for actual functionality
+                }
+                context={context}
+            />
+        </View>
+    );
+}
 
+// Updated styles for SearchBar component including main container
 const styles = StyleSheet.create({
+    mainContainer: {
+        paddingBottom: 6, // Adds space below the search bar
+    },
     searchBar: {
         height: 60,
-        backgroundColor: '#EBE6EF',
+        backgroundColor: '#eae5ef',
         borderRadius: 28,
-        display: 'flex',
+        flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
-        flexDirection: 'row',
     },
     searchIcon: {
         height: 48,
-        backgroundColor: 'rgba(213,89,192,0)',
         width: 48,
-        display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 0,
     },
     searchContent: {
-        height: '100%',
-        display: 'flex',
-        alignItems: 'flex-start',
+        flex: 1,
         justifyContent: "center",
-        textAlign: "left",
-        fontSize: 16,
-        flexGrow: 1,
+        paddingHorizontal: 8,
     },
     center: {
-        display: 'flex',
         alignItems: 'center',
-        backgroundColor: 'rgba(255,255,255,0)',
-        padding: 0,
     },
     input: {
         fontFamily: 'Roboto-Regular',
@@ -58,8 +79,5 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
         width: '100%',
         height: '100%',
-        paddingLeft: 4,
     },
 });
-
-

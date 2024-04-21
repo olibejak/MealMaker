@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#F7F2FA',
         borderRadius: 20,
         overflow: 'visible',
-        marginTop: 16,
+        marginBottom: 8,
+        marginTop: 3,
         minHeight: 250,
     },
     buttonContainer: {

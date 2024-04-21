@@ -130,7 +130,7 @@ export default function ShoppingListScreen () {
                 {shoppingListContent.map((ingredient, index) => (
                     <ListItem
                         key={index}
-                        title={ingredient.strIngredient}
+                        title={ingredient.name}
                         content={ingredient.amount}
                         dividers={'False'}
                         IconComponent={EditIcon}
