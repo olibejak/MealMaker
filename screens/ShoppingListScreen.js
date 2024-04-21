@@ -1,8 +1,8 @@
-import { View, StyleSheet, ScrollView} from "react-native";
+import {View, StyleSheet, ScrollView, TouchableOpacity, Modal, Text} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import FridgeScreen from "./FridgeScreen";
 import {BookIcon, EditIcon, HamburgerIcon, PlusIcon, ShoppingCartIcon} from "../assets/icons";
+import EditSetAmountModal from "../components/EditSetAmountModal"; // Import the modal component
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useCallback, useEffect, useState} from "react";
@@ -16,6 +16,10 @@ export default function ShoppingListScreen () {
     const [shoppingListContent, setShoppingListContent] = useState([]);
     const [fridgeContent, setFridgeContent] = useState([]);
     const isFocused = useIsFocused();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [editModalVisible, setEditModalVisible] = useState(false); // State to manage the visibility of the edit modal
+    const [selectedIngredient, setSelectedIngredient] = useState(null); // State to store the selected ingredient for editing
+
 
     const loadShoppingListContent = useCallback (async () => {
         try {
@@ -83,6 +87,9 @@ export default function ShoppingListScreen () {
             // Update the shopping list content state
             setShoppingListContent(updatedShoppingListContent);
 
+            //close modal window
+            setModalVisible(false);
+
             console.log('Fridge content updated successfully.');
         } catch (error) {
             console.error('Error merging lists:', error);
@@ -110,6 +117,11 @@ export default function ShoppingListScreen () {
         }
     };
 
+    const openEditModal = (ingredient) => {
+        setSelectedIngredient(ingredient);
+        setEditModalVisible(true);
+    };
+
     useEffect(() => {
         if (isFocused) {
             loadShoppingListContent();
@@ -125,21 +137,69 @@ export default function ShoppingListScreen () {
                 {shoppingListContent.map((ingredient, index) => (
                     <ListItem
                         key={index}
-                        title={ingredient.strIngredient}
+                        title={ingredient.name}
                         content={ingredient.amount}
                         dividers={'False'}
                         IconComponent={EditIcon}
                         onPress={() => updateIsBought(index)}
+                        onEditPress={() => openEditModal(ingredient)} // Add this to handle edit press
                         isChecked={ingredient.isBought}>
                     </ListItem>
                 ))}
             </ScrollView>
-            <BottomRightCornerButton IconComponent={ShoppingCartIcon} onPress={moveToFridge}
-                                     SecondIconComponent={PlusIcon}/>
+            <BottomRightCornerButton
+                IconComponent={ShoppingCartIcon}
+                onPress={() => setModalVisible(true)}  // Only set modal to visible
+                SecondIconComponent={PlusIcon}
+            />
             <BottomNavigationBar selected={selectedBottomBar}/>
+            {modalVisible && (
+                <ConfirmationModal
+                    onConfirm={() => moveToFridge()}
+                    onCancel={() => setModalVisible(false)}
+                    visible={modalVisible}
+                />
+            )}
+            {editModalVisible && ( // Render the edit modal conditionally
+                <EditSetAmountModal
+                    visible={editModalVisible}
+                    ingredient={selectedIngredient}
+                    onClose={() => setEditModalVisible(false)}
+                />
+            )}
         </View>
     )
 };
+
+function ConfirmationModal({ onConfirm, onCancel, visible }) {
+    return (
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={visible}
+            onRequestClose={onCancel}
+        >
+            <View style={styles.modalBackground}>
+                <View style={styles.modalContainer}>
+                    <Text style={styles.modalTitle}>Move items into fridge?</Text>
+                    <Text style={styles.modalMessage}>
+                        This will move all selected items from the shopping list into the fridge.
+                    </Text>
+                    <View style={styles.modalButtonContainer}>
+                        <TouchableOpacity onPress={onCancel}>
+                            <Text style={styles.modalCancelText}>Cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={onConfirm}>
+                            <Text style={styles.modalConfirmText}>Confirm</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+        </Modal>
+    );
+}
+
+
 
 const styles = StyleSheet.create({
     screen: {
@@ -205,4 +265,100 @@ const styles = StyleSheet.create({
     textCenter: {
         textAlign: 'center',
     },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Optional: for a dimmed background effect
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        padding: 10,
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        backgroundColor: "#2196F3",
+        marginHorizontal: 10,
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dimmed background
+    },
+    modalContainer: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 20,
+        width: '80%',
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    modalMessage: {
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    modalButtonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        width: '100%',
+        paddingHorizontal: 35,
+    },
+    modalButton: {
+        backgroundColor: '#e5dfe8', // Your color
+        borderRadius: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        elevation: 2,
+    },
+    modalButtonText: {
+        color: 'black', // Your color
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    modalCancelText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#625b70', // Using the purple color from your other screen
+        padding: 10,
+    },
+    modalConfirmText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#6750a3', // Using the purple color from your other screen
+        padding: 10,
+    },
 });
+

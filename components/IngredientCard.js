@@ -1,56 +1,69 @@
-import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import {BasketCardIcon, FilterIcon, FridgeCardIcon, PencilIcon} from "../assets/icons";
+import {StyleSheet, Text, View, TouchableOpacity} from "react-native";
+import {BasketCardIcon, FridgeCardIcon, PencilIcon} from "../assets/icons";
 
-
-export default function IngredientCard ({ text, amount, fridgeButtonOn, cartButtonOn, editButtonOn,
-                                            onPress, onPressFridge, onPressCart }) {
-
+export default function IngredientCard({
+                                           text,
+                                           amount,
+                                           fridgeButtonOn,
+                                           cartButtonOn,
+                                           editButtonOn,
+                                           onPress,
+                                           onPressFridge,
+                                           onPressCart,
+                                           onPressEdit // Add this to capture the edit press
+                                       }) {
     return (
         <View style={styles.shadowContainer}>
             <TouchableOpacity onPress={onPress} style={styles.card}>
                 <RenderText text={text} amount={amount}/>
-                    <RenderButtons
-                        fridgeButtonOn={fridgeButtonOn} cartButtonOn={cartButtonOn} editButtonOn={editButtonOn}
-                        onPressFridge={onPressFridge} onPressCart={onPressCart} />
+                <RenderButtons
+                    fridgeButtonOn={fridgeButtonOn}
+                    cartButtonOn={cartButtonOn}
+                    editButtonOn={editButtonOn}
+                    onPressFridge={onPressFridge}
+                    onPressCart={onPressCart}
+                    onPressEdit={onPressEdit} // Pass this function down to RenderButtons
+                />
             </TouchableOpacity>
         </View>
-    )};
+    );
+}
 
-
-function RenderButtons({fridgeButtonOn, cartButtonOn, editButtonOn, onPressFridge, onPressCart}) {
+function RenderButtons({
+                           fridgeButtonOn,
+                           cartButtonOn,
+                           editButtonOn,
+                           onPressFridge,
+                           onPressCart,
+                           onPressEdit // Make sure to add this parameter
+                       }) {
     return (
         <View style={styles.cardIcons}>
-            {fridgeButtonOn ? (
-                <TouchableOpacity onPress={onPressFridge} style={[styles.center, styles.cardButton]}>
+            {fridgeButtonOn && (
+                <TouchableOpacity onPress={onPressFridge} style={styles.cardButton}>
                     <FridgeCardIcon />
                 </TouchableOpacity>
-            ) : null}
-            {cartButtonOn ? (
-                <TouchableOpacity onPress={onPressCart} style={[styles.center, styles.cardButton]}>
+            )}
+            {cartButtonOn && (
+                <TouchableOpacity onPress={onPressCart} style={styles.cardButton}>
                     <BasketCardIcon />
                 </TouchableOpacity>
-            ) : null}
-            {editButtonOn ? (
-                <TouchableOpacity onPress={onPressCart} style={[styles.center, styles.cardButton]}>
+            )}
+            {editButtonOn && (
+                <TouchableOpacity onPress={onPressEdit} style={styles.cardButton}>
                     <PencilIcon />
                 </TouchableOpacity>
-            ) : null
-            }
+            )}
         </View>
-)}
+    );
+}
 
 function RenderText({text, amount}) {
     return (
-        amount === undefined ? (
-            <View style={styles.textContainer}>
-                <Text style={[styles.cardTextContent, styles.fontRegularMedium]} >{text}</Text>
-            </View>
-        ) : (
-            <View style={styles.textContainer}>
-                <Text style={[styles.cardTextContent, styles.fontRegularMedium]} numberOfLines={2} ellipsizeMode="tail">{text}</Text>
-                <Text style={[styles.cardTextContent, styles.fontRegular]} numberOfLines={2} ellipsizeMode="tail">{amount}</Text>
-            </View>
-        )
+        <View style={styles.textContainer}>
+            <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>{text}</Text>
+            {amount && <Text style={[styles.cardTextContent, styles.fontRegular]}>{amount}</Text>}
+        </View>
     );
 }
 

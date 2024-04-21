@@ -87,7 +87,7 @@ export default function IngredientsScreen({ navigation }) {
                 data={displayedIngredients}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
-                ListHeaderComponent={<SearchBar />}
+                ListHeaderComponent={<SearchBar context={"ingredients"}/>}
                 style={styles.scrollableScreen}
                 contentContainerStyle={styles.scrolling}
                 ListEmptyComponent={
