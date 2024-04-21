@@ -1,8 +1,8 @@
 import {View, StyleSheet, ScrollView, TouchableOpacity, Modal, Text} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import FridgeScreen from "./FridgeScreen";
 import {BookIcon, EditIcon, HamburgerIcon, PlusIcon, ShoppingCartIcon} from "../assets/icons";
+import EditSetAmountModal from "../components/EditSetAmountModal"; // Import the modal component
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useCallback, useEffect, useState} from "react";
@@ -17,6 +17,8 @@ export default function ShoppingListScreen () {
     const [fridgeContent, setFridgeContent] = useState([]);
     const isFocused = useIsFocused();
     const [modalVisible, setModalVisible] = useState(false);
+    const [editModalVisible, setEditModalVisible] = useState(false); // State to manage the visibility of the edit modal
+    const [selectedIngredient, setSelectedIngredient] = useState(null); // State to store the selected ingredient for editing
 
 
     const loadShoppingListContent = useCallback (async () => {
@@ -115,6 +117,11 @@ export default function ShoppingListScreen () {
         }
     };
 
+    const openEditModal = (ingredient) => {
+        setSelectedIngredient(ingredient);
+        setEditModalVisible(true);
+    };
+
     useEffect(() => {
         if (isFocused) {
             loadShoppingListContent();
@@ -135,6 +142,7 @@ export default function ShoppingListScreen () {
                         dividers={'False'}
                         IconComponent={EditIcon}
                         onPress={() => updateIsBought(index)}
+                        onEditPress={() => openEditModal(ingredient)} // Add this to handle edit press
                         isChecked={ingredient.isBought}>
                     </ListItem>
                 ))}
@@ -150,6 +158,13 @@ export default function ShoppingListScreen () {
                     onConfirm={() => moveToFridge()}
                     onCancel={() => setModalVisible(false)}
                     visible={modalVisible}
+                />
+            )}
+            {editModalVisible && ( // Render the edit modal conditionally
+                <EditSetAmountModal
+                    visible={editModalVisible}
+                    ingredient={selectedIngredient}
+                    onClose={() => setEditModalVisible(false)}
                 />
             )}
         </View>

@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, SafeAreaView, Modal, TextInput, Button, Text, FlatList, TouchableOpacity } from 'react-native';
+import {
+    View,
+    ScrollView,
+    StyleSheet,
+    SafeAreaView,
+    Modal,
+    TextInput,
+    Button,
+    Text,
+    FlatList,
+    TouchableOpacity,
+    StatusBar
+} from 'react-native';
 import TimerCard from "../components/TimerCard";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import BottomNavigationBar from "../components/BottomNavigationBar";
@@ -104,6 +116,7 @@ function AddTimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
             visible={modalVisible}
             onRequestClose={handleCancel}
         >
+            {/* Add StatusBar here to control visibility or style when modal is active */}
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <TextInput
@@ -191,7 +204,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 22,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalView: {

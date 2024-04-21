@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
-import {TouchableOpacity, View, Text, StyleSheet} from "react-native";
-import {ArrowDropDown, CheckmarkIconWhite, ArrowDropUp} from "../assets/icons";
+import React, { useState } from "react";
+import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import { ArrowDropDown, CheckmarkIconWhite, ArrowDropUp } from "../assets/icons";
 
-export default function ListItem({ title, content, dividers, IconComponent, onPress, isChecked }) {
+export default function ListItem({ title, content, dividers, IconComponent, onPress, onEditPress, isChecked }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const arrowIcon = isCollapsed ? <ArrowDropUp /> : <ArrowDropDown />;
     const [checked, setChecked] = useState(isChecked);
@@ -10,10 +10,11 @@ export default function ListItem({ title, content, dividers, IconComponent, onPr
     const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
     return (
-        <View style={dividers === 'True' ? [styles.container, styles.divider] : [styles.container]}>
-            <TouchableOpacity onPress={() =>
-                    {setChecked(!checked);
-                    if(onPress) onPress()}}>
+        <View style={dividers === 'True' ? [styles.container, styles.divider] : styles.container}>
+            <TouchableOpacity onPress={() => {
+                setChecked(!checked);
+                if (onPress) onPress();
+            }}>
                 <View style={checked ? styles.checkBoxChecked : styles.checkBoxUnchecked}>
                     {checked ? <CheckmarkIconWhite /> : null}
                 </View>
@@ -22,18 +23,23 @@ export default function ListItem({ title, content, dividers, IconComponent, onPr
                 <Text style={styles.title}>{title}</Text>
                 {!isCollapsed && <Text style={styles.content}>{content}</Text>}
             </View>
-            <RenderTrailingElement IconComponent={IconComponent} isCollapsed={isCollapsed} toggleCollapse={toggleCollapse} arrowIcon={arrowIcon} />
+            <RenderTrailingElement
+                IconComponent={IconComponent}
+                isCollapsed={isCollapsed}
+                toggleCollapse={toggleCollapse}
+                arrowIcon={arrowIcon}
+                onEditPress={onEditPress} />
         </View>
     );
 }
 
-function RenderTrailingElement({ IconComponent, isCollapsed, arrowIcon, toggleCollapse }) {
+function RenderTrailingElement({ IconComponent, isCollapsed, arrowIcon, toggleCollapse, onEditPress }) {
     return IconComponent === undefined ? (
         <TouchableOpacity onPress={toggleCollapse}>
             {arrowIcon}
         </TouchableOpacity>
     ) : (
-        <TouchableOpacity style={styles.icon}>
+        <TouchableOpacity style={styles.icon} onPress={onEditPress}>
             <IconComponent />
         </TouchableOpacity>
     );
@@ -48,7 +54,6 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         paddingRight: 24,
         paddingLeft: 24,
-        gap: 16,
     },
     divider: {
         borderBottomColor: "#C9C4CF",
@@ -66,7 +71,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginHorizontal: 16,
         marginVertical: 16,
-        // top: 20,
     },
     checkBoxChecked: {
         backgroundColor: "#6750A4",
@@ -78,29 +82,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginHorizontal: 16,
         marginVertical: 16,
-        // top: 20,
-    },
-    fontRegularMedium: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 16,
-        letterSpacing: 0.5,
-        fontWeight: "400",
-    },
-    fontRegular: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 14,
-        letterSpacing: 0.5,
-    },
-    title: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 18,
-        marginBottom: 4,
-    },
-    content: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 16,
-        color: '#48454E',
-        lineHeight: 24,
     },
     icon: {
         alignSelf: 'center',

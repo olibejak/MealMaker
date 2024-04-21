@@ -1,21 +1,21 @@
-import {View, StyleSheet, ScrollView, ActivityIndicator, FlatList} from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useCallback, useEffect, useState } from "react";
+import { View, StyleSheet, FlatList, Modal, Text, TextInput, TouchableOpacity } from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
-import IngredientCard from "../components/IngredientCard";
-import {BookIcon, HamburgerIcon, PlusIcon} from "../assets/icons";
-import React, {useCallback, useEffect, useState} from "react";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
-import SearchBar from "../components/SearchBar";
-import {useIsFocused} from "@react-navigation/native";
+import EditSetAmountModal from "../components/EditSetAmountModal";
 
-export default function FridgeScreen ({navigation}) {
+import IngredientCard from "../components/IngredientCard";
+import { BookIcon, HamburgerIcon, PlusIcon } from "../assets/icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from "@react-navigation/native";
+
+export default function FridgeScreen({ navigation }) {
     const title = "My fridge";
-    const selectedBottomBar = "Fridge";
-    const fridgeButtonOn = true;
-    const cartButtonOn = false;
     const [fridgeContent, setFridgeContent] = useState([]);
     const isFocused = useIsFocused();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedIngredient, setSelectedIngredient] = useState(null);
 
     const loadFridgeContent = useCallback(async () => {
         try {
@@ -28,29 +28,16 @@ export default function FridgeScreen ({navigation}) {
         }
     }, []);
 
-
-    /**
-     * TODO remove
-    const removeFromFridge = async (ingredient) => {
-        try {
-            const existingContent = await AsyncStorage.getItem("fridgeContent");
-            if (existingContent !== null) {
-                existingContent.;
-                await AsyncStorage.setItem("fridgeContent", JSON.stringify(existingContent));
-            }
-        } catch (error) {
-            console.error("Error removing from fridge storage:", error);
-        }
-    }
-
- */
-
     useEffect(() => {
-        // reload fridge screen when storage changes
         if (isFocused) {
             loadFridgeContent();
         }
     }, [isFocused, loadFridgeContent]);
+
+    const handleEditPress = (ingredient) => {
+        setSelectedIngredient(ingredient);
+        setModalVisible(true);
+    };
 
     const renderItem = ({ item }) => (
         <IngredientCard
@@ -58,14 +45,13 @@ export default function FridgeScreen ({navigation}) {
             amount={item.amount}
             editButtonOn={true}
             onPress={() => navigation.navigate("IngredientDetails", { ingredient: item })}
+            onPressEdit={() => handleEditPress(item)}
         />
     );
 
     return (
         <View style={styles.screen}>
-            <View>
-                <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
-            </View>
+            <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             <FlatList
                 data={fridgeContent}
                 renderItem={renderItem}
@@ -73,16 +59,21 @@ export default function FridgeScreen ({navigation}) {
                 style={styles.scrollableScreen}
                 contentContainerStyle={styles.scrolling}
             />
-            <BottomRightCornerButton IconComponent={PlusIcon}/>
-            <BottomNavigationBar selected={selectedBottomBar}/>
+            <BottomRightCornerButton IconComponent={PlusIcon} />
+            <BottomNavigationBar selected="Fridge" />
+            <EditSetAmountModal
+                visible={modalVisible}
+                ingredient={selectedIngredient}
+                onClose={() => setModalVisible(false)}
+            />
         </View>
-    )
-};
+    );
+}
 
 const styles = StyleSheet.create({
     screen: {
         display: 'flex',
-        position: 'absolute', // Changed from fixed to absolute for React Native
+        position: 'absolute',
         justifyContent: 'space-between',
         alignItems: 'stretch',
         flexDirection: 'column',
@@ -90,60 +81,62 @@ const styles = StyleSheet.create({
         height: '100%',
         top: 0,
         bottom: 0,
+        backgroundColor: '#FFF',
     },
     scrollableScreen: {
-        backgroundColor: '#FFF',
-        paddingTop: 8,
-        paddingBottom: 8,
-        paddingRight: 16,
-        paddingLeft: 16,
-
+        paddingVertical: 8,
+        paddingHorizontal: 16,
     },
     scrolling: {
-        alignItems: 'center',
-        paddingBottom: 16,
+        alignItems: 'stretch',
+        paddingBottom: 100,
     },
-
-    iconSize: {
-        width: 24,
-        height: 24,
-        padding: 8,
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
-    center: {
-        display: 'flex',
-        alignItems: 'center',
-        backgroundColor: 'rgba(255,255,255,0)',
-        padding: 0,
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
     },
-    roundCorners: {
-        backgroundColor: '#E8DEF8',
-        borderRadius: 100,
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 15,
     },
-    fontRegular: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 16,
-        letterSpacing: 0.5,
-    },
-    fontLarge: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 22,
-    },
-    fontSmallBold: {
-        fontFamily: 'Roboto-Bold',
-        fontSize: 12,
-        letterSpacing: 0.5,
-    },
-    fontRegularMedium: {
-        fontFamily: 'Roboto-Medium',
-        fontSize: 16,
-        letterSpacing: 0.5,
-    },
-    fontSmall: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 12,
-        letterSpacing: 0.5,
-    },
-    textCenter: {
+    modalInput: {
+        borderBottomWidth: 1,
+        borderColor: "#000",
+        width: 200,
+        marginBottom: 15,
+        fontSize: 18,
+        padding: 10,
         textAlign: 'center',
     },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        backgroundColor: "#2196F3",
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    // ... other styles you might need for your modal ...
 });

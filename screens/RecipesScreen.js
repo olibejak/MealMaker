@@ -9,7 +9,7 @@ import React, {useEffect, useState} from "react";
 export default function RecipesScreen ({navigation}) {
     const title = "Recipes";
     const filtersOn = false;
-    const selectedBottomBar = "recipes";
+    const selectedBottomBar = "Recipes";
     const [currentIndex, setCurrentIndex] = useState(0);
     const [recipes, setRecipes] = useState([]);
     const [displayedRecipes, setDisplayedRecipes] = useState([]);
