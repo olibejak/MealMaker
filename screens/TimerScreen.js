@@ -76,24 +76,22 @@ function AddTimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
     const [hours, setHours] = useState('00');
     const [minutes, setMinutes] = useState('00');
 
-
     const onHoursChange = (newHour) => {
-        setHours(newHour.padStart(2, '0')); // Ensures two-digit formatting
+        setHours(newHour.padStart(2, '0'));
     };
 
     const onMinutesChange = (newMinute) => {
-        setMinutes(newMinute.padStart(2, '0')); // Ensures two-digit formatting
+        setMinutes(newMinute.padStart(2, '0'));
     };
 
     const handleOk = () => {
-        console.log(`Timer set for: ${hours}:${minutes}`); // Logs the current hours and minutes
         handleAddTimer(timerLabel, `${hours}:${minutes}`);
         setModalVisible(false);
-        handleCancel()
+        handleCancel();
     };
 
     const handleCancel = () => {
-        setTimerLabel('');  // Reset the timer label to empty
+        setTimerLabel('');
         setModalVisible(false);
         setHours('00');
         setMinutes('00');
@@ -104,9 +102,7 @@ function AddTimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
             animationType="slide"
             transparent={true}
             visible={modalVisible}
-            onRequestClose={() => {
-                handleCancel();  // Use handleCancel here to ensure input is cleared on hardware back press/close gesture on modal
-            }}
+            onRequestClose={handleCancel}
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
@@ -127,10 +123,10 @@ function AddTimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
                     </View>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={handleCancel} style={styles.textButton}>
-                            <Text style={styles.textButtonLabel}>Cancel</Text>
+                            <Text style={styles.cancelButtonLabel}>Cancel</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleOk} style={[styles.textButton, styles.rightButton]}>
-                            <Text style={styles.textButtonLabel}>Ok</Text>
+                            <Text style={styles.confirmButtonLabel}>Confirm</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -138,6 +134,7 @@ function AddTimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
         </Modal>
     );
 }
+
 
 export default function TimerScreen() {
     const navigation = useNavigation();
@@ -195,6 +192,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 22,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalView: {
         width: '70%',
@@ -259,16 +257,26 @@ const styles = StyleSheet.create({
         marginTop: 20,
         width: '100%',
     },
+    textButtonLabel: {
+        color: '#625b70',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
     textButton: {
         paddingVertical: 10,
         paddingHorizontal: 20,
     },
-    rightButton: {
-        marginLeft: 10, // Adds space between the "Cancel" and "Ok" buttons
-    },
-    textButtonLabel: {
-        color: '#6750a3', // Purple color
+    confirmButtonLabel: {
+        color: '#6750a3', // Purple color for the "Confirm" button
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    cancelButtonLabel: {
+        color: '#625b70', // Grey color for the "Cancel" button
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    rightButton: {
+        marginLeft: 10, // Adds space between the "Cancel" and "Ok" buttons
     },
 });
