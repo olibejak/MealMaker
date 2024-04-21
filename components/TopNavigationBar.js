@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
@@ -23,6 +23,7 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
 
     return (
         <View style={styles.topNavigationBar}>
+            <StatusBar translucent={true} backgroundColor="#FDF7FE" barStyle="dark-content" />
             <View style={styles.topBarContent}>
                 <TouchableOpacity style={styles.icon} onPress={LeftAction}>
                     <LeftIcon />
