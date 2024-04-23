@@ -4,7 +4,7 @@ import { FilterIcon, SearchIcon } from "../assets/icons";
 import FilterCategories from './FilterCategories'; // Adjust the path according to your project structure
 
 // The SearchBar component with filter functionality
-export default function SearchBar({ onFilterPress, context, setFilter }) {
+export default function SearchBar({ onFilterPress, context, setFilter, search }) {
     const [filtersVisible, setFiltersVisible] = useState(false);
 
     const placeholder = context === 'ingredients' ? "Search ingredients" : "Search recipes";
@@ -30,7 +30,7 @@ export default function SearchBar({ onFilterPress, context, setFilter }) {
                     <TextInput
                         placeholder={placeholder}
                         returnKeyType="search"
-                        onChangeText={() => {/* Handle change */}}
+                        onChangeText={(text) => search(text)}
                         style={styles.input}
                     />
                 </View>
