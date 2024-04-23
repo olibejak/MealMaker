@@ -299,15 +299,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#2196F3",
         marginHorizontal: 10,
     },
-    textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center"
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: "center"
-    },
     modalBackground: {
         flex: 1,
         justifyContent: 'center',
@@ -315,50 +306,55 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dimmed background
     },
     modalContainer: {
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 20,
-        width: '80%',
+        display: 'flex',
         alignItems: 'center',
+        backgroundColor: 'white',
+        borderRadius: 28,
+        padding: 28,
+        width: '80%',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
     },
     modalTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+        fontSize: 26,
+        fontFamily: 'Roboto-Regular',
         marginBottom: 10,
     },
     modalMessage: {
+        alignSelf: 'flex-start',
         fontSize: 16,
-        textAlign: 'center',
         marginBottom: 20,
+        fontFamily: 'Roboto-Regular',
     },
     modalButtonContainer: {
+        alignSelf: 'flex-end',
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        width: '100%',
-        paddingHorizontal: 35,
     },
     modalButton: {
         backgroundColor: '#e5dfe8', // Your color
-        borderRadius: 20,
+        borderRadius: 28,
         paddingVertical: 10,
         paddingHorizontal: 20,
         elevation: 2,
     },
-    modalButtonText: {
-        color: 'black', // Your color
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
     modalCancelText: {
         fontSize: 16,
-        fontWeight: 'bold',
-        color: '#625b70', // Using the purple color from your other screen
+        fontFamily: 'Roboto-Bold',
+        color: '#625b70',
         padding: 10,
     },
     modalConfirmText: {
         fontSize: 16,
-        fontWeight: 'bold',
-        color: '#6750a3', // Using the purple color from your other screen
+        fontFamily: 'Roboto-Bold',
+        color: '#6750a3',
         padding: 10,
     },
 });

@@ -22,7 +22,7 @@ const Drawer = createDrawerNavigator();
 
 function CustomLabel({ children }) {
     return (
-        <Text style={{ fontWeight: 'bold' }}>{children}</Text>
+        <Text style={{ fontFamily:'Roboto-Medium' }}>{children}</Text>
     );
 }
 
@@ -40,8 +40,8 @@ function CustomDrawerContent(props) {
                 onPress={() => props.navigation.navigate('Timer')}
                 icon={() => <TimerIcon />}
             />
-            {/* Underline */}
-            <View style={{ borderBottomWidth: 2, borderBottomColor: '#CAC4D0', marginHorizontal: 10 }} />
+            {/* Separator */}
+            <View style={{ borderBottomWidth: 2, borderBottomColor: '#CAC4D0', marginHorizontal: 16 }} />
 
             {/* Custom DrawerItem for Other category */}
             <DrawerItem

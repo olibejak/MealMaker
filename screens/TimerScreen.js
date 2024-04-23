@@ -131,7 +131,7 @@ function AddTimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
                         </View>
                         <Text style={styles.separator}>:</Text>
                         <View style={styles.numberSelectorContainer}>
-                            <NumberSelector onChange={onMinutesChange} value={minutes} max={60} />
+                            <NumberSelector onChange={onMinutesChange} value={minutes} max={59} />
                         </View>
                     </View>
                     <View style={styles.buttonContainer}>
@@ -243,15 +243,15 @@ const styles = StyleSheet.create({
         paddingTop: 12,
         paddingBottom: 12,
         backgroundColor: '#e5dfe8',
-        fontFamily: 'Roboto-Regular',
+        fontFamily: 'Roboto-Medium',
         fontSize: 16,
-        letterSpacing: 0.5,
         color: 'black'
     },
     timeSelector: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+        alignContent: 'center',
     },
     numberSelectorContainer: {
         height: 80, // Increased height for the selected number
@@ -267,23 +267,25 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         lineHeight: 80, // Aligns text vertically within the item
         fontSize: 36, // Larger font size for better visibility
+        fontFamily: 'Roboto-Regular',
     },
     separator: {
-        width: 10, // Width of the separator area
+        fontFamily: 'Roboto-Regular',
         textAlign: 'center',
-        fontSize: 48, // Larger font size for the separator
+        fontSize: 36, // Larger font size for the separator
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-end', // Align buttons to the right
         alignItems: 'center',
+        alignContent: 'center',
         marginTop: 20,
         width: '100%',
     },
     textButtonLabel: {
         color: '#625b70',
         fontSize: 16,
-        fontWeight: 'bold',
+        fontFamily: 'Roboto-Medium',
     },
     textButton: {
         paddingVertical: 10,
@@ -292,12 +294,12 @@ const styles = StyleSheet.create({
     confirmButtonLabel: {
         color: '#6750a3', // Purple color for the "Confirm" button
         fontSize: 16,
-        fontWeight: 'bold',
+        fontFamily: 'Roboto-Bold', // Bold font for emphasis
     },
     cancelButtonLabel: {
         color: '#625b70', // Grey color for the "Cancel" button
         fontSize: 16,
-        fontWeight: 'bold',
+        fontFamily: 'Roboto-Bold', // Bold font for emphasis
     },
     rightButton: {
         marginLeft: 10, // Adds space between the "Cancel" and "Ok" buttons

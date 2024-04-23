@@ -44,7 +44,7 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
                     {isEditingTitle ? (
                         <View style={styles.modalTitleInput}>
                             <TextInput
-                                style={styles.modalTitleInput}
+                                style={styles.modalText}
                                 onChangeText={handleTitleChange}
                                 value={title}
                                 autoFocus={true}
@@ -55,7 +55,7 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
                     ) : (
                         <View style={styles.modalTitle}>
                             <TouchableOpacity onPress={handleTitleEdit}>
-                                <Text style={styles.modalTitle}>{title}</Text>
+                                <Text style={styles.modalText}>{title}</Text>
                             </TouchableOpacity>
                         </View>
                     )}
@@ -93,8 +93,8 @@ const styles = StyleSheet.create({
     modalContainer: {
         display: 'flex',
         backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 20,
+        borderRadius: 28,
+        padding: 28,
         width: '80%',
         alignItems: 'center',
         shadowColor: "#000",
@@ -118,21 +118,21 @@ const styles = StyleSheet.create({
     },
     modalTitle: {
         alignSelf: "flex-start", // Aligns title to the left within its container
-        textAlign: 'left',
-        fontSize: 42, // Significantly larger font size for prominence
-        marginBottom: 20, // Adds space between the title and the next element
-        color: '#1d1b20', // Optional: Adjust color to fit your design
-        fontFamily: 'Roboto-Regular',
+        padding: 10, // Adds padding to the left of the title
+        paddingLeft: 0, // Removes padding on the left
     },
     modalTitleInput: {
         alignSelf: "flex-start",
-        textAlign: 'left',
-        fontSize: 42,
-        color: '#1d1b20',
-        fontFamily: 'Roboto-Medium',
         width: '100%', // Make sure it occupies the whole line
         padding: 10, // Padding for easier text entry
-        marginBottom: 20, // Space to separator
+        paddingLeft: 0, // Remove padding on the left
+        marginBottom: 4, // Space to separator
+    },
+    modalText: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 36,
+        color: '#1d1b20',
+        textAlign: 'left',
     },
     inputTitle: {
         position: 'absolute',

@@ -58,10 +58,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: '#FFF',
     },
-    fontLarge: {
-        fontSize: 22,
-        fontWeight: 'bold',
-    },
     inputContainer: {
         flex: 1,
         padding: 16,

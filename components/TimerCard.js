@@ -78,9 +78,10 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 20,
-        fontWeight: 'bold',
+        fontFamily: 'Roboto-Medium',
         color: '#333',
         marginBottom: 15,
+        alignSelf: 'flex-start',
     },
     closeButton: {
         position: 'absolute',
@@ -88,12 +89,11 @@ const styles = StyleSheet.create({
         right: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        width: 30,
-        height: 30,
+        padding: '24'
     },
     timeText: {
         fontSize: 40, // Increased font size for larger text
-        fontWeight: 'bold',
+        fontFamily: 'Roboto-Medium',
         color: '#333',
         textAlign: 'center',
         marginBottom: 20, // Space between the text and the button
@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#000',
         fontSize: 18,
+        fontFamily: 'Roboto-Medium',
     },
     iconBubble: {
         flexDirection: 'row',
@@ -115,8 +116,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#cfbbfd',
         borderRadius: 50,
         paddingVertical: 10,
-        paddingHorizontal: 30,
-        width: 120,
+        paddingHorizontal: 10,
+        minWidth: 100,
         marginVertical: 10,
         gap: 5,
     },

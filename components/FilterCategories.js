@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'flex-end',
-        padding: 20,
+        padding: 24,
     },
 });
 
