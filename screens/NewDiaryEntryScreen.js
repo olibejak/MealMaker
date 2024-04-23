@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
     inputContainer: {
         flex: 1,
         padding: 16,
-        paddingTop: 0,
 
     },
     inputWrapper: {

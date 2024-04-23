@@ -29,12 +29,15 @@ export default function PhotoThumbnail({ sources, onClose }) {
 
 const styles = StyleSheet.create({
     carouselContainer: {
-        alignSelf: 'center',
-        height: 140, // Increased height to accommodate the top position of the close button
-        overflow: 'visible', // This should allow elements to overflow visibly
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignContent: 'center',
     },
     scrollViewContent: {
-        paddingHorizontal: 15,
+        paddingTop: 20,
+        paddingLeft: 16,
+        paddingRight: 16,
         // Ensure items are aligned in a way that allows overflow items to be visible
         alignItems: 'center',
         justifyContent: 'center', // Centering items vertically within the container
