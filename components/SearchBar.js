@@ -3,11 +3,9 @@ import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { FilterIcon, SearchIcon } from "../assets/icons";
 import FilterCategories from './FilterCategories'; // Adjust the path according to your project structure
 
-// The SearchBar component with filter functionality
 export default function SearchBar({ onFilterPress, context }) {
     const [filtersVisible, setFiltersVisible] = useState(false);
 
-    // Determine the placeholder based on the context
     const placeholder = context === 'ingredients' ? "Search ingredients" : "Search recipes";
 
     const handleFilterPress = () => {
@@ -15,6 +13,10 @@ export default function SearchBar({ onFilterPress, context }) {
         if(onFilterPress) {
             onFilterPress(!filtersVisible);
         }
+    };
+
+    const handleCloseFilter = () => {
+        setFiltersVisible(false);
     };
 
     return (
@@ -35,13 +37,16 @@ export default function SearchBar({ onFilterPress, context }) {
                     <FilterIcon />
                 </TouchableOpacity>
             </TouchableOpacity>
-            <FilterCategories
-                visible={filtersVisible}
-                onSelectCategory={(category) =>
-                    console.log("Selected category:", category) // Placeholder for actual functionality
-                }
-                context={context}
-            />
+            {filtersVisible && (
+                <FilterCategories
+                    visible={filtersVisible}
+                    onSelectCategory={(category) =>
+                        console.log("Selected category:", category) // Placeholder for actual functionality
+                    }
+                    onClose={handleCloseFilter}
+                    context={context}
+                />
+            )}
         </View>
     );
 }

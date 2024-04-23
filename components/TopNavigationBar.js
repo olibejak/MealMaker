@@ -1,5 +1,5 @@
 import React from 'react';
-import {StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
@@ -43,7 +43,14 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
 
 const styles = StyleSheet.create({
     topNavigationBar: {
-        height: 100,
+        // The height of the top navigation bar is different on iOS and Android
+        ...Platform.select({
+                ios: {
+                    height: 115,
+                },
+                android: {
+                    height: 100,
+                }}),
         backgroundColor: '#FDF7FE',
         display: 'flex',
         alignItems: 'flex-end',
@@ -71,7 +78,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 0,
+        padding: 32,
     },
     fontLarge: {
         fontFamily: 'Roboto-Regular',

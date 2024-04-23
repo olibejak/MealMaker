@@ -161,12 +161,9 @@ export default function TimerScreen() {
     };
 
     return (
-        <SafeAreaView style={styles.screen}>
+        <View style={styles.screen}>
             <TopNavigationBar title="Timer" LeftIcon={BackArrowIcon} />
-            <ScrollView
-                style={styles.scrollView}
-                contentContainerStyle={styles.contentContainer}
-            >
+            <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 {timers.map((time, index) => (
                     <TimerCard
                         label={`Timer ${index + 1}`}
@@ -184,17 +181,31 @@ export default function TimerScreen() {
             />
             <BottomNavigationBar />
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => setModalVisible(true)} />
-        </SafeAreaView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     screen: {
-        flex: 1,
-        backgroundColor: '#f2f2f2',
+        display: 'flex',
+        position: 'absolute',
+        justifyContent: 'space-between',
+        alignItems: 'stretch',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        bottom: 0,
     },
-    scrollView: {
-        flex: 1,
+    scrollableScreen: {
+        backgroundColor: '#FFF',
+        paddingVertical: 0,
+        paddingHorizontal: 16,
+    },
+    scrolling: {
+        alignItems: 'stretch',
+        paddingTop: 16,
+        paddingBottom: 60,
     },
     contentContainer: {
         paddingBottom: 80,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import { BasketIcon, DiningIcon, EggIcon, FridgeIcon } from "../assets/icons";
 import { useNavigation } from '@react-navigation/native';
 
@@ -67,8 +67,15 @@ export default function BottomNavigationBar() {
 
 const styles = StyleSheet.create({
     bottomBar: {
+        // The height of the bottom navigation bar is different on iOS and Android
+        ...Platform.select({
+            ios: {
+                height: 100,
+            },
+            android: {
+                height: 85,
+            }}),
         backgroundColor: '#F2EDF6',
-        height: 100,
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'space-evenly',

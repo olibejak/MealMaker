@@ -20,7 +20,7 @@ export default function TimerCard({ label, time, onAddTime, onStartStop, onClose
             <View style={styles.leftSection}>
                 <Text style={styles.label}>{label}</Text>
                 <AnimatedCircularProgress
-                    size={200}
+                    size={180}
                     width={10}
                     fill={100}
                     tintColor="#cfbbfd">
@@ -56,12 +56,12 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: '#F6F2F9',
         borderRadius: 20,
-        paddingVertical: 5,
-        paddingHorizontal: 10,
+        paddingVertical: 20,
+        paddingHorizontal: 20,
         marginBottom: 16,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
     leftSection: {
-        flex: 2,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -81,7 +80,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#333',
-        marginBottom: 10,
+        marginBottom: 15,
     },
     closeButton: {
         position: 'absolute',
@@ -91,12 +90,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: 30,
         height: 30,
-        borderRadius: 15,
-        shadowColor: "#6a6a6a",
-        elevation: 5,
     },
     timeText: {
-        fontSize: 42, // Increased font size for larger text
+        fontSize: 40, // Increased font size for larger text
         fontWeight: 'bold',
         color: '#333',
         textAlign: 'center',
@@ -122,19 +118,18 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         width: 120,
         marginVertical: 10,
+        gap: 5,
     },
     addTimeButton: {
         backgroundColor: '#e7ddf6',
     },
     buttonGroup: {
-        flex: 1,
         flexDirection: 'column',
         justifyContent: 'flex-end',
         alignItems: 'center',
         alignSelf: 'stretch',
     },
     innerCircle: {
-        flex: 1,
         justifyContent: 'center', // This will push the time text up and the button down
         alignItems: 'center',
         height: '100%', // Ensure the inner circle uses the full height of the circular progress
