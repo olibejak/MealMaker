@@ -239,29 +239,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#E8DEF8',
         borderRadius: 100,
     },
-    fontRegular: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 16,
-        letterSpacing: 0.5,
-    },
     fontLarge: {
         fontFamily: 'Roboto-Regular',
         fontSize: 22,
-    },
-    fontSmallBold: {
-        fontFamily: 'Roboto-Bold',
-        fontSize: 12,
-        letterSpacing: 0.5,
-    },
-    fontRegularMedium: {
-        fontFamily: 'Roboto-Medium',
-        fontSize: 16,
-        letterSpacing: 0.5,
-    },
-    fontSmall: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 12,
-        letterSpacing: 0.5,
     },
     textCenter: {
         textAlign: 'center',
@@ -325,7 +305,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         fontSize: 26,
         fontFamily: 'Roboto-Regular',
-        marginBottom: 10,
+        marginBottom: 16,
     },
     modalMessage: {
         alignSelf: 'flex-start',

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { DrawerActions } from "@react-navigation/native";
 import { AboutIcon, SettingsIcon, TimerIcon } from "../assets/icons";
@@ -22,44 +22,42 @@ const Drawer = createDrawerNavigator();
 
 function CustomLabel({ children }) {
     return (
-        <Text style={{ fontFamily:'Roboto-Medium' }}>{children}</Text>
+        <Text style={styles.label}>{children}</Text>
     );
 }
 
 function CustomDrawerContent(props) {
     return (
         <DrawerContentScrollView {...props}>
-            {/* Custom DrawerItem for categories with bold label */}
             <DrawerItem
                 label={() => <CustomLabel>Utility</CustomLabel>}
                 onPress={() => props.navigation.dispatch(DrawerActions.closeDrawer())}
+                style={styles.content}
             />
-            {/* Individual screens under Utility category */}
             <DrawerItem
-                label="Timer"
+                label={() => <Text style={styles.label}>Timer</Text>}
                 onPress={() => props.navigation.navigate('Timer')}
                 icon={() => <TimerIcon />}
+                style={styles.content}
             />
-            {/* Separator */}
-            <View style={{ borderBottomWidth: 2, borderBottomColor: '#CAC4D0', marginHorizontal: 16 }} />
-
-            {/* Custom DrawerItem for Other category */}
+            <View style={styles.separator} />
             <DrawerItem
                 label={() => <CustomLabel>Other</CustomLabel>}
                 onPress={() => props.navigation.dispatch(DrawerActions.closeDrawer())}
+                style={styles.content}
             />
             <DrawerItem
-                label="Settings"
+                label={() => <Text style={styles.label}>Settings</Text>}
                 onPress={() => props.navigation.navigate('Settings')}
                 icon={() => <SettingsIcon />}
+                style={styles.content}
             />
-            {/* Custom DrawerItem for About with bold label */}
             <DrawerItem
-                label= "About"
+                label={() => <Text style={styles.label}>About</Text>}
                 onPress={() => props.navigation.navigate('About')}
                 icon={() => <AboutIcon />}
+                style={styles.content}
             />
-            {/* ... add more drawer items here as needed */}
         </DrawerContentScrollView>
     );
 }
@@ -69,13 +67,12 @@ function DrawerNavigator() {
         <Drawer.Navigator
             backBehavior="history"
             initialRouteName="Ingredients"
+            drawerContent={(props) => <CustomDrawerContent {...props} />}
             screenOptions={{
                 headerShown: false,
                 drawerType: 'front',
             }}
-            drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
-            {/* Screens are accessible programmatically but not shown in drawer */}
             <Drawer.Screen name="Ingredients" component={IngredientsScreen} options={{ drawerItemStyle: { display: 'none' } }} />
             <Drawer.Screen name="Recipes" component={RecipesScreen} options={{ drawerItemStyle: { display: 'none' } }} />
             <Drawer.Screen name="Fridge" component={FridgeScreen} options={{ drawerItemStyle: { display: 'none' } }} />
@@ -87,12 +84,29 @@ function DrawerNavigator() {
             <Drawer.Screen name="Diary" component={DiaryScreen} options={{ drawerItemStyle: { display: 'none' } }} />
             <Drawer.Screen name="StepByStepRecipe" component={StepByStepRecipeScreen} options={{ drawerItemStyle: { display: 'none' } }} />
 
-            {/* Visible screens */}
             <Drawer.Screen name="Settings" component={SettingsScreen} />
             <Drawer.Screen name="About" component={AboutScreen} />
             <Drawer.Screen name="Timer" component={TimerScreen} />
         </Drawer.Navigator>
     );
 }
+
+const styles = StyleSheet.create({
+    title: {
+        fontFamily: 'Roboto-Medium',
+        fontSize: 16,
+    },
+    label: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 16,
+    },
+
+    separator: {
+        borderBottomWidth: 2,
+        borderBottomColor: '#CAC4D0',
+        marginHorizontal: 16,
+        marginVertical: 8,
+    }
+});
 
 export default DrawerNavigator;
