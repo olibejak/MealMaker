@@ -71,11 +71,16 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
                     </View>
                     <View style={styles.modalButtonContainer}>
                         <TouchableOpacity onPress={onClose}>
-                            <Text style={styles.modalCancelText}>Cancel</Text>
+                            <Text style={styles.modalDeleteText}>Delete</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={handleConfirm}>
-                            <Text style={styles.modalConfirmText}>Confirm</Text>
-                        </TouchableOpacity>
+                        <View style={styles.twoButtonContainer}>
+                            <TouchableOpacity onPress={onClose}>
+                                <Text style={styles.modalCancelText}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={handleConfirm}>
+                                <Text style={styles.modalConfirmText}>Confirm</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </View>
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 28,
         padding: 28,
-        width: '80%',
+        width: '85%',
         alignItems: 'center',
         shadowColor: "#000",
         shadowOffset: {
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
     },
     inputTitle: {
         position: 'absolute',
-        top: -14, // Adjust as necessary to visually cover the input border
+        top: -14,
         left: 10,
         backgroundColor: 'white',
         paddingHorizontal: 8,
@@ -155,14 +160,17 @@ const styles = StyleSheet.create({
         width: '100%',
         marginBottom: 15,
         fontSize: 18,
-        padding: 10,
+        padding: 12,
         textAlign: 'center',
         paddingTop: 20, // Ensure padding accommodates the title bubble
     },
     modalButtonContainer: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         width: '100%',
+    },
+    twoButtonContainer: {
+        flexDirection: 'row',
     },
     modalCancelText: {
         fontSize: 16,
@@ -175,6 +183,14 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Bold',
         color: '#6750a3',
         padding: 10,
+        paddingLeft: 5,
+    },
+    modalDeleteText: {
+        fontSize: 16,
+        fontFamily: 'Roboto-Bold',
+        color: '#B3261E',
+        padding: 10,
+        paddingRight: 5,
     },
 });
 
