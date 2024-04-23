@@ -16,61 +16,68 @@ export default function TimerCard({ label, time, onAddTime, onStartStop, onClose
     };
 
     return (
-        <View style={styles.card}>
-            <View style={styles.leftSection}>
-                <Text style={styles.label}>{label}</Text>
-                <AnimatedCircularProgress
-                    size={180}
-                    width={10}
-                    fill={100}
-                    tintColor="#cfbbfd">
-                    {
-                        (fill) => (
-                            <View style={styles.innerCircle}>
-                                <Text style={styles.timeText}>{time}</Text>
-                                <TouchableOpacity onPress={onReload} style={styles.reloadIcon}>
-                                    <ReloadIcon />
-                                </TouchableOpacity>
-                            </View>
-                        )
-                    }
-                </AnimatedCircularProgress>
-            </View>
-            <View style={styles.buttonGroup}>
-                <TouchableOpacity onPress={onAddTime} style={[styles.iconBubble, styles.addTimeButton]}>
-                    <PlusIcon />
-                    <Text style={styles.iconText}>1:00</Text>
+        <View style={styles.shadowContainer}>
+            <View style={styles.card}>
+                <View style={styles.leftSection}>
+                    <Text style={styles.label}>{label}</Text>
+                    <AnimatedCircularProgress
+                        size={180}
+                        width={10}
+                        fill={100}
+                        tintColor="#cfbbfd">
+                        {
+                            (fill) => (
+                                <View style={styles.innerCircle}>
+                                    <Text style={styles.timeText}>{time}</Text>
+                                    <TouchableOpacity onPress={onReload} style={styles.reloadIcon}>
+                                        <ReloadIcon />
+                                    </TouchableOpacity>
+                                </View>
+                            )
+                        }
+                    </AnimatedCircularProgress>
+                </View>
+                <View style={styles.buttonGroup}>
+                    <TouchableOpacity onPress={onAddTime} style={[styles.iconBubble, styles.addTimeButton]}>
+                        <PlusIcon />
+                        <Text style={styles.iconText}>1:00</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={toggleTimer} style={styles.iconBubble}>
+                        {isRunning ? <PauseIcon /> : <PlayIcon />}
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                    <CloseIcon />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={toggleTimer} style={styles.iconBubble}>
-                    {isRunning ? <PauseIcon /> : <PlayIcon />}
-                </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                <CloseIcon />
-            </TouchableOpacity>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    shadowContainer: {
+        paddingHorizontal: 4,
+        paddingVertical: 4,
+        backgroundColor: 'transparent'
+    },
     card: {
         backgroundColor: '#F6F2F9',
         borderRadius: 20,
         paddingVertical: 20,
         paddingHorizontal: 20,
-        marginBottom: 16,
+        marginBottom: 8,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.22,
-        shadowRadius: 2.22,
+        //  Shadow
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+        // Android elevation
         elevation: 3,
         position: 'relative',
+
     },
     leftSection: {
         alignItems: 'center',
@@ -96,12 +103,12 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Medium',
         color: '#333',
         textAlign: 'center',
-        marginBottom: 20, // Space between the text and the button
     },
     reloadIcon: {
         // Additional styling for the button if needed
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 15,
     },
     iconText: {
         textAlign: 'center',
@@ -118,7 +125,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         minWidth: 100,
-        marginVertical: 10,
+        marginVertical: 5,
         gap: 5,
     },
     addTimeButton: {

@@ -38,7 +38,7 @@ const RecipeCard = ({
             <Image source={image} style={styles.cardImage} />
             <View style={styles.cardContainer}>
                 <Text style={styles.cardTitle}>{title}</Text>
-                <Text style={styles.cardDate}>{date}</Text>
+                {date ? <Text style={styles.cardDate}>{date}</Text> : null}
                 <Text style={styles.cardDescription} numberOfLines={2} ellipsizeMode="tail">
                     {description}
                 </Text>
