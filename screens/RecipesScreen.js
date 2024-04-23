@@ -72,7 +72,7 @@ export default function RecipesScreen ({navigation}) {
                 title={item.strMeal}
                 date={tags}
                 description={ingredientsList}
-                image={item.strMealThumb}
+                image={{uri: item.strMealThumb}}
                 onPressDetails={() => navigation.navigate("RecipeDetails", {recipe: item})}
                 onPressSecondary={() => navigation.navigate("StepByStepRecipe", {recipe: item})}
                 actionButton={'cook'}
