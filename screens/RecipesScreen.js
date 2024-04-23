@@ -5,6 +5,7 @@ import RecipeCard from "../components/RecipeCard";
 import SearchBar from "../components/SearchBar";
 import {BookIcon, HamburgerIcon} from "../assets/icons";
 import React, {useEffect, useState} from "react";
+import {useIsFocused} from "@react-navigation/native";
 
 export default function RecipesScreen ({navigation}) {
     const title = "Recipes";
@@ -13,6 +14,7 @@ export default function RecipesScreen ({navigation}) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [recipes, setRecipes] = useState([]);
     const [displayedRecipes, setDisplayedRecipes] = useState([]);
+    const [activeFilter, setActiveFilter] = useState(null);
 
     useEffect(() => {
         const fetchRecipesFromAPI = async () => {
@@ -59,10 +61,16 @@ export default function RecipesScreen ({navigation}) {
             return null; // Filter out null or empty ingredient
         }).filter(item => item !== null).join(', ');
 
+        let tags;
+
+        if (item.strTags) {
+            tags = item.strTags.split(',').join(', ');
+        }
+
         return (
             <RecipeCard
                 title={item.strMeal}
-                date={item.strTags}
+                date={tags}
                 description={ingredientsList}
                 image={item.strMealThumb}
                 onPressDetails={() => navigation.navigate("RecipeDetails", {recipe: item})}
@@ -78,10 +86,12 @@ export default function RecipesScreen ({navigation}) {
                 <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             </View>
             <FlatList
-                data={recipes}
+                data={recipes.filter(item => activeFilter ? item.strCategory === activeFilter : true)}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
-                ListHeaderComponent={<SearchBar filtersOn={filtersOn} />}
+                ListHeaderComponent={
+                    <SearchBar filtersOn={filtersOn} setFilter={(category) => setActiveFilter(category)} />
+                }
                 style={styles.scrollableScreen}
                 contentContainerStyle={styles.scrolling}
                 ListEmptyComponent={

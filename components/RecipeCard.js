@@ -35,7 +35,7 @@ const RecipeCard = ({
 
     return (
         <View style={styles.card}>
-            <Image source={image} style={styles.cardImage} />
+            <Image source={{uri: image}} style={styles.cardImage} />
             <View style={styles.cardContainer}>
                 <Text style={styles.cardTitle}>{title}</Text>
                 <Text style={styles.cardDate}>{date}</Text>

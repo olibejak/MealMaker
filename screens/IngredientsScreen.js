@@ -56,6 +56,7 @@ export default function IngredientsScreen({ navigation }) {
 
     const addIngredientToStorage = async (ingredient, storage) => {
         ingredient.amount = "Great success!";
+        ingredient.name = ingredient.strIngredient;
         try {
             // Get existing fridge content
             const existingContent = await AsyncStorage.getItem(storage);
