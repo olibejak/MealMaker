@@ -1,4 +1,4 @@
-import { View, StyleSheet, FlatList, ActivityIndicator, InteractionManager } from "react-native";
+import {View, StyleSheet, FlatList, ActivityIndicator, InteractionManager, Text} from "react-native";
 import React, { useEffect, useState } from "react";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
@@ -12,6 +12,7 @@ export default function IngredientsScreen({ navigation }) {
     const [displayedIngredients, setDisplayedIngredients] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [activeSearch, setActiveSearch] = useState(null);
 
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
@@ -85,16 +86,29 @@ export default function IngredientsScreen({ navigation }) {
         <View style={styles.screen}>
             <TopNavigationBar title="Ingredients" LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             <FlatList
-                data={displayedIngredients}
+                data={displayedIngredients
+                    .filter(item => activeSearch ?
+                        item && item.strIngredient && item.strIngredient.toLowerCase().startsWith(activeSearch) : true)}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
-                ListHeaderComponent={<SearchBar context={"ingredients"}/>}
+                ListHeaderComponent={
+                    <SearchBar
+                        context={"ingredients"}
+                        search={(text) => setActiveSearch(text.toLowerCase())}
+                    />
+                }
                 style={styles.scrollableScreen}
                 contentContainerStyle={styles.scrolling}
                 ListEmptyComponent={
-                    <View style={styles.loadingScreen}>
-                        <ActivityIndicator size="large" />
-                    </View>
+                    isLoading ? (
+                        <View style={styles.loadingScreen}>
+                            <ActivityIndicator size="large" />
+                        </View>
+                    ) : (
+                        <View style={styles.loadingScreen}>
+                            <Text style={[styles.fontRegular, styles.textCenter]}>No results found</Text>
+                        </View>
+                    )
                 }
                 onEndReached={loadMoreIngredients}
                 onEndReachedThreshold={0.7}

@@ -1,4 +1,4 @@
-import {View, StyleSheet, ActivityIndicator, FlatList} from "react-native";
+import {View, StyleSheet, ActivityIndicator, FlatList, Text} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import RecipeCard from "../components/RecipeCard";
@@ -15,6 +15,8 @@ export default function RecipesScreen ({navigation}) {
     const [recipes, setRecipes] = useState([]);
     const [displayedRecipes, setDisplayedRecipes] = useState([]);
     const [activeFilter, setActiveFilter] = useState(null);
+    const [activeSearch, setActiveSearch] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchRecipesFromAPI = async () => {
@@ -31,6 +33,8 @@ export default function RecipesScreen ({navigation}) {
                     }
             catch (error) {
                     console.error("Failed to fetch ingredients or request timed out:", error);
+                } finally {
+                    setIsLoading(false)
                 }
             }
         };
@@ -86,18 +90,31 @@ export default function RecipesScreen ({navigation}) {
                 <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             </View>
             <FlatList
-                data={recipes.filter(item => activeFilter ? item.strCategory === activeFilter : true)}
+                data={recipes
+                    .filter(item => activeFilter ? item && item.strCategory && item.strCategory === activeFilter : true)
+                    .filter(item => activeSearch ?
+                        item && item.strMeal && item.strMeal.toLowerCase().startsWith(activeSearch) : true)
+                }
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={
-                    <SearchBar filtersOn={filtersOn} setFilter={(category) => setActiveFilter(category)} />
+                    <SearchBar
+                        filtersOn={filtersOn} setFilter={(category) => setActiveFilter(category)}
+                        search={(text) => setActiveSearch(text.toLowerCase())}
+                    />
                 }
                 style={styles.scrollableScreen}
                 contentContainerStyle={styles.scrolling}
                 ListEmptyComponent={
+                    isLoading ? (
                     <View style={styles.loadingScreen}>
                         <ActivityIndicator size="large" />
                     </View>
+                    ) : (
+                        <View style={styles.loadingScreen}>
+                            <Text style={[styles.fontRegular, styles.textCenter]}>No results found</Text>
+                        </View>
+                    )
                 }
                 onEndReached={loadMoreRecipes}
                 onEndReachedThreshold={0.7}
