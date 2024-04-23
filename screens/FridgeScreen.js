@@ -113,30 +113,10 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5
     },
-    modalTitle: {
-        fontSize: 24,
-        fontWeight: "bold",
-        marginBottom: 15,
-    },
-    modalInput: {
-        borderBottomWidth: 1,
-        borderColor: "#000",
-        width: 200,
-        marginBottom: 15,
-        fontSize: 18,
-        padding: 10,
-        textAlign: 'center',
-    },
     button: {
         borderRadius: 20,
         padding: 10,
         elevation: 2,
         backgroundColor: "#2196F3",
-    },
-    textStyle: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center"
-    },
-    // ... other styles you might need for your modal ...
+    }
 });
