@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
 import {Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useCallback, useEffect, useState} from 'react';
 import { BasketIcon, DiningIcon, EggIcon, FridgeIcon } from "../assets/icons";
-import { useNavigation } from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function BottomNavigationBar() {
     const navigation = useNavigation();
     const state = navigation.getState();
     const [selected, setSelected] = useState(null);
-    const [fridgeCount, setFridgeCount] = useState(3);  // Example count
-    const [shoppingListCount, setShoppingListCount] = useState(5);  // Example count
+    const [fridgeCount, setFridgeCount] = useState(0);  // Example count
+    const [shoppingListCount, setShoppingListCount] = useState(0);  // Example count
+    const isFocused = useIsFocused();
 
     function isSelected(current) {
         return selected === current ? styles.enabled : {};
@@ -17,6 +19,30 @@ export default function BottomNavigationBar() {
     useEffect(() => {
         setSelected(state.routes[state.index].name)
     }, [state]);
+
+    const loadFridgeCount = useCallback(async () => {
+        const content = await AsyncStorage.getItem("fridgeContent");
+        if (content !== null) {
+            setFridgeCount(JSON.parse(content).length);
+        }
+    }, [setFridgeCount])
+
+    useEffect(() => {
+        if (isFocused)
+            loadFridgeCount().then(() => this.forceUpdate);
+    }, [AsyncStorage.getItem("fridgeContent"), isFocused])
+
+    const loadShoppingListCount = useCallback(async () => {
+        const content = await AsyncStorage.getItem("shoppingListContent");
+        if (content !== null) {
+            setShoppingListCount(JSON.parse(content).length);
+        }
+    }, [setFridgeCount])
+
+    useEffect(() => {
+        if (isFocused)
+            loadShoppingListCount().then(() => this.forceUpdate);
+    }, [AsyncStorage.getItem("shoppingListContent"), isFocused])
 
     return (
         <View style={styles.bottomBar}>
