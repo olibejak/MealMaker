@@ -142,17 +142,19 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 8, // Adjusted to move closer to the edge of the actual icon
         top: -4, // Adjusted to raise the badge higher towards the top of the icon
-        backgroundColor: '#9c312a',
-        borderRadius: 8,
-        width: 16,
-        height: 16,
+        backgroundColor: '#B3261E',
+        borderRadius: 100,
+        width: 22,
+        height: 22,
         justifyContent: 'center',
         alignItems: 'center',
+        alignContent: 'center',
     },
     badgeText: {
         color: 'white',
-        fontSize: 10,
-        fontWeight: 'bold',
+        fontSize: 11,
+        fontFamily: 'Roboto-Bold',
+        textAlign: 'center',
     },
     fontSmallBold: {
         fontFamily: 'Roboto-Bold',

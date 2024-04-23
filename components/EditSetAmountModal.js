@@ -42,18 +42,22 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
                     {isEditingTitle ? (
-                        <TextInput
-                            style={styles.modalTitleInput}
-                            onChangeText={handleTitleChange}
-                            value={title}
-                            autoFocus={true}
-                            onEndEditing={saveTitleEdit}
-                            placeholder="Enter new title"
-                        />
+                        <View style={styles.modalTitleInput}>
+                            <TextInput
+                                style={styles.modalTitleInput}
+                                onChangeText={handleTitleChange}
+                                value={title}
+                                autoFocus={true}
+                                onEndEditing={saveTitleEdit}
+                                placeholder="Enter new title"
+                            />
+                        </View>
                     ) : (
-                        <TouchableOpacity onPress={handleTitleEdit}>
-                            <Text style={styles.modalTitle}>{title}</Text>
-                        </TouchableOpacity>
+                        <View style={styles.modalTitle}>
+                            <TouchableOpacity onPress={handleTitleEdit}>
+                                <Text style={styles.modalTitle}>{title}</Text>
+                            </TouchableOpacity>
+                        </View>
                     )}
                     <View style={styles.titleSeparator} />
                     <View style={styles.inputContainer}>
@@ -87,6 +91,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContainer: {
+        display: 'flex',
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 20,
@@ -113,16 +118,18 @@ const styles = StyleSheet.create({
     },
     modalTitle: {
         alignSelf: "flex-start", // Aligns title to the left within its container
-        fontSize: 36, // Significantly larger font size for prominence
+        textAlign: 'left',
+        fontSize: 42, // Significantly larger font size for prominence
         marginBottom: 20, // Adds space between the title and the next element
         color: '#1d1b20', // Optional: Adjust color to fit your design
-        fontWeight: 'bold', // Optional: Makes the title bolder
+        fontFamily: 'Roboto-Regular',
     },
     modalTitleInput: {
         alignSelf: "flex-start",
-        fontSize: 36,
+        textAlign: 'left',
+        fontSize: 42,
         color: '#1d1b20',
-        fontWeight: 'bold',
+        fontFamily: 'Roboto-Medium',
         width: '100%', // Make sure it occupies the whole line
         padding: 10, // Padding for easier text entry
         marginBottom: 20, // Space to separator
@@ -138,7 +145,7 @@ const styles = StyleSheet.create({
         color: '#6750a3',
         borderRadius: 10, // Makes it look more like a bubble
         overflow: 'hidden', // Ensures nothing leaks outside the bubble
-        fontWeight: 'bold', // Makes text bolder
+        fontFamily: 'Roboto-Medium',
         zIndex: 1, // Ensures the title is rendered above the input
     },
     modalInput: {
@@ -159,13 +166,13 @@ const styles = StyleSheet.create({
     },
     modalCancelText: {
         fontSize: 16,
-        fontWeight: 'bold',
+        fontFamily: 'Roboto-Bold',
         color: '#625b70',
         padding: 10,
     },
     modalConfirmText: {
         fontSize: 16,
-        fontWeight: 'bold',
+        fontFamily: 'Roboto-Bold',
         color: '#6750a3',
         padding: 10,
     },

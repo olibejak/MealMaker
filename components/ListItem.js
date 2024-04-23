@@ -87,4 +87,27 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         padding: 16,
     },
+    // title: {
+    //     fontFamily: 'Roboto-Medium',
+    //     fontSize: 16,
+    //     color: '#48454E',
+    //     lineHeight: 24,
+    // },
+    // content: {
+    //     fontFamily: 'Roboto-Regular',
+    //     fontSize: 14,
+    //     color: '#48454E',
+    //     lineHeight: 24,
+    // },
+    title: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 18,
+        marginBottom: 4,
+    },
+    content: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 16,
+        color: '#48454E',
+        lineHeight: 24,
+    },
 });

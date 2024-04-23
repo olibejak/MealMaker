@@ -61,8 +61,8 @@ function RenderButtons({
 function RenderText({text, amount}) {
     return (
         <View style={styles.textContainer}>
-            <Text style={[styles.cardTextContent, styles.fontRegularMedium]}>{text}</Text>
-            {amount && <Text style={[styles.cardTextContent, styles.fontRegular]}>{amount}</Text>}
+            <Text style={[styles.cardTextContent, styles.title]}>{text}</Text>
+            {amount && <Text style={[styles.cardTextContent, styles.content]}>{amount}</Text>}
         </View>
     );
 }
@@ -134,12 +134,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255,255,255,0)',
         padding: 0,
     },
-    fontRegularMedium: {
+    title: {
         fontFamily: 'Roboto-Medium',
-        fontSize: 16,
+        fontSize: 17,
         letterSpacing: 0.5,
     },
-    fontRegular: {
+    content: {
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
         letterSpacing: 0.5,
