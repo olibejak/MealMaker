@@ -120,6 +120,8 @@ const styles = StyleSheet.create({
     inputContainer: {
         width: '100%',
         position: 'relative', // Contains the title and the input
+        marginBottom: 16, // Space above and below the container
+        marginTop: 6,
     },
     modalTitle: {
         alignSelf: "flex-start", // Aligns title to the left within its container

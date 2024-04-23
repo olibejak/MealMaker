@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform } from 'react-native';
 import {BackArrowIcon, CameraIcon, CheckmarkIconBlack, ImageIcon} from "../assets/icons.js";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import PhotoThumbnail from "../components/PhotoThumbnail";
+import * as ImagePicker from "expo-image-picker";
 
 export default function NewDiaryEntryScreen() {
     const title = "New Entry";
@@ -12,6 +13,48 @@ export default function NewDiaryEntryScreen() {
         require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'), require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg')
         // Add more images here
     ]);
+    const [image, setImage] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            if (Platform.OS !== 'web') {
+                const libraryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (libraryStatus.status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                }
+
+                const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+                if (cameraStatus.status !== 'granted') {
+                    alert('Sorry, we need camera permissions to make this work!');
+                }
+            }
+        })();
+    }, []);
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+        if (!result.canceled) {
+            setImage(result.uri);
+        }
+    };
+
+    const takePhoto = async () => {
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+        if (!result.canceled) {
+            setImage(result.uri);
+        }
+    }
+
     const handleRemovePhoto = (index) => {
         setPhotos(photos => photos.filter((_, i) => i !== index));
     };
@@ -36,11 +79,11 @@ export default function NewDiaryEntryScreen() {
                         onPress={() => console.log('Checkmark pressed')}
                     />
                     <View style={styles.buttonsContainer}>
-                        <TouchableOpacity style={styles.button}>
+                        <TouchableOpacity style={styles.button} onPress={takePhoto}>
                             <CameraIcon color="black" />
                             <Text style={styles.fontButton}>Take a photo</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.button}>
+                        <TouchableOpacity style={styles.button} onPress={pickImage}>
                             <ImageIcon color="black" />
                             <Text style={styles.fontButton}>Upload photo</Text>
                         </TouchableOpacity>
