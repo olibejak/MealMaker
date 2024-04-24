@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import {PotIcon, GarbageIcon, FridgeCardIcon, BasketCardIcon} from "../assets/icons";
+import React, {useState} from 'react';
+import {View, Text, Image, StyleSheet, TouchableOpacity, ActivityIndicator} from 'react-native';
+import {PotIcon, GarbageIcon} from "../assets/icons";
 
 const RecipeCard = ({
                         title,
@@ -11,6 +11,8 @@ const RecipeCard = ({
                         onPressSecondary,
                         actionButton // 'cook' or 'delete'
                     }) => {
+    const [isLoading, setIsLoading] = useState(true);
+
     const renderActionButton = () => {
         switch (actionButton) {
             case 'cook':
@@ -35,7 +37,17 @@ const RecipeCard = ({
 
     return (
         <View style={styles.card}>
-            <Image source={image} style={styles.cardImage} />
+            <View style={styles.cardImage}>
+                {isLoading && (
+                    <ActivityIndicator size="large" style={StyleSheet.absoluteFill} />
+                )}
+                <Image
+                    source={image}
+                    style={[StyleSheet.absoluteFill, {borderTopLeftRadius: 20, borderTopRightRadius: 20}]}
+                    onLoad={() => setIsLoading(false)}
+                    onError={() => setIsLoading(false)}
+                />
+            </View>
             <View style={styles.cardContainer}>
                 <Text style={styles.cardTitle}>{title}</Text>
                 {date ? <Text style={styles.cardDate}>{date}</Text> : null}
@@ -52,17 +64,6 @@ const RecipeCard = ({
         </View>
     );
 };
-
-// <View style={styles.addToButtonsContainer}>
-//     <TouchableOpacity style={styles.addToButton}>
-//         <Text style={styles.fontButton}>Add to</Text>
-//         <FridgeCardIcon/>
-//     </TouchableOpacity>
-//     <TouchableOpacity style={styles.addToButton}>
-//         <Text style={styles.fontButton}>Add to</Text>
-//         <BasketCardIcon />
-//     </TouchableOpacity>
-// </View>
 
 
 const styles = StyleSheet.create({
