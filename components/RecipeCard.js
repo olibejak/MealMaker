@@ -37,13 +37,13 @@ const RecipeCard = ({
 
     return (
         <View style={styles.card}>
-            <View style={styles.cardImage}>
+            <View>
                 {isLoading && (
                     <ActivityIndicator size="large" style={StyleSheet.absoluteFill} />
                 )}
                 <Image
                     source={image}
-                    style={[StyleSheet.absoluteFill, {borderTopLeftRadius: 20, borderTopRightRadius: 20}]}
+                    style={styles.cardImage}
                     onLoad={() => setIsLoading(false)}
                     onError={() => setIsLoading(false)}
                 />
