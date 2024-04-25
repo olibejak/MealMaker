@@ -4,7 +4,6 @@ import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import EditSetAmountModal from "../components/EditSetAmountModal";
-
 import IngredientCard from "../components/IngredientCard";
 import { BookIcon, HamburgerIcon, PlusIcon } from "../assets/icons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,6 +38,11 @@ export default function FridgeScreen({ navigation }) {
         setModalVisible(true);
     };
 
+    const openEmptyEditModal = () => {
+        setSelectedIngredient({name: '', amount: ''}); // Set empty ingredient
+        setModalVisible(true);
+    };
+
     const renderItem = ({ item }) => (
         <IngredientCard
             text={item.name}
@@ -59,7 +63,7 @@ export default function FridgeScreen({ navigation }) {
                 style={styles.scrollableScreen}
                 contentContainerStyle={styles.scrolling}
             />
-            <BottomRightCornerButton IconComponent={PlusIcon} />
+            <BottomRightCornerButton IconComponent={PlusIcon} onPress={openEmptyEditModal}/>
             <BottomNavigationBar selected="Fridge" />
             <EditSetAmountModal
                 visible={modalVisible}

@@ -123,6 +123,11 @@ export default function ShoppingListScreen () {
         setEditModalVisible(true);
     };
 
+    const openEmptyEditModal = () => {
+        setSelectedIngredient({name: '', amount: ''}); // Set empty ingredient
+        setEditModalVisible(true);
+    };
+
     useEffect(() => {
         if (isFocused) {
             loadShoppingListContent();
@@ -152,6 +157,7 @@ export default function ShoppingListScreen () {
                 IconComponent={ShoppingCartIcon}
                 onPress={() => setModalVisible(true)}  // Only set modal to visible
                 SecondIconComponent={PlusIcon}
+                secondOnPress={openEmptyEditModal}
             />
             <BottomNavigationBar selected={selectedBottomBar}/>
             {modalVisible && (

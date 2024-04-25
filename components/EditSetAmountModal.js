@@ -3,8 +3,7 @@ import {Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar} f
 
 function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
     const [amount, setAmount] = useState(ingredient?.amount || '');
-    const [title, setTitle] = useState(ingredient?.name || 'Default Title');
-    const [isEditingTitle, setIsEditingTitle] = useState(false);
+    const [title, setTitle] = useState(ingredient?.name || ''); // Default to empty if no name
 
     useEffect(() => {
         if (ingredient) {
@@ -13,21 +12,13 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
         }
     }, [ingredient]);
 
-    const handleTitleEdit = () => {
-        setIsEditingTitle(true);
-    };
-
     const handleTitleChange = (text) => {
         setTitle(text);
     };
 
-    const saveTitleEdit = () => {
-        setIsEditingTitle(false);
-    };
-
     const handleConfirm = () => {
         console.log(`Title: ${title}, Amount: ${amount}`); // Prints title and amount to the console
-        onClose(); // You can still use the onClose prop to close the modal after confirming
+        onClose(); // Close the modal after confirming
     };
 
     if (!visible) return null;
@@ -41,24 +32,15 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
             <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.5)"/>
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
-                    {isEditingTitle ? (
-                        <View style={styles.modalTitleInput}>
-                            <TextInput
-                                style={styles.modalText}
-                                onChangeText={handleTitleChange}
-                                value={title}
-                                autoFocus={true}
-                                onEndEditing={saveTitleEdit}
-                                placeholder="Enter new title"
-                            />
-                        </View>
-                    ) : (
-                        <View style={styles.modalTitle}>
-                            <TouchableOpacity onPress={handleTitleEdit}>
-                                <Text style={styles.modalText}>{title}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
+                    <View style={styles.modalTitleInput}>
+                        <TextInput
+                            style={styles.modalText}
+                            onChangeText={handleTitleChange}
+                            value={title}
+                            autoFocus={true}
+                            placeholder="Enter new title"
+                        />
+                    </View>
                     <View style={styles.titleSeparator} />
                     <View style={styles.inputContainer}>
                         <Text style={styles.inputTitle}>Amount</Text>
@@ -70,9 +52,11 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
                         />
                     </View>
                     <View style={styles.modalButtonContainer}>
-                        <TouchableOpacity onPress={onClose}>
-                            <Text style={styles.modalDeleteText}>Delete</Text>
-                        </TouchableOpacity>
+                        {title || amount ? (
+                            <TouchableOpacity onPress={onClose}>
+                                <Text style={styles.modalDeleteText}>Delete</Text>
+                            </TouchableOpacity>
+                        ) : <View style={styles.placeholderButton}></View>}
                         <View style={styles.twoButtonContainer}>
                             <TouchableOpacity onPress={onClose}>
                                 <Text style={styles.modalCancelText}>Cancel</Text>
@@ -112,21 +96,20 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     titleSeparator: {
-        alignSelf: 'stretch', // Stretches to the full width of the container
+        alignSelf: 'stretch',
         height: 2, // Thin line
-        backgroundColor: '#d3d3d3', // Light grey color
-        marginBottom: 25, // Space after the line
+        backgroundColor: '#d3d3d3',
+        marginBottom: 25,
     },
     inputContainer: {
         width: '100%',
-        position: 'relative', // Contains the title and the input
-        marginBottom: 16, // Space above and below the container
+        position: 'relative',
+        marginBottom: 16,
         marginTop: 6,
     },
     modalTitle: {
-        alignSelf: "flex-start", // Aligns title to the left within its container
-        padding: 10, // Adds padding to the left of the title
-        paddingLeft: 0, // Removes padding on the left
+        alignSelf: "flex-start",
+        padding: 10,
     },
     modalTitleInput: {
         alignSelf: "flex-start",
@@ -150,10 +133,10 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
         fontSize: 14,
         color: '#6750a3',
-        borderRadius: 10, // Makes it look more like a bubble
-        overflow: 'hidden', // Ensures nothing leaks outside the bubble
+        borderRadius: 10,
+        overflow: 'hidden',
         fontFamily: 'Roboto-Medium',
-        zIndex: 1, // Ensures the title is rendered above the input
+        zIndex: 1,
     },
     modalInput: {
         borderWidth: 2,
@@ -164,7 +147,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         padding: 12,
         textAlign: 'center',
-        paddingTop: 20, // Ensure padding accommodates the title bubble
+        paddingTop: 20,
     },
     modalButtonContainer: {
         flexDirection: 'row',
@@ -193,6 +176,11 @@ const styles = StyleSheet.create({
         color: '#B3261E',
         padding: 10,
         paddingRight: 5,
+    },
+    placeholderButton: {
+        opacity: 0, // Invisible
+        paddingHorizontal: 10, // Same padding as the Delete button
+        paddingVertical: 10, // Same padding as the Delete button
     },
 });
 
