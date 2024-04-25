@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import {Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, StatusBar} from 'react-native';
 
 function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
     const [amount, setAmount] = useState(ingredient?.amount || '');
@@ -34,11 +34,11 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
 
     return (
         <Modal
-            animationType="slide"
             transparent={true}
             visible={visible}
             onRequestClose={onClose}
         >
+            <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.5)"/>
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
                     {isEditingTitle ? (

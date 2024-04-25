@@ -111,12 +111,11 @@ function AddTimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
 
     return (
         <Modal
-            animationType="slide"
             transparent={true}
             visible={modalVisible}
             onRequestClose={handleCancel}
         >
-            {/* Add StatusBar here to control visibility or style when modal is active */}
+            <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.5)" />
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <TextInput

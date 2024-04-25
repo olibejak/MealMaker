@@ -1,13 +1,14 @@
-import {Modal, Text, TouchableOpacity, View} from "react-native";
+import {Modal, StatusBar, Text, TouchableOpacity, View} from "react-native";
+import React from "react";
 
 export default function ConfirmationModal ({ onConfirm, onCancel, visible }) {
     return (
         <Modal
-            animationType="slide"
             transparent={true}
             visible={visible}
             onRequestClose={onCancel}
         >
+            <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.5)" />
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
                     <Text style={styles.modalTitle}>Move items into fridge?</Text>
