@@ -64,14 +64,18 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         alignItems: 'center',
+        paddingLeft: 16,
+        paddingRight: 16,
     },
     mainContainer: {
         backgroundColor: '#ECE6F0',
         borderRadius: 28,
-        // width: '100%',
-        marginHorizontal: 16,
-        padding: 20,
-        // TODO: modify the top to match android as well
+        width: '100%',
+        padding: 16,
+        paddingBottom: 8,
+        boxSizing: 'border-box',
+
+        // The top position of the modal is different on iOS and Android due to the top bar
         ...Platform.select({
                 ios: {top: 120},
                 android: {top: 80}
@@ -118,10 +122,8 @@ const styles = StyleSheet.create({
         height: 24,
     },
     closeButton: {
-        position: 'absolute',
-        top: 10,
-        right: 10,
-        padding: 10,
+        alignSelf: 'flex-end',
+        padding: 8,
     },
 });
 
