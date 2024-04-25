@@ -28,7 +28,9 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
 
     const handleConfirm = () => {
         console.log(`Title: ${title}, Amount: ${amount}`); // Prints title and amount to the console
-        onClose(); // Close the modal after confirming
+        ingredient.name = title;
+        ingredient.amount = amount;
+        onClose(); // You can still use the onClose prop to close the modal after confirming
     };
 
     if (!visible) return null;

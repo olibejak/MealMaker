@@ -134,6 +134,22 @@ export default function ShoppingListScreen () {
         }
     }, [isFocused, loadShoppingListContent]);
 
+    const persistShoppingListContent = async() => {
+        try {
+            const content = await AsyncStorage.getItem("shoppingListContent");
+            if (content !== null) {
+                await AsyncStorage.setItem("shoppingListContent", JSON.stringify(shoppingListContent));
+            }
+        } catch (error) {
+            console.error("Error saving shopping list content:", error);
+        }
+    }
+
+    useEffect(() => {
+        if (isFocused)
+            persistShoppingListContent()
+    }, [isFocused, fridgeContent, persistShoppingListContent])
+
     return (
         <View style={styles.screen}>
             <View>
