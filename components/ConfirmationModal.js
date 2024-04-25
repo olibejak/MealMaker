@@ -4,6 +4,7 @@ import React from "react";
 export default function ConfirmationModal ({ onConfirm, onCancel, visible }) {
     return (
         <Modal
+            animationType="fade"
             transparent={true}
             visible={visible}
             onRequestClose={onCancel}

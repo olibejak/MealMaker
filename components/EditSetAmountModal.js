@@ -25,6 +25,7 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
 
     return (
         <Modal
+            animationType="fade"
             transparent={true}
             visible={visible}
             onRequestClose={onClose}

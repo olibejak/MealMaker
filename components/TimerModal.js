@@ -93,6 +93,7 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
 
     return (
         <Modal
+            animationType="fade"
             transparent={true}
             visible={modalVisible}
             onRequestClose={handleCancel}
