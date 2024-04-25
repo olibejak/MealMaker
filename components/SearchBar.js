@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { FilterIcon, SearchIcon } from "../assets/icons";
-import FilterCategories from './FilterCategories'; // Adjust the path according to your project structure
+import FilterCategories from './FilterCategories';
 
 // The SearchBar component with filter functionality
 export default function SearchBar({ onFilterPress, context, setFilter, search }) {
