@@ -34,6 +34,22 @@ export default function FridgeScreen({ navigation }) {
         }
     }, [isFocused, loadFridgeContent]);
 
+    const persistFridgeContent = async() => {
+        try {
+            const content = await AsyncStorage.getItem("fridgeContent");
+            if (content !== null) {
+                await AsyncStorage.setItem("fridgeContent", JSON.stringify(fridgeContent));
+            }
+        } catch (error) {
+            console.error("Error saving fridge content:", error);
+        }
+    }
+
+    useEffect(() => {
+        if (isFocused)
+            persistFridgeContent()
+        }, [isFocused, fridgeContent, persistFridgeContent])
+
     const handleEditPress = (ingredient) => {
         setSelectedIngredient(ingredient);
         setModalVisible(true);
@@ -44,7 +60,8 @@ export default function FridgeScreen({ navigation }) {
             text={item.name}
             amount={item.amount}
             editButtonOn={true}
-            onPress={() => navigation.navigate("IngredientDetails", { ingredient: item })}
+            onPress={() => item.strIngredient.toLowerCase() === item.name.toLowerCase() ?
+                navigation.navigate("IngredientDetails", { ingredient: item }) : undefined}
             onPressEdit={() => handleEditPress(item)}
         />
     );
@@ -65,6 +82,7 @@ export default function FridgeScreen({ navigation }) {
                 visible={modalVisible}
                 ingredient={selectedIngredient}
                 onClose={() => setModalVisible(false)}
+                onConfirm={() => persistFridgeContent()}
             />
         </View>
     );
