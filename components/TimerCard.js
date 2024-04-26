@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     iconText: {
         textAlign: 'center',
         color: '#000',
-        fontSize: 18,
+        fontSize: 17,
         fontFamily: 'Roboto-Medium',
     },
     iconBubble: {

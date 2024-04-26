@@ -6,7 +6,7 @@ export default function MealMiniature({mealName, mealThumb, onPress}) {
             <View style={styles.rounded}>
                 <Image style={styles.image} source={{uri: `${mealThumb}`}}/>
                 <View style={styles.textContainer}>
-                    <Text style={styles.text}>{mealName}</Text>
+                    <Text style={styles.text} numberOfLines={3}>{mealName}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
         marginTop: 12,
         marginBottom: 12,
         marginRight: 12,
-        padding: 0,
         borderRadius: 10,
     },
 
@@ -51,6 +50,6 @@ const styles = StyleSheet.create({
     text: {
         textAlign: 'left',
         fontFamily: 'Roboto-Regular',
-        fontSize: 18,
+        fontSize: 17,
     },
 });

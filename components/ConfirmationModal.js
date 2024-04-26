@@ -8,6 +8,7 @@ export default function ConfirmationModal ({ onConfirm, onCancel, visible }) {
             transparent={true}
             visible={visible}
             onRequestClose={onCancel}
+            statusBarTranslucent={true}
         >
             <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.5)" />
             <View style={styles.modalBackground}>

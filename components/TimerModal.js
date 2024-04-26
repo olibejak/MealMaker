@@ -97,6 +97,7 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
             transparent={true}
             visible={modalVisible}
             onRequestClose={handleCancel}
+            statusBarTranslucent={true}
         >
             <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.5)" />
             <View style={styles.centeredView}>
