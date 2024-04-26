@@ -15,6 +15,7 @@ export default function FridgeScreen({ navigation }) {
     const isFocused = useIsFocused();
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedIngredient, setSelectedIngredient] = useState(null);
+    const [isNewIngredient, setIsNewIngredient] = useState(false)
 
     const loadFridgeContent = useCallback(async () => {
         try {
@@ -34,6 +35,10 @@ export default function FridgeScreen({ navigation }) {
     }, [isFocused, loadFridgeContent]);
 
     const persistFridgeContent = async() => {
+        if (isNewIngredient && selectedIngredient.name !== "") {
+            setFridgeContent([...fridgeContent, selectedIngredient]);
+            setIsNewIngredient(false);
+        }
         try {
             const content = await AsyncStorage.getItem("fridgeContent");
             if (content !== null) {
@@ -56,6 +61,7 @@ export default function FridgeScreen({ navigation }) {
 
     const openEmptyEditModal = () => {
         setSelectedIngredient({name: '', amount: ''}); // Set empty ingredient
+        setIsNewIngredient(true);
         setModalVisible(true);
     };
 
@@ -87,6 +93,8 @@ export default function FridgeScreen({ navigation }) {
                 ingredient={selectedIngredient}
                 onClose={() => setModalVisible(false)}
                 onConfirm={() => persistFridgeContent()}
+                deleteIngredient={() =>
+                    setFridgeContent(fridgeContent.filter(item => item !== selectedIngredient))}
             />
         </View>
     );

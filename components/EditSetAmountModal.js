@@ -11,7 +11,7 @@ import {
     KeyboardAvoidingView
 } from 'react-native';
 
-function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
+function EditSetAmountModal({ visible, ingredient, onClose, mode, deleteIngredient }) {
     const [amount, setAmount] = useState(ingredient?.amount || '');
     const [title, setTitle] = useState(ingredient?.name || ''); // Default to empty if no name
 
@@ -26,8 +26,12 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
         setTitle(text);
     };
 
+    const handleDelete = () => {
+        deleteIngredient();
+        onClose();
+    }
+
     const handleConfirm = () => {
-        console.log(`Title: ${title}, Amount: ${amount}`); // Prints title and amount to the console
         ingredient.name = title;
         ingredient.amount = amount;
         onClose(); // You can still use the onClose prop to close the modal after confirming
@@ -67,7 +71,7 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
                     </View>
                     <View style={styles.modalButtonContainer}>
                         {title || amount ? (
-                            <TouchableOpacity onPress={onClose}>
+                            <TouchableOpacity onPress={handleDelete}>
                                 <Text style={styles.modalDeleteText}>Delete</Text>
                             </TouchableOpacity>
                         ) : <View style={styles.placeholderButton}></View>}

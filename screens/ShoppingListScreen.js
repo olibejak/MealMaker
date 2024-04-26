@@ -188,6 +188,8 @@ export default function ShoppingListScreen () {
                     visible={editModalVisible}
                     ingredient={selectedIngredient}
                     onClose={() => setEditModalVisible(false)}
+                    deleteIngredient={() =>
+                        setShoppingListContent(shoppingListContent.filter(item => item !== selectedIngredient))}
                 />
             )}
         </View>
