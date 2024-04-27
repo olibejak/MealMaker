@@ -19,9 +19,14 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     const [isFavorite, setIsFavorite] = useState(false);
     const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
     const [modalVisible, setModalVisible] = useState(false);
+    const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
 
-    const toggleModal = () => {
-        setModalVisible(!modalVisible); // Toggles modal visibility
+
+    const toggleSnackbarModal = () => {
+        setSnackbarModalVisible(!snackbarModalVisible);
+        setTimeout(() => {
+            setSnackbarModalVisible(false); // Hide the modal after 0.5 seconds
+        }, 1000);
     };
 
 
@@ -87,11 +92,11 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                     <Image source={{uri: `https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png`,}} style={styles.image} />
                 </View>
                 <View style={styles.addToButtonsContainer}>
-                    <TouchableOpacity style={styles.addToButton} onPress={toggleModal}>
+                    <TouchableOpacity style={styles.addToButton} onPress={toggleSnackbarModal}>
                         <Text style={styles.fontButton}>Add to</Text>
                         <FridgeCardIcon/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.addToButton} onPress={toggleModal}>
+                    <TouchableOpacity style={styles.addToButton} onPress={toggleSnackbarModal}>
                         <Text style={styles.fontButton}>Add to</Text>
                         <BasketCardIcon />
                     </TouchableOpacity>
@@ -118,7 +123,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
             // >
             //     {snackbarMessage}
             textToDisplay={'Added to fridge successfully!'}
-            visible={modalVisible}
+            visible={snackbarModalVisible}
             >
             </SnackbarModal>
 

@@ -1,31 +1,12 @@
 import { Modal, View, Text, StyleSheet, StatusBar } from 'react-native';
 import {useEffect, useState} from "react";
 
-function SnackbarModal({ textToDisplay, visible, onClose }) {
-    const [show, setShow] = useState(visible);
-
-    useEffect(() => {
-        let timer;
-        if (visible) {
-            setShow(true);
-            timer = setTimeout(() => {
-                setShow(false);
-                if (onClose) onClose(); // Callback to parent to inform that the modal should be closed
-            }, 1000);
-        } else {
-            setShow(false);
-        }
-
-        return () => {
-            clearTimeout(timer); // Ensure that we clear the timeout on component unmount or visibility change
-        };
-    }, [visible, onClose]);
-
+function SnackbarModal({ textToDisplay, visible }) {
     return (
         <Modal
             animationType="fade"
             transparent={true}
-            visible={show}
+            visible={visible}
             statusBarTranslucent={true}
         >
             <View style={styles.modalBackground}>
@@ -36,6 +17,8 @@ function SnackbarModal({ textToDisplay, visible, onClose }) {
         </Modal>
     );
 }
+
+
 
 const styles = StyleSheet.create({
     modalBackground: {
