@@ -10,7 +10,6 @@ export default function ConfirmationModal ({ onConfirm, onCancel, visible }) {
             onRequestClose={onCancel}
             statusBarTranslucent={true}
         >
-            <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.5)" />
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
                     <Text style={styles.modalTitle}>Move items into fridge?</Text>

@@ -2,6 +2,8 @@ import {View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, TouchableO
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import {useEffect, useState} from "react";
+import SnackbarModal from "../components/SnackbarModal";
+// import Snackbar from "react-native-snackbar";
 import {
     BackArrowIcon,
     FridgeCardIcon,
@@ -16,6 +18,12 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     const [mealsFromIngredient, setMealsFromIngredient] = useState([]);
     const [isFavorite, setIsFavorite] = useState(false);
     const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const toggleModal = () => {
+        setModalVisible(!modalVisible); // Toggles modal visibility
+    };
+
 
     const parsedIngredientName = () => {
         let parsedString = ingredient.strIngredient.toLowerCase();
@@ -79,11 +87,11 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                     <Image source={{uri: `https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png`,}} style={styles.image} />
                 </View>
                 <View style={styles.addToButtonsContainer}>
-                    <TouchableOpacity style={styles.addToButton}>
+                    <TouchableOpacity style={styles.addToButton} onPress={toggleModal}>
                         <Text style={styles.fontButton}>Add to</Text>
                         <FridgeCardIcon/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.addToButton}>
+                    <TouchableOpacity style={styles.addToButton} onPress={toggleModal}>
                         <Text style={styles.fontButton}>Add to</Text>
                         <BasketCardIcon />
                     </TouchableOpacity>
@@ -103,6 +111,17 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                     ListEmptyComponent={<ActivityIndicator style={styles.loadingContainer} size="large"/>}
                 />
             </ScrollView>
+            <SnackbarModal
+            //     visible={snackbarVisible}
+            //     onDismiss={() => setSnackbarVisible(false)}
+            //     duration={3000}
+            // >
+            //     {snackbarMessage}
+            textToDisplay={'Added to fridge successfully!'}
+            visible={modalVisible}
+            >
+            </SnackbarModal>
+
             <BottomNavigationBar selected={"Ingredients"} />
         </View>
     );

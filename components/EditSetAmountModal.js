@@ -41,7 +41,6 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
             onRequestClose={onClose}
             statusBarTranslucent={true}
         >
-            <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.5)"/>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
                     <View style={styles.modalTitleInput}>
