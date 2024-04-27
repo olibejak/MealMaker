@@ -6,7 +6,9 @@ function NumberSelector({ onChange, value, max }) {
     const middleOfData = Math.floor(totalEntries / 3);
     const itemHeight = 80;
     const [isInputMode, setIsInputMode] = useState(false);
-    const [inputValue, setInputValue] = useState(value);
+
+    // Adjust here to ensure single '0' is shown initially
+    const [inputValue, setInputValue] = useState(value === '00' ? '0' : value);
 
     const data = Array.from({ length: totalEntries }, (_, i) => ({
         key: `${i % (max + 1)}`
@@ -28,7 +30,7 @@ function NumberSelector({ onChange, value, max }) {
         const centeredKey = data[index % (max + 1)].key;
 
         onChange(centeredKey);
-        setInputValue(centeredKey); // Set the input value to the last scrolled number
+        setInputValue(centeredKey);
 
         if (index < max + 1 || index > (max + 1) * 2) {
             flatListRef.current.scrollToIndex({
@@ -39,7 +41,7 @@ function NumberSelector({ onChange, value, max }) {
     };
 
     const handleInputConfirm = () => {
-        onChange(inputValue.padStart('0'));
+        onChange(inputValue.padStart(2, '0'));
         setIsInputMode(false);
     };
 
@@ -85,17 +87,18 @@ function NumberSelector({ onChange, value, max }) {
 
 
 
+
 export default function TimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
     const [timerLabel, setTimerLabel] = useState('');
     const [hours, setHours] = useState('00');
     const [minutes, setMinutes] = useState('00');
 
     const onHoursChange = (newHour) => {
-        setHours(newHour.padStart(2, '0'));
+        setHours(newHour === "" ? "0" : newHour.padStart(2, '0'));
     };
 
     const onMinutesChange = (newMinute) => {
-        setMinutes(newMinute.padStart(2, '0'));
+        setMinutes(newMinute === "" ? "0" : newMinute.padStart(2, '0'));
     };
 
     const handleOk = () => {
