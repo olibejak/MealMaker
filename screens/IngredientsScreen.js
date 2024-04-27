@@ -6,6 +6,7 @@ import SearchBar from "../components/SearchBar";
 import IngredientCard from "../components/IngredientCard";
 import { BookIcon, HamburgerIcon } from "../assets/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import EditSetAmountModal from "../components/EditSetAmountModal";
 
 export default function IngredientsScreen({ navigation }) {
     const [ingredients, setIngredients] = useState([]);
@@ -13,6 +14,9 @@ export default function IngredientsScreen({ navigation }) {
     const [isLoading, setIsLoading] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [activeSearch, setActiveSearch] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedIngredient, setSelectedIngredient] = useState(null);
+    const [selectedDestination, setSelectedDestination] = useState(null);
 
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
@@ -50,8 +54,8 @@ export default function IngredientsScreen({ navigation }) {
             fridgeButtonOn={true}
             cartButtonOn={true}
             onPress={() => navigation.navigate("IngredientDetails", { ingredient: item })}
-            onPressFridge={() => addIngredientToStorage(item, "fridgeContent")}
-            onPressCart={() => addIngredientToStorage(item, "shoppingListContent")}
+            onPressFridge={() => handleEditAmount(item, "fridgeContent")}
+            onPressCart={() => handleEditAmount(item, "shoppingListContent")}
         />
     );
 
@@ -81,6 +85,19 @@ export default function IngredientsScreen({ navigation }) {
             console.error("Error adding to storage:", error);
         }
     }
+
+    const handleEditAmount = (ingredient, destination) => {
+        setSelectedIngredient(ingredient)
+        setSelectedDestination(destination)
+        setModalVisible(true);
+    };
+
+    const handleConfirmEdit = () => {
+        addIngredientToStorage(selectedIngredient, selectedDestination)
+        addIngredientToStorage(selectedIngredient, selectedDestination)
+        console.log(`New amount for ${ingredient.strIngredient}: ${ingredientAmount}`);
+        setModalVisible(false);
+    };
 
     return (
         <View style={styles.screen}>
@@ -115,6 +132,13 @@ export default function IngredientsScreen({ navigation }) {
                 initialNumToRender={10}
             />
             <BottomNavigationBar />
+            <EditSetAmountModal
+                visible={modalVisible}
+                ingredient={selectedIngredient}
+                onClose={() => setModalVisible(false)}
+                onConfirm={handleConfirmEdit(selectedIngredient, destinationStorage)}
+                showDelete={false} // Hide delete button in this screen
+            />
         </View>
     );
 };

@@ -6,7 +6,6 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    StatusBar,
     Platform,
     KeyboardAvoidingView
 } from 'react-native';
@@ -14,11 +13,17 @@ import {
 function EditSetAmountModal({ visible, ingredient, onClose, showDelete }) {
     const [amount, setAmount] = useState(ingredient?.amount || '');
     const [title, setTitle] = useState(ingredient?.name || ''); // Default to empty if no name
+    const [editableTitle, setTitleEditable] = useState(true);
+
 
     useEffect(() => {
         if (ingredient) {
-            setAmount(ingredient.amount);
-            setTitle(ingredient.name);
+            setAmount(ingredient?.amount|| '');
+            // Set ingredient name to strIngredient if name is empty
+            if (!title && ingredient.strIngredient) {
+                setTitleEditable(false)
+                setTitle(ingredient.strIngredient);
+            }
         }
     }, [ingredient]);
 
@@ -48,8 +53,9 @@ function EditSetAmountModal({ visible, ingredient, onClose, showDelete }) {
                             style={styles.modalText}
                             onChangeText={handleTitleChange}
                             value={title}
-                            autoFocus={true}
+                            autoFocus={editableTitle}
                             placeholder="Enter new title"
+                            editable={editableTitle}
                         />
                     </View>
                     <View style={styles.titleSeparator} />
@@ -60,6 +66,7 @@ function EditSetAmountModal({ visible, ingredient, onClose, showDelete }) {
                             value={amount}
                             onChangeText={setAmount}
                             placeholder="Enter amount"
+                            autoFocus={!editableTitle}
                         />
                     </View>
                     <View style={styles.modalButtonContainer}>

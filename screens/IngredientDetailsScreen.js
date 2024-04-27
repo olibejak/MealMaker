@@ -10,11 +10,13 @@ import {
     StarFilledIcon
 } from "../assets/icons";
 import MealMiniature from "../components/MealMiniature";
+import EditSetAmountModal from "../components/EditSetAmountModal";
 
 export default function IngredientDetailsScreen ({ route, navigation }) {
     const { ingredient } = route.params;
     const [mealsFromIngredient, setMealsFromIngredient] = useState([]);
     const [isFavorite, setIsFavorite] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
 
     const parsedIngredientName = () => {
@@ -69,6 +71,15 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
         )
     }
 
+    const handleEditAmount = () => {
+        setModalVisible(true);
+    };
+
+    const handleConfirmEdit = (item, destination) => {
+        console.log("Item added:", item);
+        setModalVisible(false);
+    };
+
     return (
         <View style={styles.screen}>
             <View>
@@ -79,11 +90,11 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                     <Image source={{uri: `https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png`,}} style={styles.image} />
                 </View>
                 <View style={styles.addToButtonsContainer}>
-                    <TouchableOpacity style={styles.addToButton}>
+                    <TouchableOpacity style={styles.addToButton} onPress={handleEditAmount}>
                         <Text style={styles.fontButton}>Add to</Text>
                         <FridgeCardIcon/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.addToButton}>
+                    <TouchableOpacity style={styles.addToButton} onPress={handleEditAmount}>
                         <Text style={styles.fontButton}>Add to</Text>
                         <BasketCardIcon />
                     </TouchableOpacity>
@@ -104,6 +115,13 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 />
             </ScrollView>
             <BottomNavigationBar selected={"Ingredients"} />
+            <EditSetAmountModal
+                visible={modalVisible}
+                ingredient={ingredient}
+                onClose={() => setModalVisible(false)}
+                onConfirm={handleConfirmEdit}
+                showDelete={false} // Hide delete button in this screen
+            />
         </View>
     );
 };
