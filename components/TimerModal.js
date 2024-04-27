@@ -1,35 +1,35 @@
-import React, {useState} from "react";
-import {FlatList, Modal, StatusBar, Text, TextInput, TouchableOpacity, View, StyleSheet} from "react-native";
+import React, {useEffect, useState} from "react";
+import {FlatList, Modal, Text, TextInput, TouchableOpacity, View, StyleSheet} from "react-native";
 
 function NumberSelector({ onChange, value, max }) {
-    const visibleEntries = 5; // Visible entries before and after the actual visible entry
-    const totalEntries = (max + 1) * 3; // Tripling the list to allow more scroll room
-    const middleOfData = Math.floor(totalEntries / 3); // Initial middle of the actual data
-    const itemHeight = 80; // Updated height of each item to match new styles
+    const totalEntries = (max + 1) * 3;
+    const middleOfData = Math.floor(totalEntries / 3);
+    const itemHeight = 80;
+    const [isInputMode, setIsInputMode] = useState(false);
+    const [inputValue, setInputValue] = useState(value);
 
     const data = Array.from({ length: totalEntries }, (_, i) => ({
         key: `${i % (max + 1)}`
     }));
     const flatListRef = React.useRef(null);
 
-    // Initial scroll to the middle of the data
-    React.useEffect(() => {
-        if (flatListRef.current) {
+    useEffect(() => {
+        if (flatListRef.current && !isInputMode) {
             flatListRef.current.scrollToIndex({
                 index: middleOfData + parseInt(value),
                 animated: false
             });
         }
-    }, [value]);
+    }, [value, isInputMode]);
 
-    const handleScrollEnd = (event) => {
+    const handleScrollEnd = event => {
         const offset = event.nativeEvent.contentOffset.y;
         const index = Math.round(offset / itemHeight);
-        const centeredKey = data[index % (max + 1)].key;  // Calculate the key at the centered index
+        const centeredKey = data[index % (max + 1)].key;
 
-        onChange(centeredKey);  // Update the state in the parent component
+        onChange(centeredKey);
+        setInputValue(centeredKey); // Set the input value to the last scrolled number
 
-        // Re-center the view if near the start or end
         if (index < max + 1 || index > (max + 1) * 2) {
             flatListRef.current.scrollToIndex({
                 index: middleOfData + (index % (max + 1)),
@@ -38,15 +38,34 @@ function NumberSelector({ onChange, value, max }) {
         }
     };
 
+    const handleInputConfirm = () => {
+        onChange(inputValue.padStart('0'));
+        setIsInputMode(false);
+    };
+
+    if (isInputMode) {
+        return (
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={styles.input}
+                    onChangeText={setInputValue}
+                    value={inputValue}
+                    keyboardType="numeric"
+                    returnKeyType="done"
+                    onSubmitEditing={handleInputConfirm}
+                    autoFocus={true}
+                />
+            </View>
+        );
+    }
+
     return (
-        <View style={styles.numberSelectorContainer}>
+        <TouchableOpacity onPress={() => setIsInputMode(true)} style={styles.numberSelectorContainer}>
             <FlatList
                 ref={flatListRef}
                 data={data}
                 renderItem={({ item }) => (
-                    <Text style={styles.numberItem} onPress={() => {
-                        onChange(item.key);
-                    }}>
+                    <Text style={styles.numberItem}>
                         {item.key}
                     </Text>
                 )}
@@ -57,12 +76,13 @@ function NumberSelector({ onChange, value, max }) {
                 )}
                 snapToInterval={itemHeight}
                 decelerationRate="fast"
-                onScrollEndDrag={handleScrollEnd}  // Called when the user stops dragging
-                onMomentumScrollEnd={handleScrollEnd}  // Called when the momentum from dragging has stopped
+                onScrollEndDrag={handleScrollEnd}
+                onMomentumScrollEnd={handleScrollEnd}
             />
-        </View>
+        </TouchableOpacity>
     );
 }
+
 
 
 export default function TimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
@@ -106,6 +126,7 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
                         value={timerLabel}
                         onChangeText={setTimerLabel}
                         style={styles.inputText}
+                        autoFocus={true}
                     />
                     <View style={styles.timeSelector}>
                         <View style={styles.numberSelectorContainer}>
@@ -131,6 +152,18 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
 }
 
 const styles = StyleSheet.create({
+    inputContainer: {
+    height: 80,
+        width: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    input: {
+        width: '100%',
+            height: '100%',
+            fontSize: 36,
+            textAlign: 'center',
+    },
     modalView: {
         width: '70%',
         margin: 20,
