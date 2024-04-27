@@ -1,42 +1,26 @@
-import {View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, TouchableOpacity, FlatList} from "react-native";
-import TopNavigationBar from "../components/TopNavigationBar";
-import BottomNavigationBar from "../components/BottomNavigationBar";
-import {useEffect, useState} from "react";
-import SnackbarModal from "../components/SnackbarModal";
-// import Snackbar from "react-native-snackbar";
-import {
-    BackArrowIcon,
-    FridgeCardIcon,
-    BasketCardIcon,
-    StarOutlineIcon,
-    StarFilledIcon
-} from "../assets/icons";
-import MealMiniature from "../components/MealMiniature";
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
+import TopNavigationBar from '../components/TopNavigationBar';
+import BottomNavigationBar from '../components/BottomNavigationBar';
+import SnackbarModal from '../components/SnackbarModal';
+import { BackArrowIcon, FridgeCardIcon, BasketCardIcon, StarOutlineIcon, StarFilledIcon } from '../assets/icons';
+import MealMiniature from '../components/MealMiniature';
 
-export default function IngredientDetailsScreen ({ route, navigation }) {
+
+export default function IngredientDetailsScreen({ route, navigation }) {
     const { ingredient } = route.params;
     const [mealsFromIngredient, setMealsFromIngredient] = useState([]);
     const [isFavorite, setIsFavorite] = useState(false);
-    const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
-    const [modalVisible, setModalVisible] = useState(false);
     const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
-
-
-    const toggleSnackbarModal = () => {
-        setSnackbarModalVisible(!snackbarModalVisible);
-        setTimeout(() => {
-            setSnackbarModalVisible(false); // Hide the modal after 0.5 seconds
-        }, 1000);
-    };
-
+    const starIconToRender = isFavorite ? StarFilledIcon : StarOutlineIcon;
 
     const parsedIngredientName = () => {
         let parsedString = ingredient.strIngredient.toLowerCase();
         parsedString = parsedString.replace(/ /g, '_');
         return parsedString;
-    }
+    };
 
-    const navigateToMealDetails = async(idMeal) => {
+    const navigateToMealDetails = async (idMeal) => {
         const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`;
         try {
             const response = await fetch(url);
@@ -45,33 +29,30 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
 
             if (meals && meals.length > 0) {
                 const meal = meals[0];
-                navigation.navigate("RecipeDetails", { recipe: meal });
+                navigation.navigate('RecipeDetails', { recipe: meal });
             } else {
-                // Handle case where meal data is empty or undefined
-                console.error("Meal data is empty or undefined.");
+                console.error('Meal data is empty or undefined.');
             }
         } catch (error) {
-            // Handle fetch or JSON parsing errors
-            console.error("Error fetching meal data:", error);
+            console.error('Error fetching meal data:', error);
         }
     };
 
     useEffect(() => {
-            const fetchMealsFromIngredient = async () => {
-                const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${parsedIngredientName()}`;
-                try {
-                    const response = await fetch(url);
-                    const json = await response.json();
-                    setMealsFromIngredient(json.meals);
-                } catch (error) {
-                    console.error("Failed to fetch ingredients or request timed out:", error);
-                }
-            };
-            fetchMealsFromIngredient();
-        }
-        , []);
+        const fetchMealsFromIngredient = async () => {
+            const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${parsedIngredientName()}`;
+            try {
+                const response = await fetch(url);
+                const json = await response.json();
+                setMealsFromIngredient(json.meals);
+            } catch (error) {
+                console.error('Failed to fetch ingredients or request timed out:', error);
+            }
+        };
+        fetchMealsFromIngredient();
+    }, []);
 
-    const renderMealMiniatures = ({item, index}) => {
+    const renderMealMiniatures = ({ item, index }) => {
         return (
             <MealMiniature
                 key={index}
@@ -79,24 +60,35 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 mealThumb={item.strMealThumb}
                 onPress={() => navigateToMealDetails(item.idMeal)}
             />
-        )
-    }
+        );
+    };
+
+    const handleAddToFridge = () => {
+        // Logic for adding to fridge
+        setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to fridge
+    };
+
+    const handleAddToBasket = () => {
+        // Logic for adding to basket
+        setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to basket
+    };
 
     return (
         <View style={styles.screen}>
-            <View>
-                <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon} RightIcon={starIconToRender} />
-            </View>
+            <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon} RightIcon={starIconToRender} />
             <ScrollView style={styles.scrollableScreen}>
                 <View style={styles.imageContainer}>
-                    <Image source={{uri: `https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png`,}} style={styles.image} />
+                    <Image
+                        source={{ uri: `https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png` }}
+                        style={styles.image}
+                    />
                 </View>
                 <View style={styles.addToButtonsContainer}>
-                    <TouchableOpacity style={styles.addToButton} onPress={toggleSnackbarModal}>
+                    <TouchableOpacity style={styles.addToButton} onPress={handleAddToFridge}>
                         <Text style={styles.fontButton}>Add to</Text>
-                        <FridgeCardIcon/>
+                        <FridgeCardIcon />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.addToButton} onPress={toggleSnackbarModal}>
+                    <TouchableOpacity style={styles.addToButton} onPress={handleAddToBasket}>
                         <Text style={styles.fontButton}>Add to</Text>
                         <BasketCardIcon />
                     </TouchableOpacity>
@@ -113,27 +105,21 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                     renderItem={renderMealMiniatures}
                     style={styles.mealsContainer}
                     contentContainerStyle={styles.scrolling}
-                    ListEmptyComponent={<ActivityIndicator style={styles.loadingContainer} size="large"/>}
+                    ListEmptyComponent={<ActivityIndicator style={styles.loadingContainer} size="large" />}
                 />
             </ScrollView>
             <SnackbarModal
-            //     visible={snackbarVisible}
-            //     onDismiss={() => setSnackbarVisible(false)}
-            //     duration={3000}
-            // >
-            //     {snackbarMessage}
-            textToDisplay={'Added to fridge successfully!'}
-            visible={snackbarModalVisible}
-            >
-            </SnackbarModal>
-
-            <BottomNavigationBar selected={"Ingredients"} />
+                textToDisplay={'Added to fridge successfully!'}
+                onDismiss={() => setSnackbarModalVisible(false)}
+                visible={snackbarModalVisible}
+            />
+            <BottomNavigationBar selected={'Ingredients'} />
         </View>
     );
-};
+}
 
 const IngredientDetails = ({ ingredient }) => {
-    if (ingredient.strType) {  // Checks if strType is not empty, undefined, or null
+    if (ingredient.strType) {
         return (
             <View style={styles.textContainer}>
                 <Text style={styles.cardTitle}>Type</Text>
@@ -141,7 +127,7 @@ const IngredientDetails = ({ ingredient }) => {
             </View>
         );
     } else {
-        return null;  // Returns null if strType is empty, which means nothing will be rendered
+        return null;
     }
 };
 
@@ -241,20 +227,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#48454E',
         lineHeight: 24,
-    },
-    fontButton: {
-        fontFamily: 'Roboto-Medium',
-        fontSize: 16,
-        letterSpacing: 0.5,
-        marginLeft: 5,
-    },
-    fontSmall: {
-        fontFamily: 'Roboto-Regular',
-        fontSize: 12,
-        letterSpacing: 0.5,
-    },
-    textCenter: {
-        textAlign: 'center',
     },
     imageContainer: {
         display: 'flex',

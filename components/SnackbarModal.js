@@ -1,13 +1,36 @@
-import { Modal, View, Text, StyleSheet, StatusBar } from 'react-native';
-import {useEffect, useState} from "react";
+import React, { useEffect, useState } from 'react';
+import { Modal, View, Text, StyleSheet } from 'react-native';
 
-function SnackbarModal({ textToDisplay, visible }) {
+function SnackbarModal({ textToDisplay, visible, onDismiss }) {
+    const [modalVisible, setModalVisible] = useState(visible);
+
+    useEffect(() => {
+        setModalVisible(visible);
+    }, [visible]);
+
+    useEffect(() => {
+        if (modalVisible) {
+            const timeout = setTimeout(() => {
+                setModalVisible(false);
+                if (onDismiss) {
+                    onDismiss();
+                }
+            }, 1000);
+            return () => clearTimeout(timeout);
+        }
+    }, [modalVisible, onDismiss]);
+
     return (
         <Modal
             animationType="fade"
             transparent={true}
-            visible={visible}
+            visible={modalVisible}
             statusBarTranslucent={true}
+            onRequestClose={() => {
+                if (onDismiss) {
+                    onDismiss();
+                }
+            }}
         >
             <View style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
@@ -17,8 +40,6 @@ function SnackbarModal({ textToDisplay, visible }) {
         </Modal>
     );
 }
-
-
 
 const styles = StyleSheet.create({
     modalBackground: {
