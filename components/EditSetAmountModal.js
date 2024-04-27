@@ -6,19 +6,24 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    StatusBar,
     Platform,
     KeyboardAvoidingView
 } from 'react-native';
 
-function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
+function EditSetAmountModal({ visible, ingredient, onClose, showDelete }) {
     const [amount, setAmount] = useState(ingredient?.amount || '');
     const [title, setTitle] = useState(ingredient?.name || ''); // Default to empty if no name
+    const [editableTitle, setTitleEditable] = useState(true);
+
 
     useEffect(() => {
         if (ingredient) {
-            setAmount(ingredient.amount);
-            setTitle(ingredient.name);
+            setAmount(ingredient?.amount|| '');
+            // Set ingredient name to strIngredient if name is empty
+            if (!title && ingredient.strIngredient) {
+                setTitleEditable(false)
+                setTitle(ingredient.strIngredient);
+            }
         }
     }, [ingredient]);
 
@@ -41,7 +46,6 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
             onRequestClose={onClose}
             statusBarTranslucent={true}
         >
-            <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.5)"/>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
                     <View style={styles.modalTitleInput}>
@@ -49,8 +53,9 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
                             style={styles.modalText}
                             onChangeText={handleTitleChange}
                             value={title}
-                            autoFocus={true}
+                            autoFocus={editableTitle}
                             placeholder="Enter new title"
+                            editable={editableTitle}
                         />
                     </View>
                     <View style={styles.titleSeparator} />
@@ -61,10 +66,11 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
                             value={amount}
                             onChangeText={setAmount}
                             placeholder="Enter amount"
+                            autoFocus={!editableTitle}
                         />
                     </View>
                     <View style={styles.modalButtonContainer}>
-                        {title || amount ? (
+                        {showDelete ? (
                             <TouchableOpacity onPress={onClose}>
                                 <Text style={styles.modalDeleteText}>Delete</Text>
                             </TouchableOpacity>

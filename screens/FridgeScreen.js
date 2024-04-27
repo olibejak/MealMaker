@@ -14,6 +14,7 @@ export default function FridgeScreen({ navigation }) {
     const [fridgeContent, setFridgeContent] = useState([]);
     const isFocused = useIsFocused();
     const [modalVisible, setModalVisible] = useState(false);
+    const [deleteVisible, setDeleteVisible] = useState(false);
     const [selectedIngredient, setSelectedIngredient] = useState(null);
 
     const loadFridgeContent = useCallback(async () => {
@@ -35,11 +36,13 @@ export default function FridgeScreen({ navigation }) {
 
     const handleEditPress = (ingredient) => {
         setSelectedIngredient(ingredient);
+        setDeleteVisible(true);
         setModalVisible(true);
     };
 
     const openEmptyEditModal = () => {
-        setSelectedIngredient({name: '', amount: ''}); // Set empty ingredient
+        setSelectedIngredient({name: '', amount: ''});
+        setDeleteVisible(false);
         setModalVisible(true);
     };
 
@@ -69,6 +72,7 @@ export default function FridgeScreen({ navigation }) {
                 visible={modalVisible}
                 ingredient={selectedIngredient}
                 onClose={() => setModalVisible(false)}
+                showDelete={deleteVisible}
             />
         </View>
     );
