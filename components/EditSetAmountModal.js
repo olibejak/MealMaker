@@ -11,7 +11,7 @@ import {
     KeyboardAvoidingView
 } from 'react-native';
 
-function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
+function EditSetAmountModal({ visible, ingredient, onClose, showDelete }) {
     const [amount, setAmount] = useState(ingredient?.amount || '');
     const [title, setTitle] = useState(ingredient?.name || ''); // Default to empty if no name
 
@@ -41,7 +41,6 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
             onRequestClose={onClose}
             statusBarTranslucent={true}
         >
-            <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.5)"/>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalBackground}>
                 <View style={styles.modalContainer}>
                     <View style={styles.modalTitleInput}>
@@ -64,7 +63,7 @@ function EditSetAmountModal({ visible, ingredient, onClose, mode }) {
                         />
                     </View>
                     <View style={styles.modalButtonContainer}>
-                        {title || amount ? (
+                        {showDelete ? (
                             <TouchableOpacity onPress={onClose}>
                                 <Text style={styles.modalDeleteText}>Delete</Text>
                             </TouchableOpacity>
