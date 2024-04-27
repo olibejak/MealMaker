@@ -94,8 +94,6 @@ export default function IngredientsScreen({ navigation }) {
 
     const handleConfirmEdit = () => {
         addIngredientToStorage(selectedIngredient, selectedDestination)
-        addIngredientToStorage(selectedIngredient, selectedDestination)
-        console.log(`New amount for ${ingredient.strIngredient}: ${ingredientAmount}`);
         setModalVisible(false);
     };
 
@@ -136,7 +134,7 @@ export default function IngredientsScreen({ navigation }) {
                 visible={modalVisible}
                 ingredient={selectedIngredient}
                 onClose={() => setModalVisible(false)}
-                onConfirm={handleConfirmEdit(selectedIngredient, destinationStorage)}
+                onConfirm={handleConfirmEdit}
                 showDelete={false} // Hide delete button in this screen
             />
         </View>
