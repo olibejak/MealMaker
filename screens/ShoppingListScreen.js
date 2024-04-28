@@ -19,6 +19,7 @@ export default function ShoppingListScreen () {
     const isFocused = useIsFocused();
     const [modalVisible, setModalVisible] = useState(false);
     const [editModalVisible, setEditModalVisible] = useState(false); // State to manage the visibility of the edit modal
+    const [deleteVisible, setDeleteVisible] = useState(false);
     const [selectedIngredient, setSelectedIngredient] = useState(null); // State to store the selected ingredient for editing
 
 
@@ -120,11 +121,13 @@ export default function ShoppingListScreen () {
 
     const openEditModal = (ingredient) => {
         setSelectedIngredient(ingredient);
+        setDeleteVisible(true);
         setEditModalVisible(true);
     };
 
     const openEmptyEditModal = () => {
-        setSelectedIngredient({name: '', amount: ''}); // Set empty ingredient
+        setSelectedIngredient({name: '', amount: ''});
+        setDeleteVisible(false);
         setEditModalVisible(true);
     };
 
@@ -190,6 +193,7 @@ export default function ShoppingListScreen () {
                     onClose={() => setEditModalVisible(false)}
                     deleteIngredient={() =>
                         setShoppingListContent(shoppingListContent.filter(item => item !== selectedIngredient))}
+                    showDelete={deleteVisible}
                 />
             )}
         </View>

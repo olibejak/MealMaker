@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 6,
+        gap: 12,
     },
     cardButton: {
         width: 40,
