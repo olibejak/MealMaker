@@ -13,12 +13,13 @@ export default function IngredientsScreen({ navigation }) {
     const [displayedIngredients, setDisplayedIngredients] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [activeSearch, setActiveSearch] = useState(null);
+    const [activeSearch, setActiveSearch] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedIngredient, setSelectedIngredient] = useState(null);
     const [selectedDestination, setSelectedDestination] = useState(null);
 
     useEffect(() => {
+        setIsLoading(true);
         InteractionManager.runAfterInteractions(() => {
             const fetchIngredients = async () => {
                 const url = 'https://www.themealdb.com/api/json/v1/1/list.php?i=list';
@@ -105,7 +106,7 @@ export default function IngredientsScreen({ navigation }) {
         <View style={styles.screen}>
             <TopNavigationBar title="Ingredients" LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             <FlatList
-                data={displayedIngredients
+                data={ingredients
                     .filter(item => activeSearch ?
                         item && item.strIngredient && item.strIngredient.toLowerCase().startsWith(activeSearch) : true)}
                 renderItem={renderItem}

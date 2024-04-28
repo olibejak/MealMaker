@@ -15,7 +15,7 @@ export default function RecipesScreen ({navigation}) {
     const [recipes, setRecipes] = useState([]);
     const [displayedRecipes, setDisplayedRecipes] = useState([]);
     const [activeFilter, setActiveFilter] = useState(null);
-    const [activeSearch, setActiveSearch] = useState(null);
+    const [activeSearch, setActiveSearch] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
