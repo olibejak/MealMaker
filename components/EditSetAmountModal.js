@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
     Modal,
     View,
@@ -9,31 +9,40 @@ import {
     Platform,
     KeyboardAvoidingView
 } from 'react-native';
+import {useIsFocused} from "@react-navigation/native";
 
-function EditSetAmountModal({ visible, ingredient, onClose, showDelete }) {
+function EditSetAmountModal({ visible, ingredient, onClose, deleteIngredient, showDelete, onConfirm }) {
     const [amount, setAmount] = useState(ingredient?.amount || '');
     const [title, setTitle] = useState(ingredient?.name || ''); // Default to empty if no name
-    const [editableTitle, setTitleEditable] = useState(true);
-
+    const [editableTitle, setTitleEditable] = useState(false);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         if (ingredient) {
-            setAmount(ingredient?.amount|| '');
-            // Set ingredient name to strIngredient if name is empty
-            if (!title && ingredient.strIngredient) {
+            setTitle(ingredient?.name || '')
+            setAmount(ingredient?.amount || '')
+            if (!!ingredient.strIngredient && !ingredient.name) {
+                setTitle(ingredient.strIngredient)
                 setTitleEditable(false)
-                setTitle(ingredient.strIngredient);
-            }
+            } else
+                setTitleEditable(true)
         }
-    }, [ingredient]);
+        }, [ingredient])
 
-    const handleTitleChange = (text) => {
-        setTitle(text);
-    };
+    const handleDelete = () => {
+        deleteIngredient();
+        onClose();
+    }
 
     const handleConfirm = () => {
-        console.log(`Title: ${title}, Amount: ${amount}`); // Prints title and amount to the console
-        onClose(); // Close the modal after confirming
+        if (onConfirm) {
+            onConfirm(amount);
+        } else {
+            ingredient.name = title;
+            ingredient.amount = amount;
+        }
+        setAmount('');
+        onClose(); // You can still use the onClose prop to close the modal after confirming
     };
 
     if (!visible) return null;
@@ -51,7 +60,7 @@ function EditSetAmountModal({ visible, ingredient, onClose, showDelete }) {
                     <View style={styles.modalTitleInput}>
                         <TextInput
                             style={styles.modalText}
-                            onChangeText={handleTitleChange}
+                            onChangeText={(text) => setTitle(text)}
                             value={title}
                             autoFocus={editableTitle}
                             placeholder="Enter new title"
@@ -64,14 +73,14 @@ function EditSetAmountModal({ visible, ingredient, onClose, showDelete }) {
                         <TextInput
                             style={styles.modalInput}
                             value={amount}
-                            onChangeText={setAmount}
+                            onChangeText={(text) => setAmount(text)}
                             placeholder="Enter amount"
                             autoFocus={!editableTitle}
                         />
                     </View>
                     <View style={styles.modalButtonContainer}>
                         {showDelete ? (
-                            <TouchableOpacity onPress={onClose}>
+                            <TouchableOpacity onPress={handleDelete}>
                                 <Text style={styles.modalDeleteText}>Delete</Text>
                             </TouchableOpacity>
                         ) : <View style={styles.placeholderButton}></View>}

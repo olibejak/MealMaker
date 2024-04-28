@@ -16,6 +16,7 @@ export default function FridgeScreen({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [deleteVisible, setDeleteVisible] = useState(false);
     const [selectedIngredient, setSelectedIngredient] = useState(null);
+    const [isNewIngredient, setIsNewIngredient] = useState(false)
 
     const loadFridgeContent = useCallback(async () => {
         try {
@@ -34,6 +35,26 @@ export default function FridgeScreen({ navigation }) {
         }
     }, [isFocused, loadFridgeContent]);
 
+    const persistFridgeContent = async() => {
+        if (isNewIngredient && selectedIngredient.name !== "") {
+            setFridgeContent([...fridgeContent, selectedIngredient]);
+            setIsNewIngredient(false);
+        }
+        try {
+            const content = await AsyncStorage.getItem("fridgeContent");
+            if (content !== null) {
+                await AsyncStorage.setItem("fridgeContent", JSON.stringify(fridgeContent));
+            }
+        } catch (error) {
+            console.error("Error saving fridge content:", error);
+        }
+    }
+
+    useEffect(() => {
+        if (isFocused)
+            persistFridgeContent()
+        }, [isFocused, fridgeContent, persistFridgeContent])
+
     const handleEditPress = (ingredient) => {
         setSelectedIngredient(ingredient);
         setDeleteVisible(true);
@@ -42,6 +63,7 @@ export default function FridgeScreen({ navigation }) {
 
     const openEmptyEditModal = () => {
         setSelectedIngredient({name: '', amount: ''});
+        setIsNewIngredient(true);
         setDeleteVisible(false);
         setModalVisible(true);
     };
@@ -51,7 +73,9 @@ export default function FridgeScreen({ navigation }) {
             text={item.name}
             amount={item.amount}
             editButtonOn={true}
-            onPress={() => navigation.navigate("IngredientDetails", { ingredient: item })}
+            onPress={() =>
+                item.strIngredient && item.strIngredient.toLowerCase() === item.name.toLowerCase() ?
+                navigation.navigate("IngredientDetails", { ingredient: item }) : undefined}
             onPressEdit={() => handleEditPress(item)}
         />
     );
@@ -72,6 +96,8 @@ export default function FridgeScreen({ navigation }) {
                 visible={modalVisible}
                 ingredient={selectedIngredient}
                 onClose={() => setModalVisible(false)}
+                deleteIngredient={() =>
+                    setFridgeContent(fridgeContent.filter(item => item !== selectedIngredient))}
                 showDelete={deleteVisible}
             />
         </View>

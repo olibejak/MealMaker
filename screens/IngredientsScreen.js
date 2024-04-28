@@ -59,9 +59,10 @@ export default function IngredientsScreen({ navigation }) {
         />
     );
 
-    const addIngredientToStorage = async (ingredient, storage) => {
-        ingredient.amount = "Great success!";
-        ingredient.name = ingredient.strIngredient;
+    const addIngredientToStorage = async (ingredient, storage, amount) => {
+        const newIngredient = Object.assign({}, ingredient);
+        newIngredient.name = ingredient.strIngredient;
+        newIngredient.amount = amount;
         try {
             // Get existing fridge content
             const existingContent = await AsyncStorage.getItem(storage);
@@ -74,10 +75,13 @@ export default function IngredientsScreen({ navigation }) {
                 = newContent.findIndex(item => item.strIngredient === ingredient.strIngredient)
             if (existingIngredientIndex > -1) {
                 // Ingredient already exists, update its amount by joining with the new amount
-                newContent[existingIngredientIndex].amount += `, ${ingredient.amount}`;
+                if(newContent[existingIngredientIndex].amount.trim() === "")
+                    newContent[existingIngredientIndex].amount += `${newIngredient.amount}`;
+                else
+                    newContent[existingIngredientIndex].amount += `, ${newIngredient.amount}`;
             } else {
                 // Ingredient does not exist, add it to the fridge
-                newContent.push(ingredient);
+                newContent.push(newIngredient);
             }
             // Save updated fridge content
             await AsyncStorage.setItem(storage, JSON.stringify(newContent));
@@ -92,8 +96,8 @@ export default function IngredientsScreen({ navigation }) {
         setModalVisible(true);
     };
 
-    const handleConfirmEdit = () => {
-        addIngredientToStorage(selectedIngredient, selectedDestination)
+    const handleConfirmEdit = (amount) => {
+        addIngredientToStorage(selectedIngredient, selectedDestination, amount)
         setModalVisible(false);
     };
 
@@ -134,7 +138,7 @@ export default function IngredientsScreen({ navigation }) {
                 visible={modalVisible}
                 ingredient={selectedIngredient}
                 onClose={() => setModalVisible(false)}
-                onConfirm={handleConfirmEdit}
+                onConfirm={(amount) => handleConfirmEdit(amount)}
                 showDelete={false} // Hide delete button in this screen
             />
         </View>
