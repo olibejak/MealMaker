@@ -60,7 +60,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
             };
             fetchMealsFromIngredient();
         }
-        , []);
+        , [route]);
 
     const renderMealMiniatures = ({item, index}) => {
         return (

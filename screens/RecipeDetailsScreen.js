@@ -101,6 +101,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                 const url = 'https://www.themealdb.com/api/json/v1/1/list.php?i=list';
 
                 try {
+                    setRecipeIngredients([]);
                     for (let ingredientIndex = 1; ingredientIndex < 21; ++ingredientIndex) {
                         if (recipe[`strIngredient${ingredientIndex}`] === null ||
                             recipe[`strIngredient${ingredientIndex}`] === "") {break;}
@@ -122,7 +123,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
             };
             fetchMealsFromIngredient();
         }
-        , []);
+        , [route]);
 
     const renderIngredientMiniatures = ({item, index}) => {
         return (
