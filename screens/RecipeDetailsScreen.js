@@ -21,6 +21,7 @@ import {
 } from "../assets/icons";
 import MealMiniature from "../components/MealMiniature";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RecipeDetailsScreen ( { route, navigation } ) {
     const {recipe} = route.params;
@@ -53,6 +54,46 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
         navigation.navigate("StepByStepRecipe", {recipe: recipe} );
     }
 
+    const addIngredientsToShoppingList = async () => {
+        try {
+            // Get existing shopping list content
+            const existingContent = await AsyncStorage.getItem("shoppingListContent");
+            let newContent = [];
+            if (existingContent !== null) {
+                newContent = JSON.parse(existingContent);
+            }
+
+            // Filter out empty ingredient names and create an array of ingredients to add
+            const ingredientsToAdd = ingredientKeys.map((key, index) => ({
+                name: recipe[key],
+                amount: recipe[amountKeys[index]] || 'N/A' // Use 'N/A' if amount is missing
+            })).filter(item => item.name);
+
+            // Iterate over ingredients to add
+            ingredientsToAdd.forEach(newIngredient => {
+                // Check if the ingredient already exists in the shopping list
+                const existingIndex = newContent.findIndex(
+                    item => item.name && newIngredient.name &&
+                    item.name.toLowerCase().trim() === newIngredient.name.toLowerCase().trim().toLowerCase()
+                );
+                if (existingIndex > -1) {
+                    // If the ingredient already exists, update its amount by appending the new amount
+                    if(newContent[existingIndex].amount.trim() === "")
+                        newContent[existingIndex].amount += `${newIngredient.amount}`;
+                    else
+                        newContent[existingIndex].amount += `, ${newIngredient.amount}`;
+                } else if (newIngredient.name) {
+                    // If the ingredient does not exist, add it to the shopping list
+                    newContent.push(newIngredient);
+                }
+            });
+
+            // Save updated shopping list content
+            await AsyncStorage.setItem("shoppingListContent", JSON.stringify(newContent));
+        } catch (error) {
+            console.error("Error adding to shopping list:", error);
+        }
+    }
 
     useEffect(() => {
             const fetchMealsFromIngredient = async () => {
@@ -104,7 +145,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                     <Image source={{uri: `${recipe.strMealThumb}`,}} style={styles.image} />
                 </View>
                 <View style={styles.addToButtonsContainer}>
-                    <TouchableOpacity style={styles.addToButton}>
+                    <TouchableOpacity style={styles.addToButton} onPress={addIngredientsToShoppingList}>
                         <Text style={styles.fontButton}>Add Ingredients to</Text>
                         <BasketCardIcon />
                     </TouchableOpacity>

@@ -21,6 +21,7 @@ export default function ShoppingListScreen () {
     const [editModalVisible, setEditModalVisible] = useState(false); // State to manage the visibility of the edit modal
     const [deleteVisible, setDeleteVisible] = useState(false);
     const [selectedIngredient, setSelectedIngredient] = useState(null); // State to store the selected ingredient for editing
+    const [isNewIngredient, setIsNewIngredient] = useState(false)
 
 
     const loadShoppingListContent = useCallback (async () => {
@@ -41,24 +42,6 @@ export default function ShoppingListScreen () {
             console.error("Error loading shopping list content:", error);
         }
     }, []);
-
-    const addToShoppingList = async (ingredient) => {
-        try {
-            // Get existing fridge content
-            const existingContent = await AsyncStorage.getItem("shoppingListContent");
-            let newContent = [];
-            if (existingContent !== null) {
-                newContent = JSON.parse(existingContent);
-            }
-            // Add new ingredient
-            newContent.push(ingredient);
-            // Save updated fridge content
-            await AsyncStorage.setItem("shoppingListContent", JSON.stringify(newContent));
-            setShoppingListContent(newContent);
-        } catch (error) {
-            console.error("Error adding to shopping list:", error);
-        }
-    }
 
     const moveToFridge = async () => {
         try {
@@ -127,6 +110,7 @@ export default function ShoppingListScreen () {
 
     const openEmptyEditModal = () => {
         setSelectedIngredient({name: '', amount: ''});
+        setIsNewIngredient(true);
         setDeleteVisible(false);
         setEditModalVisible(true);
     };
@@ -138,6 +122,10 @@ export default function ShoppingListScreen () {
     }, [isFocused, loadShoppingListContent]);
 
     const persistShoppingListContent = async() => {
+        if (isNewIngredient && selectedIngredient.name !== "") {
+            setShoppingListContent([...shoppingListContent, selectedIngredient]);
+            setIsNewIngredient(false);
+        }
         try {
             const content = await AsyncStorage.getItem("shoppingListContent");
             if (content !== null) {

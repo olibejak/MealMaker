@@ -11,6 +11,7 @@ import {
 } from "../assets/icons";
 import MealMiniature from "../components/MealMiniature";
 import EditSetAmountModal from "../components/EditSetAmountModal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function IngredientDetailsScreen ({ route, navigation }) {
     const { ingredient } = route.params;
@@ -18,6 +19,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     const [isFavorite, setIsFavorite] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
+    const [selectedStorage, setSelectedStorage] = useState("");
 
     const parsedIngredientName = () => {
         let parsedString = ingredient.strIngredient.toLowerCase();
@@ -71,14 +73,46 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
         )
     }
 
-    const handleEditAmount = () => {
+    const handleEditAmount = (storage) => {
         setModalVisible(true);
+        setSelectedStorage(storage)
     };
 
-    const handleConfirmEdit = (item, destination) => {
-        console.log("Item added:", item);
+    const handleConfirmEdit = (amount) => {
         setModalVisible(false);
+        addIngredientToStorage(amount);
     };
+
+    const addIngredientToStorage = async (amount) => {
+        const newIngredient = Object.assign({}, ingredient);
+        newIngredient.name = ingredient.strIngredient;
+        newIngredient.amount = amount;
+        try {
+            // Get existing fridge content
+            const existingContent = await AsyncStorage.getItem(selectedStorage);
+            let newContent = [];
+            if (existingContent !== null) {
+                newContent = JSON.parse(existingContent);
+            }
+            // Check if ingredient already exists in the fridge
+            const existingIngredientIndex
+                = newContent.findIndex(item => item.strIngredient === ingredient.strIngredient)
+            if (existingIngredientIndex > -1) {
+                // Ingredient already exists, update its amount by joining with the new amount
+                if(newContent[existingIngredientIndex].amount.trim() === "")
+                    newContent[existingIngredientIndex].amount += `${newIngredient.amount}`;
+                else
+                    newContent[existingIngredientIndex].amount += `, ${newIngredient.amount}`;
+            } else {
+                // Ingredient does not exist, add it to the fridge
+                newContent.push(newIngredient);
+            }
+            // Save updated fridge content
+            await AsyncStorage.setItem(selectedStorage, JSON.stringify(newContent));
+        } catch (error) {
+            console.error("Error adding to storage:", error);
+        }
+    }
 
     return (
         <View style={styles.screen}>
@@ -90,11 +124,11 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                     <Image source={{uri: `https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png`,}} style={styles.image} />
                 </View>
                 <View style={styles.addToButtonsContainer}>
-                    <TouchableOpacity style={styles.addToButton} onPress={handleEditAmount}>
+                    <TouchableOpacity style={styles.addToButton} onPress={() => handleEditAmount("fridgeContent")}>
                         <Text style={styles.fontButton}>Add to</Text>
                         <FridgeCardIcon/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.addToButton} onPress={handleEditAmount}>
+                    <TouchableOpacity style={styles.addToButton} onPress={() => handleEditAmount("shoppingListContent")}>
                         <Text style={styles.fontButton}>Add to</Text>
                         <BasketCardIcon />
                     </TouchableOpacity>
@@ -119,7 +153,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 visible={modalVisible}
                 ingredient={ingredient}
                 onClose={() => setModalVisible(false)}
-                onConfirm={handleConfirmEdit}
+                onConfirm={(amount) => handleConfirmEdit(amount)}
                 showDelete={false} // Hide delete button in this screen
             />
         </View>

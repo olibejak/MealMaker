@@ -62,7 +62,7 @@ function RenderText({text, amount}) {
     return (
         <View style={styles.textContainer}>
             <Text style={[styles.cardTextContent, styles.title]}>{text}</Text>
-            {amount && <Text style={[styles.cardTextContent, styles.content]}>{amount}</Text>}
+            {amount ? (<Text style={[styles.cardTextContent, styles.content]}>{amount}</Text>) : null}
         </View>
     );
 }
