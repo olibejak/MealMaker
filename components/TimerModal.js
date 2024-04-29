@@ -110,8 +110,6 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
     );
 }
 
-// Continue using your existing StyleSheet declarations
-
 
 const styles = StyleSheet.create({
     modalView: {

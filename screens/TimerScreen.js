@@ -39,6 +39,16 @@ export default function TimerScreen() {
         }
     };
 
+    const handleRemoveTimer = async (label) => {
+        const updatedTimers = timers.filter(timer => timer.label !== label);
+        setTimers(updatedTimers);
+        try {
+            await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
+        } catch (error) {
+            console.error('Failed to remove timer:', error);
+        }
+    };
+
     return (
         <View style={styles.screen}>
             <TopNavigationBar title="Timer" LeftIcon={BackArrowIcon} />
@@ -50,6 +60,7 @@ export default function TimerScreen() {
                         time={timer.time}
                         onStartStop={() => console.log('Start/Stop timer')}
                         onReset={() => console.log('Reset timer')}
+                        onClose={handleRemoveTimer}
                     />
                 ))}
             </ScrollView>
