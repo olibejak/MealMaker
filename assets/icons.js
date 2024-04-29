@@ -175,11 +175,10 @@ const StarOutlineIcon = () => (
     </Svg>
 )
 const StarFilledIcon = () => (
-    <Svg height="24" viewBox="0 -960 960 960" width="24">
-        <Path
-            d="M354-287 126-76 126 77-33-144 111-96-146-13-58-136-58 135-146 13 111 97-33 143ZM233-120l65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Zm247-350Z"
-            fill="#49454F"
-        />
+    <Svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+        <Path d="M0 0h24v24H0z" fill="none"/>
+        <Path d="M0 0h24v24H0z" fill="none"/>
+        <Path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
     </Svg>
 )
 const TimerIcon = () => (
