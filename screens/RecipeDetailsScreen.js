@@ -39,7 +39,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                 if (favourites) {
                     const favouriteRecipes = JSON.parse(favourites);
                     setIsFavourite(favouriteRecipes.findIndex(
-                        favouriteRecipe => favouriteRecipe.idRecipe === recipe.idRecipe) > -1);
+                        favouriteRecipe => favouriteRecipe.idMeal === recipe.idMeal) > -1);
                 }
             })
             .catch((error) => console.error('Error retrieving favorites:', error));
@@ -52,7 +52,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                 if (isFavourite) {
                     // Remove from favorites
                     favouriteRecipes = favouriteRecipes.filter(
-                        (favouriteRecipe) => recipe.idRecipe !== favouriteRecipe.idRecipe);
+                        (favouriteRecipe) => recipe.idMeal !== favouriteRecipe.idMeal);
                     setIsFavourite(false)
                 } else {
                     // Add to favorites

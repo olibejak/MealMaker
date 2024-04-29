@@ -36,6 +36,8 @@ export default function RecipesScreen ({navigation}) {
                     }
             catch (error) {
                     console.error("Failed to fetch ingredients or request timed out:", error);
+                setRecipes(JSON.parse(await AsyncStorage.getItem("favouriteRecipes")
+                    .catch((error) => console.error("Error loading favourite recipes:", error))))
                 } finally {
                     setIsLoading(false)
                 }
