@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from 'react-native-uuid';
 import TimerCard from "../components/TimerCard";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import BottomNavigationBar from "../components/BottomNavigationBar";
@@ -20,7 +21,10 @@ export default function TimerScreen() {
         try {
             const storedTimers = await AsyncStorage.getItem('timers');
             if (storedTimers !== null) {
-                setTimers(JSON.parse(storedTimers));
+                const parsedTimers = JSON.parse(storedTimers);
+                // Ensure all loaded timers have a unique ID
+                const timersWithUniqueIds = parsedTimers.map(timer => ({...timer, id: timer.id || uuid.v4()}));
+                setTimers(timersWithUniqueIds);
             }
         } catch (error) {
             console.error('Failed to load timers from AsyncStorage:', error);
@@ -28,7 +32,7 @@ export default function TimerScreen() {
     };
 
     const handleAddTimer = async (label, time) => {
-        const newTimer = { label, time };
+        const newTimer = { id: uuid.v4(), label, time };
         const updatedTimers = [...timers, newTimer];
         setTimers(updatedTimers);
         setModalVisible(false);
@@ -39,8 +43,8 @@ export default function TimerScreen() {
         }
     };
 
-    const handleRemoveTimer = async (label) => {
-        const updatedTimers = timers.filter(timer => timer.label !== label);
+    const handleRemoveTimer = async (id) => {
+        const updatedTimers = timers.filter(timer => timer.id !== id);
         setTimers(updatedTimers);
         try {
             await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
@@ -53,14 +57,14 @@ export default function TimerScreen() {
         <View style={styles.screen}>
             <TopNavigationBar title="Timer" LeftIcon={BackArrowIcon} />
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                {timers.map((timer, index) => (
+                {timers.map(timer => (
                     <TimerCard
-                        key={index}
+                        key={timer.id} // Ensuring key is using the UUID
                         label={timer.label}
                         time={timer.time}
                         onStartStop={() => console.log('Start/Stop timer')}
                         onReset={() => console.log('Reset timer')}
-                        onClose={handleRemoveTimer}
+                        onClose={() => handleRemoveTimer(timer.id)} // Pass ID to the close handler
                     />
                 ))}
             </ScrollView>
