@@ -20,7 +20,7 @@ export default function IngredientsScreen({ navigation }) {
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [favouriteIngredients, setFavouriteIngredients] = useState([]);
     const [activeFilter, setActiveFilter] = useState(null);
-    const isFocused = useIsFocused(true);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         setIsLoading(true);
@@ -128,17 +128,17 @@ export default function IngredientsScreen({ navigation }) {
             <TopNavigationBar title="Ingredients" LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             <FlatList
                 data={ activeFilter ? favouriteIngredients.filter(item => activeSearch ?
-                    item && item.strIngredient && item.strIngredient.toLowerCase().startsWith(activeSearch) : true)
+                    item && item.strIngredient && item.strIngredient.toLowerCase().startsWith(activeSearch.trim()) : true)
                     : ingredients
                     .filter(item => activeSearch ?
-                        item && item.strIngredient && item.strIngredient.toLowerCase().startsWith(activeSearch) : true)}
+                        item && item.strIngredient && item.strIngredient.toLowerCase().startsWith(activeSearch.trim()) : true)}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={
                     <SearchBar
+                        setFilter={(category) => setActiveFilter(category)}
                         context={"ingredients"}
                         search={(text) => setActiveSearch(text.toLowerCase())}
-                        setFilter={(category) => {setActiveFilter(category)}}
                         activeFilter={activeFilter}
                     />
                 }

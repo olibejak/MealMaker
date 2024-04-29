@@ -6,6 +6,7 @@ import SearchBar from "../components/SearchBar";
 import {BookIcon, HamburgerIcon} from "../assets/icons";
 import React, {useEffect, useState} from "react";
 import {useIsFocused} from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RecipesScreen ({navigation}) {
     const title = "Recipes";
@@ -17,6 +18,8 @@ export default function RecipesScreen ({navigation}) {
     const [activeFilter, setActiveFilter] = useState(null);
     const [activeSearch, setActiveSearch] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [favouriteRecipes, setFavouriteRecipes] = useState([]);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         const fetchRecipesFromAPI = async () => {
@@ -40,6 +43,23 @@ export default function RecipesScreen ({navigation}) {
         };
         fetchRecipesFromAPI();
     }, []);
+
+    useEffect( () => {
+        const loadFavouriteRecipes = async () => {
+            try {
+                // Load fridge content
+                const content = await AsyncStorage.getItem("favouriteRecipes");
+                if (content !== null) {
+                    setFavouriteRecipes(JSON.parse(content));
+                }
+            } catch (error) {
+                console.error("Error loading favourite recipes:", error);
+            }
+        }
+        if (isFocused) {
+            loadFavouriteRecipes();
+        }
+    }, [isFocused])
 
     const loadMoreRecipes = () => {
         if (currentIndex < recipes.length) {
@@ -90,10 +110,13 @@ export default function RecipesScreen ({navigation}) {
                 <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             </View>
             <FlatList
-                data={recipes
+                data={activeFilter === "Favourite recipes" ?
+                    favouriteRecipes.filter(item => activeSearch ?
+                        item && item.strMeal && item.strMeal.toLowerCase().startsWith(activeSearch.trim()) : true)
+                    : recipes
                     .filter(item => activeFilter ? item && item.strCategory && item.strCategory === activeFilter : true)
                     .filter(item => activeSearch ?
-                        item && item.strMeal && item.strMeal.toLowerCase().startsWith(activeSearch) : true)
+                        item && item.strMeal && item.strMeal.toLowerCase().startsWith(activeSearch.trim()) : true)
                 }
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
@@ -101,6 +124,7 @@ export default function RecipesScreen ({navigation}) {
                     <SearchBar
                         filtersOn={filtersOn} setFilter={(category) => setActiveFilter(category)}
                         search={(text) => setActiveSearch(text.toLowerCase())}
+                        activeFilter={activeFilter}
                     />
                 }
                 style={styles.scrollableScreen}
