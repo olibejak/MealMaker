@@ -3,7 +3,6 @@ import { FlatList, Modal, StatusBar, Text, TextInput, TouchableOpacity, View, St
 
 function NumberSelector({ onChange, value, max }) {
     const itemHeight = 80; // Height of each item
-
     const data = Array.from({ length: max + 1 }, (_, i) => ({
         key: `${i}`
     }));
@@ -17,14 +16,6 @@ function NumberSelector({ onChange, value, max }) {
             });
         }
     }, [value]);
-
-    const handleScrollEnd = (event) => {
-        const offset = event.nativeEvent.contentOffset.y;
-        const index = Math.round(offset / itemHeight);
-        const centeredKey = data[index].key; // Directly use the index to find the key
-
-        onChange(centeredKey); // Update the state in the parent component
-    };
 
     return (
         <View style={styles.numberSelectorContainer}>
@@ -44,9 +35,6 @@ function NumberSelector({ onChange, value, max }) {
                     { length: itemHeight, offset: itemHeight * index, index }
                 )}
                 snapToInterval={itemHeight}
-                decelerationRate="fast" // Adjusted for a faster deceleration
-                onScrollEndDrag={handleScrollEnd}
-                onMomentumScrollEnd={handleScrollEnd}
             />
         </View>
     );
@@ -95,7 +83,7 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
                     />
                     <View style={styles.timeSelector}>
                         <View style={styles.numberSelectorContainer}>
-                            <NumberSelector onChange={onHoursChange} value={hours} max={23} />
+                            <NumberSelector onChange={onHoursChange} value={hours} max={179} />
                         </View>
                         <Text style={styles.separator}>:</Text>
                         <View style={styles.numberSelectorContainer}>
