@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {TouchableOpacity, View, Text, StyleSheet, Modal, Platform} from 'react-native';
 import { CloseIcon, CheckmarkIcon, StarFilledIcon } from '../assets/icons';
 
-const FilterCategories = ({ visible, onSelectCategory, onClose, context }) => {
+const FilterCategories = ({ visible, onSelectCategory, onClose, context, activeFilter }) => {
     const [selectedCategory, setSelectedCategory] = useState(null);
+
+    useEffect(() => {
+        setSelectedCategory(activeFilter)
+    }, [activeFilter]);
 
     let categories;
     if (context === 'ingredients') {
@@ -17,6 +21,7 @@ const FilterCategories = ({ visible, onSelectCategory, onClose, context }) => {
     }
 
     const handleSelectCategory = (category) => {
+        activeFilter = category;
         if (selectedCategory === category) {
             setSelectedCategory(null);
             onSelectCategory(null);

@@ -27,10 +27,44 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
     const {recipe} = route.params;
     const [isLoading, setIsLoading] = useState(true);
     const [recipeIngredients, setRecipeIngredients] = useState([]);
-    const [isFavorite, setIsFavorite] = useState(false);
-    const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
+    const [isFavourite, setIsFavourite] = useState(false);
+    const starIconToRender = isFavourite ? StarFilledIcon  : StarOutlineIcon;
     const ingredientKeys = Object.keys(recipe).filter(key => key.startsWith('strIngredient'));
     const amountKeys = Object.keys(recipe).filter(key => key.startsWith('strMeasure'));
+
+    useEffect(() => {
+        // Retrieve favorites from local storage
+        AsyncStorage.getItem('favouriteRecipes')
+            .then((favourites) => {
+                if (favourites) {
+                    const favouriteRecipes = JSON.parse(favourites);
+                    setIsFavourite(favouriteRecipes.findIndex(
+                        favouriteRecipe => favouriteRecipe.idMeal === recipe.idMeal) > -1);
+                }
+            })
+            .catch((error) => console.error('Error retrieving favorites:', error));
+    }, [route]);
+
+    const toggleFavorite = async () => {
+        AsyncStorage.getItem('favouriteRecipes')
+            .then((favourites) => {
+                let favouriteRecipes = favourites ? JSON.parse(favourites) : [];
+                if (isFavourite) {
+                    // Remove from favorites
+                    favouriteRecipes = favouriteRecipes.filter(
+                        (favouriteRecipe) => recipe.idMeal !== favouriteRecipe.idMeal);
+                    setIsFavourite(false)
+                } else {
+                    // Add to favorites
+                    favouriteRecipes.push(recipe);
+                    setIsFavourite(true)
+                }
+                // Update local storage
+                AsyncStorage.setItem('favouriteRecipes', JSON.stringify(favouriteRecipes))
+                    .catch((error) => console.error('Error updating favorites:', error));
+            })
+            .catch((error) => console.error('Error retrieving favorites:', error));
+    };
 
     const ingredientsList = ingredientKeys.map((key, index) => {
         const ingredient = recipe[key];
@@ -139,7 +173,8 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={recipe.strMeal} LeftIcon={BackArrowIcon} RightIcon={starIconToRender} />
+                <TopNavigationBar title={recipe.strMeal} LeftIcon={BackArrowIcon}
+                                  RightIcon={starIconToRender} starAction={toggleFavorite} />
             </View>
             <ScrollView style={styles.scrollableScreen}>
                 <View style={styles.imageContainer}>

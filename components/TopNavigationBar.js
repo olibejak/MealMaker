@@ -1,8 +1,9 @@
 import React from 'react';
 import {Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import {StarFilledIcon, StarOutlineIcon} from "../assets/icons";
 
-export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
+export default function TopNavigationBar({ title, LeftIcon, RightIcon, starAction }) {
     const navigation = useNavigation();
 
     const LeftAction = () => {
@@ -17,6 +18,9 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon }) {
     const RightAction = () => {
         if (RightIcon && RightIcon.name === 'BookIcon') {
             navigation.navigate('Diary');  // Navigates to the Diary screen if the book icon is pressed
+        } else if (RightIcon && starAction &&
+            (RightIcon.name === "StarFilledIcon" ||  RightIcon.name === "StarOutlineIcon")) {
+            starAction();
         }
         // Additional icons and actions can be added here with else if statements
     };

@@ -16,10 +16,45 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function IngredientDetailsScreen ({ route, navigation }) {
     const { ingredient } = route.params;
     const [mealsFromIngredient, setMealsFromIngredient] = useState([]);
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [isFavourite, setIsFavourite] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const starIconToRender = isFavorite ? StarFilledIcon  : StarOutlineIcon;
+    const starIconToRender = isFavourite ? StarFilledIcon  : StarOutlineIcon;
     const [selectedStorage, setSelectedStorage] = useState("");
+
+    useEffect(() => {
+        // Retrieve favorites from local storage
+        AsyncStorage.getItem('favouriteIngredients')
+            .then((favourites) => {
+                if (favourites) {
+                    const favoriteIngredients = JSON.parse(favourites);
+                    setIsFavourite(favoriteIngredients.findIndex(
+                        favIngredient => favIngredient.idIngredient === ingredient.idIngredient) > -1);
+                }
+            })
+            .catch((error) => console.error('Error retrieving favorites:', error));
+    }, [route]);
+
+    const toggleFavorite = async () => {
+        AsyncStorage.getItem('favouriteIngredients')
+            .then((favourites) => {
+                let favouriteIngredients = favourites ? JSON.parse(favourites) : [];
+                if (isFavourite) {
+                    // Remove from favorites
+                    favouriteIngredients = favouriteIngredients.filter(
+                        (favIngredient) => ingredient.idIngredient !== favIngredient.idIngredient);
+                    setIsFavourite(false)
+                } else {
+                    // Add to favorites
+                    favouriteIngredients.push(ingredient);
+                    setIsFavourite(true)
+                }
+                // Update local storage
+                AsyncStorage.setItem('favouriteIngredients', JSON.stringify(favouriteIngredients))
+                    .catch((error) => console.error('Error updating favorites:', error));
+            })
+            .catch((error) => console.error('Error retrieving favorites:', error));
+    };
+
 
     const parsedIngredientName = () => {
         let parsedString = ingredient.strIngredient.toLowerCase();
@@ -117,7 +152,8 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     return (
         <View style={styles.screen}>
             <View>
-                <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon} RightIcon={starIconToRender} />
+                <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon}
+                                  RightIcon={starIconToRender} starAction={toggleFavorite} />
             </View>
             <ScrollView style={styles.scrollableScreen}>
                 <View style={styles.imageContainer}>

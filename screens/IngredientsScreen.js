@@ -1,5 +1,5 @@
 import {View, StyleSheet, FlatList, ActivityIndicator, InteractionManager, Text} from "react-native";
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
@@ -7,6 +7,7 @@ import IngredientCard from "../components/IngredientCard";
 import { BookIcon, HamburgerIcon } from "../assets/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EditSetAmountModal from "../components/EditSetAmountModal";
+import {useIsFocused} from "@react-navigation/native";
 
 export default function IngredientsScreen({ navigation }) {
     const [ingredients, setIngredients] = useState([]);
@@ -17,6 +18,9 @@ export default function IngredientsScreen({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedIngredient, setSelectedIngredient] = useState(null);
     const [selectedDestination, setSelectedDestination] = useState(null);
+    const [favouriteIngredients, setFavouriteIngredients] = useState([]);
+    const [activeFilter, setActiveFilter] = useState(null);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         setIsLoading(true);
@@ -31,6 +35,8 @@ export default function IngredientsScreen({ navigation }) {
                     setCurrentIndex(10);
                 } catch (error) {
                     console.error("Failed to fetch ingredients:", error);
+                    setIngredients(JSON.parse(await AsyncStorage.getItem("favouriteIngredients")
+                        .catch((error) => console.error("Error loading favourite ingredients:", error))))
                 } finally {
                     setIsLoading(false);
                 }
@@ -39,6 +45,23 @@ export default function IngredientsScreen({ navigation }) {
             fetchIngredients();
         });
     }, []);
+
+    useEffect( () => {
+        const loadFavouriteIngredients = async () => {
+            try {
+                // Load fridge content
+                const content = await AsyncStorage.getItem("favouriteIngredients");
+                if (content !== null) {
+                    setFavouriteIngredients(JSON.parse(content));
+                }
+            } catch (error) {
+                console.error("Error loading favourite ingredients:", error);
+            }
+        }
+        if (isFocused) {
+            loadFavouriteIngredients();
+        }
+    }, [isFocused])
 
     const loadMoreIngredients = () => {
         if (currentIndex < ingredients.length) {
@@ -106,15 +129,19 @@ export default function IngredientsScreen({ navigation }) {
         <View style={styles.screen}>
             <TopNavigationBar title="Ingredients" LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             <FlatList
-                data={ingredients
+                data={ activeFilter ? favouriteIngredients.filter(item => activeSearch ?
+                    item && item.strIngredient && item.strIngredient.toLowerCase().startsWith(activeSearch.trim()) : true)
+                    : ingredients
                     .filter(item => activeSearch ?
-                        item && item.strIngredient && item.strIngredient.toLowerCase().startsWith(activeSearch) : true)}
+                        item && item.strIngredient && item.strIngredient.toLowerCase().startsWith(activeSearch.trim()) : true)}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
                 ListHeaderComponent={
                     <SearchBar
+                        setFilter={(category) => setActiveFilter(category)}
                         context={"ingredients"}
                         search={(text) => setActiveSearch(text.toLowerCase())}
+                        activeFilter={activeFilter}
                     />
                 }
                 style={styles.scrollableScreen}
