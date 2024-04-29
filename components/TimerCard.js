@@ -38,7 +38,7 @@ export default function TimerCard({ label, time, onAddTime, onStartStop, onClose
                     </AnimatedCircularProgress>
                 </View>
                 <View style={styles.buttonGroup}>
-                    <TouchableOpacity onPress={onAddTime} style={[styles.iconBubble, styles.addTimeButton]}>
+                    <TouchableOpacity onPress={() => onAddTime()} style={[styles.iconBubble, styles.addTimeButton]}>
                         <PlusIcon />
                         <Text style={styles.iconText}>1:00</Text>
                     </TouchableOpacity>

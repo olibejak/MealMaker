@@ -43,6 +43,24 @@ export default function TimerScreen() {
         }
     };
 
+    const handleAddTime = async (id, additionalSeconds) => {
+        const updatedTimers = timers.map(timer => {
+            if (timer.id === id) {
+                const totalSeconds = timeToSeconds(timer.time) + additionalSeconds;
+                const newTime = secondsToTime(totalSeconds);
+                return { ...timer, time: newTime };
+            }
+            return timer;
+        });
+        setTimers(updatedTimers);
+        try {
+            await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
+        } catch (error) {
+            console.error('Failed to update timer time:', error);
+        }
+    };
+
+
     const handleRemoveTimer = async (id) => {
         const updatedTimers = timers.filter(timer => timer.id !== id);
         setTimers(updatedTimers);
@@ -53,18 +71,30 @@ export default function TimerScreen() {
         }
     };
 
+    function timeToSeconds(time) {
+        const [minutes, seconds] = time.split(":").map(Number);
+        return minutes * 60 + seconds;
+    }
+
+    function secondsToTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
     return (
         <View style={styles.screen}>
             <TopNavigationBar title="Timer" LeftIcon={BackArrowIcon} />
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 {timers.map(timer => (
                     <TimerCard
-                        key={timer.id} // Ensuring key is using the UUID
+                        key={timer.id}
                         label={timer.label}
                         time={timer.time}
+                        onAddTime={() => handleAddTime(timer.id, 60)} // Adding 60 seconds, representing one minute
                         onStartStop={() => console.log('Start/Stop timer')}
                         onReset={() => console.log('Reset timer')}
-                        onClose={() => handleRemoveTimer(timer.id)} // Pass ID to the close handler
+                        onClose={() => handleRemoveTimer(timer.id)}
                     />
                 ))}
             </ScrollView>
