@@ -1,41 +1,27 @@
-import React, {useState} from "react";
-import {FlatList, Modal, StatusBar, Text, TextInput, TouchableOpacity, View, StyleSheet} from "react-native";
+import React, { useState } from "react";
+import { FlatList, Modal, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
 
 function NumberSelector({ onChange, value, max }) {
-    const visibleEntries = 5; // Visible entries before and after the actual visible entry
-    const totalEntries = (max + 1) * 3; // Tripling the list to allow more scroll room
-    const middleOfData = Math.floor(totalEntries / 3); // Initial middle of the actual data
-    const itemHeight = 80; // Updated height of each item to match new styles
-
-    const data = Array.from({ length: totalEntries }, (_, i) => ({
-        key: `${i % (max + 1)}`
+    const itemHeight = 80; // Height of each item
+    const data = Array.from({ length: max + 1 }, (_, i) => ({
+        key: `${i}`
     }));
     const flatListRef = React.useRef(null);
 
-    // Initial scroll to the middle of the data
     React.useEffect(() => {
         if (flatListRef.current) {
             flatListRef.current.scrollToIndex({
-                index: middleOfData + parseInt(value),
+                index: parseInt(value),
                 animated: false
             });
         }
     }, [value]);
 
-    const handleScrollEnd = (event) => {
-        const offset = event.nativeEvent.contentOffset.y;
+    const handleScrollEnd = (e) => {
+        const offset = e.nativeEvent.contentOffset.y;
         const index = Math.round(offset / itemHeight);
-        const centeredKey = data[index % (max + 1)].key;  // Calculate the key at the centered index
-
-        onChange(centeredKey);  // Update the state in the parent component
-
-        // Re-center the view if near the start or end
-        if (index < max + 1 || index > (max + 1) * 2) {
-            flatListRef.current.scrollToIndex({
-                index: middleOfData + (index % (max + 1)),
-                animated: false
-            });
-        }
+        const selectedItem = data[index].key;
+        onChange(parseInt(selectedItem, 10));
     };
 
     return (
@@ -44,9 +30,7 @@ function NumberSelector({ onChange, value, max }) {
                 ref={flatListRef}
                 data={data}
                 renderItem={({ item }) => (
-                    <Text style={styles.numberItem} onPress={() => {
-                        onChange(item.key);
-                    }}>
+                    <Text style={styles.numberItem}>
                         {item.key}
                     </Text>
                 )}
@@ -56,39 +40,35 @@ function NumberSelector({ onChange, value, max }) {
                     { length: itemHeight, offset: itemHeight * index, index }
                 )}
                 snapToInterval={itemHeight}
-                decelerationRate="fast"
-                onScrollEndDrag={handleScrollEnd}  // Called when the user stops dragging
-                onMomentumScrollEnd={handleScrollEnd}  // Called when the momentum from dragging has stopped
+                onMomentumScrollEnd={handleScrollEnd}
             />
         </View>
     );
 }
 
-
 export default function TimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
     const [timerLabel, setTimerLabel] = useState('');
-    const [hours, setHours] = useState('00');
-    const [minutes, setMinutes] = useState('00');
+    const [hours, setHours] = useState(0); // Changed to integer
+    const [minutes, setMinutes] = useState(0); // Changed to integer
 
     const onHoursChange = (newHour) => {
-        setHours(newHour.padStart(2, '0'));
+        setHours(newHour.toString().padStart(2, '0')); // Ensure string formatting after handling as number
     };
 
     const onMinutesChange = (newMinute) => {
-        setMinutes(newMinute.padStart(2, '0'));
+        setMinutes(newMinute.toString().padStart(2, '0')); // Ensure string formatting after handling as number
     };
 
     const handleOk = () => {
-        handleAddTimer(timerLabel, `${hours}:${minutes}`);
+        handleAddTimer(timerLabel, `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
         setModalVisible(false);
-        handleCancel();
     };
 
     const handleCancel = () => {
         setTimerLabel('');
         setModalVisible(false);
-        setHours('00');
-        setMinutes('00');
+        setHours(0); // Reset to integer
+        setMinutes(0); // Reset to integer
     };
 
     return (
@@ -109,11 +89,11 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
                     />
                     <View style={styles.timeSelector}>
                         <View style={styles.numberSelectorContainer}>
-                            <NumberSelector onChange={onHoursChange} value={hours} max={24} />
+                            <NumberSelector onChange={onHoursChange} value={hours.toString()} max={179} />
                         </View>
                         <Text style={styles.separator}>:</Text>
                         <View style={styles.numberSelectorContainer}>
-                            <NumberSelector onChange={onMinutesChange} value={minutes} max={59} />
+                            <NumberSelector onChange={onMinutesChange} value={minutes.toString()} max={59} />
                         </View>
                     </View>
                     <View style={styles.buttonContainer}>
@@ -129,6 +109,9 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
         </Modal>
     );
 }
+
+// Continue using your existing StyleSheet declarations
+
 
 const styles = StyleSheet.create({
     modalView: {
