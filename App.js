@@ -21,6 +21,16 @@ export default function App() {
             if (shoppingListStorage === null) {
                 await AsyncStorage.setItem("shoppingListContent", JSON.stringify([]));
             }
+
+            const favouriteIngredients = await AsyncStorage.getItem("favouriteIngredients");
+            if (favouriteIngredients === null) {
+                await AsyncStorage.setItem("favouriteIngredients", JSON.stringify([]));
+            }
+
+            const favouriteRecipes = await AsyncStorage.getItem("favouriteRecipes");
+            if (favouriteRecipes === null) {
+                await AsyncStorage.setItem("favouriteRecipes", JSON.stringify([]));
+            }
         } catch (error) {
             console.error("Error initializing local storage:", error);
         }

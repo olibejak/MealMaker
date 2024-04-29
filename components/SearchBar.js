@@ -4,7 +4,7 @@ import { FilterIcon, SearchIcon } from "../assets/icons";
 import FilterCategories from './FilterCategories';
 
 // The SearchBar component with filter functionality
-export default function SearchBar({ onFilterPress, context, setFilter, search }) {
+export default function SearchBar({ onFilterPress, context, setFilter, search, activeFilter }) {
     const [filtersVisible, setFiltersVisible] = useState(false);
 
     const placeholder = context === 'ingredients' ? "Search ingredients" : "Search recipes";
@@ -46,6 +46,7 @@ export default function SearchBar({ onFilterPress, context, setFilter, search })
                     }
                     onClose={handleCloseFilter}
                     context={context}
+                    activeFilter={activeFilter}
                 />
             )}
         </View>
