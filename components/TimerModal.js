@@ -1,22 +1,18 @@
-import React, {useState} from "react";
-import {FlatList, Modal, StatusBar, Text, TextInput, TouchableOpacity, View, StyleSheet} from "react-native";
+import React, { useState } from "react";
+import { FlatList, Modal, StatusBar, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
 
 function NumberSelector({ onChange, value, max }) {
-    const visibleEntries = 5; // Visible entries before and after the actual visible entry
-    const totalEntries = (max + 1) * 3; // Tripling the list to allow more scroll room
-    const middleOfData = Math.floor(totalEntries / 3); // Initial middle of the actual data
-    const itemHeight = 80; // Updated height of each item to match new styles
+    const itemHeight = 80; // Height of each item
 
-    const data = Array.from({ length: totalEntries }, (_, i) => ({
-        key: `${i % (max + 1)}`
+    const data = Array.from({ length: max + 1 }, (_, i) => ({
+        key: `${i}`
     }));
     const flatListRef = React.useRef(null);
 
-    // Initial scroll to the middle of the data
     React.useEffect(() => {
         if (flatListRef.current) {
             flatListRef.current.scrollToIndex({
-                index: middleOfData + parseInt(value),
+                index: parseInt(value),
                 animated: false
             });
         }
@@ -25,17 +21,9 @@ function NumberSelector({ onChange, value, max }) {
     const handleScrollEnd = (event) => {
         const offset = event.nativeEvent.contentOffset.y;
         const index = Math.round(offset / itemHeight);
-        const centeredKey = data[index % (max + 1)].key;  // Calculate the key at the centered index
+        const centeredKey = data[index].key; // Directly use the index to find the key
 
-        onChange(centeredKey);  // Update the state in the parent component
-
-        // Re-center the view if near the start or end
-        if (index < max + 1 || index > (max + 1) * 2) {
-            flatListRef.current.scrollToIndex({
-                index: middleOfData + (index % (max + 1)),
-                animated: false
-            });
-        }
+        onChange(centeredKey); // Update the state in the parent component
     };
 
     return (
@@ -56,14 +44,13 @@ function NumberSelector({ onChange, value, max }) {
                     { length: itemHeight, offset: itemHeight * index, index }
                 )}
                 snapToInterval={itemHeight}
-                decelerationRate="fast"
-                onScrollEndDrag={handleScrollEnd}  // Called when the user stops dragging
-                onMomentumScrollEnd={handleScrollEnd}  // Called when the momentum from dragging has stopped
+                decelerationRate="fast" // Adjusted for a faster deceleration
+                onScrollEndDrag={handleScrollEnd}
+                onMomentumScrollEnd={handleScrollEnd}
             />
         </View>
     );
 }
-
 
 export default function TimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
     const [timerLabel, setTimerLabel] = useState('');
@@ -81,7 +68,6 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
     const handleOk = () => {
         handleAddTimer(timerLabel, `${hours}:${minutes}`);
         setModalVisible(false);
-        handleCancel();
     };
 
     const handleCancel = () => {
@@ -109,7 +95,7 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
                     />
                     <View style={styles.timeSelector}>
                         <View style={styles.numberSelectorContainer}>
-                            <NumberSelector onChange={onHoursChange} value={hours} max={24} />
+                            <NumberSelector onChange={onHoursChange} value={hours} max={23} />
                         </View>
                         <Text style={styles.separator}>:</Text>
                         <View style={styles.numberSelectorContainer}>
@@ -129,6 +115,9 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
         </Modal>
     );
 }
+
+// Continue using your existing StyleSheet declarations
+
 
 const styles = StyleSheet.create({
     modalView: {
