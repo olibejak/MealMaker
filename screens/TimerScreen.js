@@ -1,38 +1,53 @@
-import React, { useState } from 'react';
-import {
-    View,
-    ScrollView,
-    StyleSheet,
-
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import TimerCard from "../components/TimerCard";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import TopNavigationBar from "../components/TopNavigationBar";
 import { BackArrowIcon, PlusIcon } from "../assets/icons";
-import { useNavigation } from "@react-navigation/native";
-import TimerModal from '../components/TimerModal'
+import TimerModal from '../components/TimerModal';
 
 export default function TimerScreen() {
-    const navigation = useNavigation();
     const [modalVisible, setModalVisible] = useState(false);
-    const timers = ['20:00', '20:00', '20:00', '20:00', '20:00', '20:00', '20:00'];
+    const [timers, setTimers] = useState([]);
 
-    const handleAddTimer = (label, time) => {
-        console.log(`Adding new timer: ${label} for ${time}`);
+    useEffect(() => {
+        loadTimers();
+    }, []);
+
+    const loadTimers = async () => {
+        try {
+            const storedTimers = await AsyncStorage.getItem('timers');
+            if (storedTimers !== null) {
+                setTimers(JSON.parse(storedTimers));
+            }
+        } catch (error) {
+            console.error('Failed to load timers from AsyncStorage:', error);
+        }
+    };
+
+    const handleAddTimer = async (label, time) => {
+        const newTimer = { label, time };
+        const updatedTimers = [...timers, newTimer];
+        setTimers(updatedTimers);
         setModalVisible(false);
-        // You can implement adding this new timer to your timers array here
+        try {
+            await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
+        } catch (error) {
+            console.error('Failed to save timers:', error);
+        }
     };
 
     return (
         <View style={styles.screen}>
             <TopNavigationBar title="Timer" LeftIcon={BackArrowIcon} />
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                {timers.map((time, index) => (
+                {timers.map((timer, index) => (
                     <TimerCard
-                        label={`Timer ${index + 1}`}
                         key={index}
-                        time={time}
+                        label={timer.label}
+                        time={timer.time}
                         onStartStop={() => console.log('Start/Stop timer')}
                         onReset={() => console.log('Reset timer')}
                     />
