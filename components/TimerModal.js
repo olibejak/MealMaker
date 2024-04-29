@@ -8,7 +8,7 @@ function NumberSelector({ onChange, value, max }) {
     const [isInputMode, setIsInputMode] = useState(false);
 
     // Adjust here to ensure single '0' is shown initially
-    const [inputValue, setInputValue] = useState(value === '00' ? '0' : value);
+    const [inputValue, setInputValue] = useState('0');
 
     const data = Array.from({ length: totalEntries }, (_, i) => ({
         key: `${i % (max + 1)}`
@@ -19,7 +19,7 @@ function NumberSelector({ onChange, value, max }) {
         if (flatListRef.current && !isInputMode) {
             flatListRef.current.scrollToIndex({
                 index: middleOfData + parseInt(value),
-                animated: false
+                animated: true
             });
         }
     }, [value, isInputMode]);
@@ -90,8 +90,8 @@ function NumberSelector({ onChange, value, max }) {
 
 export default function TimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
     const [timerLabel, setTimerLabel] = useState('');
-    const [hours, setHours] = useState('00');
-    const [minutes, setMinutes] = useState('00');
+    const [hours, setHours] = useState('0');
+    const [minutes, setMinutes] = useState('0');
 
     const onHoursChange = (newHour) => {
         setHours(newHour === "" ? "0" : newHour.padStart(2, '0'));
@@ -129,7 +129,6 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
                         value={timerLabel}
                         onChangeText={setTimerLabel}
                         style={styles.inputText}
-                        autoFocus={true}
                     />
                     <View style={styles.timeSelector}>
                         <View style={styles.numberSelectorContainer}>
