@@ -18,10 +18,13 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
     const diaryEntry = route.params?.diaryEntry ?? null;
 
     useEffect(() => {
-        // When diaryEntry is passed, initialize states with its content
+        // Initialize states with content if diaryEntry is passed, otherwise set defaults
         if (diaryEntry) {
-            setInputText(diaryEntry.text);
-            setImageUris(diaryEntry.images);
+            setInputText(diaryEntry.text || '');
+            setImageUris(diaryEntry.images || []);
+        } else {
+            setInputText('');
+            setImageUris([]);
         }
     }, [diaryEntry]);
 
@@ -110,6 +113,7 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
             log.error('Error removing photo', error);
             alert('Failed to remove the photo. Please try again.');
         }
+        imageUris[index] = null;
     };
 
     const saveEntry = async () => {
@@ -136,7 +140,6 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
         }
 
         await AsyncStorage.setItem('diaryContent', JSON.stringify(diaryContent));
-
 
         navigation.navigate('DiaryEntryDetail', { diaryEntry: newEntry });
     };

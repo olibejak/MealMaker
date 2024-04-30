@@ -11,7 +11,7 @@ const RecipeCard = ({
                         onPressSecondary,
                         actionButton // 'cook' or 'delete'
                     }) => {
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(image ? true : false);
 
     const renderActionButton = () => {
         switch (actionButton) {
@@ -42,7 +42,7 @@ const RecipeCard = ({
                     <ActivityIndicator size="large" style={StyleSheet.absoluteFill} />
                 )}
 
-                {(!image && !isLoading) ? null : <Image
+                {(!image) ? null : <Image
                     source={image}
                     style={styles.cardImage}
                     onLoad={() => setIsLoading(false)}
