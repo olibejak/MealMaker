@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../assets/icons";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
-export default function TimerCard({ id, label, initialTime, onAddTime, onStartStop, onClose, running }) {
+export default function TimerCard({ label, initialTime, onAddTime, onStartStop, onClose, running }) {
     const [isRunning, setIsRunning] = useState(running); // Initialize with the running state from props
     const [currentTime, setCurrentTime] = useState(initialTime);
 
@@ -55,10 +55,10 @@ export default function TimerCard({ id, label, initialTime, onAddTime, onStartSt
                         size={180}
                         width={10}
                         fill={(timeToSeconds(currentTime) / timeToSeconds(initialTime)) * 100}
-                        tintColor="#F6F2F9"
-                        backgroundColor="#3d5875"
-                        color="#3d5875">
-
+                        tintColor="#cfbbfd"  // This will now act like the "background"
+                        backgroundColor="#F6F2F9" // This will act like the "fill color"
+                        rotation={360}
+                    >
                         {
                             () => (
                                 <View style={styles.innerCircle}>
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-around',
         //  Shadow
-        shadowColor: '#000',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.5,
         shadowRadius: 1,
