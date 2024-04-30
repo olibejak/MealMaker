@@ -18,18 +18,16 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
     // Extract diaryEntry from route.params or set it to null if undefined
     const diaryEntry = route.params?.diaryEntry ?? null;
 
-    // Focus Effect to reset state whenever the screen is focused
-    useFocusEffect(
-        React.useCallback(() => {
-            if (diaryEntry) {
-                setInputText(diaryEntry.text || '');
-                setImageUris(diaryEntry.images || []);
-            } else {
-                setInputText('');
-                setImageUris([]);
-            }
-        }, [diaryEntry])
-    );
+    useEffect(() => {
+        // Initialize states with content if diaryEntry is passed, otherwise set defaults
+        if (diaryEntry) {
+            setInputText(diaryEntry.text || '');
+            setImageUris(diaryEntry.images || []);
+        } else {
+            setInputText('');
+            setImageUris([]);
+        }
+    }, [diaryEntry]);
 
     useEffect(() => {
         (async () => {
@@ -55,7 +53,6 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
 
         const fileName = uri.split('/').pop();
         const newPath = FileSystem.documentDirectory + fileName;
-        log.info('Copying image to:', newPath);
 
         try {
             await FileSystem.copyAsync({
@@ -78,7 +75,6 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
         });
 
         if (!result.canceled) {
-            result.assets.forEach((asset) => log.info(asset.uri));
             await handleAddImage(result.assets[0].uri);
         }
         else {
@@ -131,7 +127,6 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
             title: firstLine, // Set or update the title based on the first line of the input text
             text: inputText,
             images: imageUris,
-            date: diaryEntry ? diaryEntry.date : new Date().toLocaleDateString(), // Keep the original date if editing, otherwise use the current date
         };
 
         if (diaryEntry) {
