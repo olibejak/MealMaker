@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, View, Text, StyleSheet } from 'react-native';
+import {Modal, View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 
 function SnackbarModal({ textToDisplay, visible, onDismiss }) {
     const [modalVisible, setModalVisible] = useState(visible);
@@ -20,6 +20,13 @@ function SnackbarModal({ textToDisplay, visible, onDismiss }) {
         }
     }, [modalVisible, onDismiss]);
 
+    const handleBackgroundPress = () => {
+        setModalVisible(false);
+        if (onDismiss) {
+            onDismiss();
+        }
+    };
+
     return (
         <Modal
             animationType="fade"
@@ -32,11 +39,15 @@ function SnackbarModal({ textToDisplay, visible, onDismiss }) {
                 }
             }}
         >
-            <View style={styles.modalBackground}>
-                <View style={styles.modalContainer}>
-                    <Text style={styles.modalText}>{textToDisplay}</Text>
+            <TouchableWithoutFeedback onPress={handleBackgroundPress}>
+                <View style={styles.modalBackground}>
+                    <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                        <View style={styles.modalContainer}>
+                            <Text style={styles.modalText}>{textToDisplay}</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
         </Modal>
     );
 }
