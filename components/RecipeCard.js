@@ -41,12 +41,13 @@ const RecipeCard = ({
                 {isLoading && (
                     <ActivityIndicator size="large" style={StyleSheet.absoluteFill} />
                 )}
-                <Image
+
+                {(!image && !isLoading) ? null : <Image
                     source={image}
                     style={styles.cardImage}
                     onLoad={() => setIsLoading(false)}
                     onError={() => setIsLoading(false)}
-                />
+                />}
             </View>
             <View style={styles.cardContainer}>
                 <Text style={styles.cardTitle}>{title}</Text>

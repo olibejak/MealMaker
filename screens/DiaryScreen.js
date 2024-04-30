@@ -1,18 +1,15 @@
 // MyDiaryScreen.js
 import React, {useCallback, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import RecipeCard from "../components/RecipeCard";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import TopNavigationBar from "../components/TopNavigationBar";
 import {BackArrowIcon, PlusIcon} from "../assets/icons";
-import {useNavigation} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../utils/Logger";
 
-export default function MyDiaryScreen() {
-    const navigation = useNavigation();
-    const state = navigation.getState();
+export default function MyDiaryScreen({navigation}) {
     const [isFocused, setIsFocused] = useState(false);
     const [diaryContent, setDiaryContent] = useState([]);
 
@@ -59,18 +56,24 @@ export default function MyDiaryScreen() {
         <View style={styles.screen}>
             <TopNavigationBar title={'My diary'} LeftIcon={BackArrowIcon} />
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                {diaryContent.map((diaryEntry) => (
-                    <RecipeCard
-                        key={diaryEntry.id}
-                        title={diaryEntry.title}
-                        date={diaryEntry.date}
-                        image={diaryEntry.images[0]}
-                        description={diaryEntry.text}
-                        onPressDetails={() => navigation.navigate('DiaryEntryDetail', { diaryId: diaryEntry.id })}
-                        onPressSecondary={() => deleteDiaryEntry(diaryEntry.id)}
-                        actionButton={'delete'}
-                    />
-                ))}
+                {diaryContent.length > 0 ? (
+                    diaryContent.map((diaryEntry) => (
+                        <RecipeCard
+                            key={diaryEntry.id}
+                            title={diaryEntry.title}
+                            date={diaryEntry.date}
+                            image={diaryEntry.images[0]}
+                            description={diaryEntry.text}
+                            onPressDetails={() => navigation.navigate('DiaryEntryDetail', { diaryEntry: diaryEntry })}
+                            onPressSecondary={() => deleteDiaryEntry(diaryEntry.id)}
+                            actionButton={'delete'}
+                        />
+                    ))
+                ) : (
+                    <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}> No diary entries, click + to add some</Text>
+                    </View>
+                )}
             </ScrollView>
             <BottomNavigationBar/>
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => navigation.navigate('NewDiaryEntry')} />
@@ -96,8 +99,22 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     scrolling: {
+        flexGrow: 1,
         alignItems: 'stretch',
         paddingTop: 8,
         paddingBottom: 50,
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'center',
+    },
+    emptyText: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 18,
+        color: '#666',
+        textAlignVertical: 'center',
+        textAlign: 'center',
     },
 });

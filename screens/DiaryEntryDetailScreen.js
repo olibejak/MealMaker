@@ -7,9 +7,9 @@ import {useNavigation} from "@react-navigation/native";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 
 
-export default function DiaryEntryDetailScreen() {
+export default function DiaryEntryDetailScreen( { route, navigation } ) {
+    const {diaryEntry} = route.params;
     const title = "My first Recipe";
-    const navigation = useNavigation();
     const image = require('../assets/testing_images/recipe.jpg')
 
     return (
