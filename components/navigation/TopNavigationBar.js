@@ -1,7 +1,7 @@
 import React from 'react';
 import {Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import {StarFilledIcon, StarOutlineIcon} from "../assets/icons";
+import {StarFilledIcon, StarOutlineIcon} from "../../assets/icons";
 
 export default function TopNavigationBar({ title, LeftIcon, RightIcon, starAction }) {
     const navigation = useNavigation();

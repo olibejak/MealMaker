@@ -1,9 +1,9 @@
 import React from 'react';
 import {View, Text, ScrollView, StyleSheet, Image, Dimensions} from 'react-native';
-import BottomNavigationBar from "../components/BottomNavigationBar";
-import TopNavigationBar from "../components/TopNavigationBar";
-import {BackArrowIcon, PencilIcon} from "../assets/icons";
-import BottomRightCornerButton from "../components/BottomRightCornerButton";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import {BackArrowIcon, PencilIcon} from "../../assets/icons";
+import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
 
 
 export default function DiaryEntryDetailScreen( { route, navigation } ) {

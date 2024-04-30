@@ -1,13 +1,13 @@
 // MyDiaryScreen.js
 import React, {useCallback, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import BottomRightCornerButton from "../components/BottomRightCornerButton";
-import RecipeCard from "../components/RecipeCard";
-import BottomNavigationBar from "../components/BottomNavigationBar";
-import TopNavigationBar from "../components/TopNavigationBar";
-import {BackArrowIcon, PlusIcon} from "../assets/icons";
+import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
+import RecipeCard from "../../components/cards/RecipeCard";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import {BackArrowIcon, PlusIcon} from "../../assets/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import log from "../utils/Logger";
+import log from "../../utils/Logger";
 
 export default function MyDiaryScreen({navigation}) {
 

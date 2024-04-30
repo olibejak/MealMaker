@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import { FilterIcon, SearchIcon } from "../assets/icons";
-import FilterCategories from './FilterCategories';
+import { FilterIcon, SearchIcon } from "../../assets/icons";
+import FilterCategoriesModal from '../modals/FilterCategoriesModal';
 
 // The SearchBar component with filter functionality
 export default function SearchBar({ onFilterPress, context, setFilter, search, activeFilter }) {
@@ -39,7 +39,7 @@ export default function SearchBar({ onFilterPress, context, setFilter, search, a
                 </TouchableOpacity>
             </TouchableOpacity>
             {filtersVisible && (
-                <FilterCategories
+                <FilterCategoriesModal
                     visible={filtersVisible}
                     onSelectCategory={(category) =>
                         setFilter(category) // Placeholder for actual functionality

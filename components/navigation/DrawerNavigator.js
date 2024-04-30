@@ -2,21 +2,21 @@ import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { DrawerActions } from "@react-navigation/native";
-import { AboutIcon, SettingsIcon, TimerIcon } from "../assets/icons";
+import { AboutIcon, SettingsIcon, TimerIcon } from "../../assets/icons";
 
-import IngredientsScreen from "../screens/IngredientsScreen";
-import RecipesScreen from "../screens/RecipesScreen";
-import FridgeScreen from "../screens/FridgeScreen";
-import NewDiaryEntryScreen from "../screens/NewDiaryEntryScreen";
-import ShoppingListScreen from "../screens/ShoppingListScreen";
-import DiaryEntryDetailScreen from "../screens/DiaryEntryDetailScreen";
-import IngredientDetailsScreen from "../screens/IngredientDetailsScreen";
-import SettingsScreen from "../screens/SettingsScreen";
-import DiaryScreen from "../screens/DiaryScreen";
-import RecipeDetailsScreen from "../screens/RecipeDetailsScreen";
-import StepByStepRecipeScreen from "../screens/StepByStepRecipeScreen";
-import AboutScreen from "../screens/AboutScreen";
-import TimerScreen from "../screens/TimerScreen";
+import IngredientsScreen from "../../screens/main/IngredientsScreen";
+import RecipesScreen from "../../screens/main/RecipesScreen";
+import FridgeScreen from "../../screens/main/FridgeScreen";
+import NewDiaryEntryScreen from "../../screens/diary/NewDiaryEntryScreen";
+import ShoppingListScreen from "../../screens/main/ShoppingListScreen";
+import DiaryEntryDetailScreen from "../../screens/diary/DiaryEntryDetailScreen";
+import IngredientDetailsScreen from "../../screens/main/IngredientDetailsScreen";
+import SettingsScreen from "../../screens/drawer/SettingsScreen";
+import DiaryScreen from "../../screens/diary/DiaryScreen";
+import RecipeDetailsScreen from "../../screens/main/RecipeDetailsScreen";
+import StepByStepRecipeScreen from "../../screens/main/StepByStepRecipeScreen";
+import AboutScreen from "../../screens/drawer/AboutScreen";
+import TimerScreen from "../../screens/drawer/TimerScreen";
 
 const Drawer = createDrawerNavigator();
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
-import { CloseIcon } from "../assets/icons"; // Ensure this import is correct
+import { CloseIcon } from "../../assets/icons"; // Ensure this import is correct
 
 export default function PhotoThumbnail({ sources, onClose }) {
     // Render item function to display each photo and its close button

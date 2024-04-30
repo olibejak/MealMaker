@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform} from 'react-native';
-import {BackArrowIcon, CameraIcon, CheckmarkIconBlack, ImageIcon} from "../assets/icons.js";
-import BottomRightCornerButton from "../components/BottomRightCornerButton";
-import TopNavigationBar from "../components/TopNavigationBar";
-import BottomNavigationBar from "../components/BottomNavigationBar";
-import PhotoThumbnail from "../components/PhotoThumbnail";
+import {BackArrowIcon, CameraIcon, CheckmarkIconBlack, ImageIcon} from "../../assets/icons.js";
+import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
+import PhotoThumbnail from "../../components/image/PhotoThumbnail";
 import * as ImagePicker from "expo-image-picker";
-import log from "../utils/Logger";
+import log from "../../utils/Logger";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {CommonActions, useFocusEffect} from "@react-navigation/native";

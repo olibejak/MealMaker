@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity, ActivityIndicator} from 'react-native';
-import {PotIcon, GarbageIcon} from "../assets/icons";
+import {PotIcon, GarbageIcon} from "../../assets/icons";
 
 const RecipeCard = ({
                         title,

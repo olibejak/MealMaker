@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {TouchableOpacity, View, Text, StyleSheet, Modal, Platform} from 'react-native';
-import { CloseIcon, CheckmarkIcon, StarFilledIcon } from '../assets/icons';
+import { CloseIcon, CheckmarkIcon, StarFilledIcon } from '../../assets/icons';
 
-const FilterCategories = ({ visible, onSelectCategory, onClose, context, activeFilter }) => {
+const FilterCategoriesModal = ({ visible, onSelectCategory, onClose, context, activeFilter }) => {
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     useEffect(() => {
@@ -132,4 +132,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default FilterCategories;
+export default FilterCategoriesModal;

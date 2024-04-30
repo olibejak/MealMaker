@@ -1,15 +1,15 @@
 import {View, StyleSheet, FlatList, ActivityIndicator, InteractionManager, Text} from "react-native";
 import React, {useEffect, useState} from "react";
-import TopNavigationBar from "../components/TopNavigationBar";
-import BottomNavigationBar from "../components/BottomNavigationBar";
-import SearchBar from "../components/SearchBar";
-import IngredientCard from "../components/IngredientCard";
-import { BookIcon, HamburgerIcon } from "../assets/icons";
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
+import SearchBar from "../../components/searchbar/SearchBar";
+import IngredientCard from "../../components/cards/IngredientCard";
+import { BookIcon, HamburgerIcon } from "../../assets/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import EditSetAmountModal from "../components/EditSetAmountModal";
+import EditSetAmountModal from "../../components/modals/EditSetAmountModal";
 import {useIsFocused} from "@react-navigation/native";
-import SnackbarModal from "../components/SnackbarModal";
-import log from "../utils/Logger";
+import SnackbarModal from "../../components/modals/SnackbarModal";
+import log from "../../utils/Logger";
 
 export default function IngredientsScreen({ navigation }) {
     const [ingredients, setIngredients] = useState([]);

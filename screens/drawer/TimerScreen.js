@@ -5,14 +5,14 @@ import {
     StyleSheet,
 
 } from 'react-native';
-import TimerCard from "../components/TimerCard";
-import BottomRightCornerButton from "../components/BottomRightCornerButton";
-import BottomNavigationBar from "../components/BottomNavigationBar";
-import TopNavigationBar from "../components/TopNavigationBar";
-import { BackArrowIcon, PlusIcon } from "../assets/icons";
+import TimerCard from "../../components/cards/TimerCard";
+import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import { BackArrowIcon, PlusIcon } from "../../assets/icons";
 import { useNavigation } from "@react-navigation/native";
-import TimerModal from '../components/TimerModal'
-import log from "../utils/Logger";
+import TimerModal from '../../components/modals/TimerModal'
+import log from "../../utils/Logger";
 
 export default function TimerScreen() {
     const navigation = useNavigation();

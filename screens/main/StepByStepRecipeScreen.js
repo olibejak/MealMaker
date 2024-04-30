@@ -1,10 +1,10 @@
 import {ScrollView, StyleSheet, View} from "react-native";
-import TopNavigationBar from "../components/TopNavigationBar";
-import {BackArrowIcon, StarFilledIcon, StarOutlineIcon, TimerIcon} from "../assets/icons";
-import BottomNavigationBar from "../components/BottomNavigationBar";
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import {BackArrowIcon, StarFilledIcon, StarOutlineIcon, TimerIcon} from "../../assets/icons";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import {useEffect, useState} from "react";
-import ListItem from "../components/ListItem";
-import BottomRightCornerButton from "../components/BottomRightCornerButton";
+import ListItem from "../../components/lists/ListItem";
+import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
 
 export default function StepByStepRecipeScreen ( { route, navigation} ) {
     const recipe = route.params.recipe;

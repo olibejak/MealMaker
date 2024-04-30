@@ -1,13 +1,13 @@
 import {View, StyleSheet, ActivityIndicator, FlatList, Text} from "react-native";
-import TopNavigationBar from "../components/TopNavigationBar";
-import BottomNavigationBar from "../components/BottomNavigationBar";
-import RecipeCard from "../components/RecipeCard";
-import SearchBar from "../components/SearchBar";
-import {BookIcon, HamburgerIcon} from "../assets/icons";
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
+import RecipeCard from "../../components/cards/RecipeCard";
+import SearchBar from "../../components/searchbar/SearchBar";
+import {BookIcon, HamburgerIcon} from "../../assets/icons";
 import React, {useEffect, useState} from "react";
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import log from "../utils/Logger";
+import log from "../../utils/Logger";
 
 export default function RecipesScreen ({navigation}) {
     const title = "Recipes";

@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { View, StyleSheet, FlatList} from "react-native";
-import TopNavigationBar from "../components/TopNavigationBar";
-import BottomNavigationBar from "../components/BottomNavigationBar";
-import BottomRightCornerButton from "../components/BottomRightCornerButton";
-import EditSetAmountModal from "../components/EditSetAmountModal";
-import IngredientCard from "../components/IngredientCard";
-import { BookIcon, HamburgerIcon, PlusIcon } from "../assets/icons";
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
+import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
+import EditSetAmountModal from "../../components/modals/EditSetAmountModal";
+import IngredientCard from "../../components/cards/IngredientCard";
+import { BookIcon, HamburgerIcon, PlusIcon } from "../../assets/icons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from "@react-navigation/native";
-import log from "../utils/Logger";
+import log from "../../utils/Logger";
 
 export default function FridgeScreen({ navigation }) {
     const title = "My fridge";

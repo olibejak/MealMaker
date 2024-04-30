@@ -9,8 +9,8 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
-import TopNavigationBar from "../components/TopNavigationBar";
-import BottomNavigationBar from "../components/BottomNavigationBar";
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import {useEffect, useState} from "react";
 import {
     BackArrowIcon,
@@ -18,11 +18,11 @@ import {
     PotIcon,
     StarFilledIcon,
     StarOutlineIcon
-} from "../assets/icons";
-import MealMiniature from "../components/MealMiniature";
-import BottomRightCornerButton from "../components/BottomRightCornerButton";
+} from "../../assets/icons";
+import MealMiniature from "../../components/image/MealMiniature";
+import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import log from "../utils/Logger";
+import log from "../../utils/Logger";
 
 export default function RecipeDetailsScreen ( { route, navigation } ) {
     const {recipe} = route.params;

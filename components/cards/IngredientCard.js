@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, TouchableOpacity} from "react-native";
-import {BasketCardIcon, FridgeCardIcon, PencilIcon} from "../assets/icons";
+import {BasketCardIcon, FridgeCardIcon, PencilIcon} from "../../assets/icons";
 
 export default function IngredientCard({
                                            text,

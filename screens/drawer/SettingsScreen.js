@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import TopNavigationBar from "../components/TopNavigationBar";
-import BottomNavigationBar from "../components/BottomNavigationBar";
-import SettingsCard from "../components/SettingsCard";
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
+import SettingsCard from "../../components/cards/SettingsCard";
 import {
     BookIcon,
     FlashlightIcon,
@@ -11,7 +11,7 @@ import {
     PhoneLinkIcon,
     VibrationIcon,
     VolumeIcon
-} from "../assets/icons";
+} from "../../assets/icons";
 
 export default function SettingsScreen({ navigation }) {
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);

@@ -1,6 +1,6 @@
 import {Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import React, {useCallback, useEffect, useState} from 'react';
-import { BasketIcon, DiningIcon, EggIcon, FridgeIcon } from "../assets/icons";
+import { BasketIcon, DiningIcon, EggIcon, FridgeIcon } from "../../assets/icons";
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

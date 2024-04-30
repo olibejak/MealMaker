@@ -1,9 +1,9 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View, Linking } from 'react-native';
-import TopNavigationBar from "../components/TopNavigationBar";
-import BottomNavigationBar from "../components/BottomNavigationBar";
-import { BookIcon, HamburgerIcon } from "../assets/icons";
-import log from "../utils/Logger";
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
+import { BookIcon, HamburgerIcon } from "../../assets/icons";
+import log from "../../utils/Logger";
 
 export default function AboutScreen() {
     const sections = [

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../assets/icons"; // Replace with actual icons
+import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../../assets/icons"; // Replace with actual icons
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 export default function TimerCard({ label, time, onAddTime, onStartStop, onClose, onReload }) {

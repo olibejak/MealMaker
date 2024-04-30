@@ -1,13 +1,13 @@
 import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
-import TopNavigationBar from '../components/TopNavigationBar';
-import BottomNavigationBar from '../components/BottomNavigationBar';
-import SnackbarModal from '../components/SnackbarModal';
-import { BackArrowIcon, FridgeCardIcon, BasketCardIcon, StarOutlineIcon, StarFilledIcon } from '../assets/icons';
-import MealMiniature from '../components/MealMiniature';
+import TopNavigationBar from '../../components/navigation/TopNavigationBar';
+import BottomNavigationBar from '../../components/navigation/BottomNavigationBar';
+import SnackbarModal from '../../components/modals/SnackbarModal';
+import { BackArrowIcon, FridgeCardIcon, BasketCardIcon, StarOutlineIcon, StarFilledIcon } from '../../assets/icons';
+import MealMiniature from '../../components/image/MealMiniature';
 import {useEffect, useState} from "react";
-import EditSetAmountModal from "../components/EditSetAmountModal";
+import EditSetAmountModal from "../../components/modals/EditSetAmountModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import log from "../utils/Logger";
+import log from "../../utils/Logger";
 
 export default function IngredientDetailsScreen ({ route, navigation }) {
     const { ingredient } = route.params;

@@ -1,16 +1,16 @@
 import {View, StyleSheet, ScrollView} from "react-native";
-import TopNavigationBar from "../components/TopNavigationBar";
-import BottomNavigationBar from "../components/BottomNavigationBar";
-import {BookIcon, EditIcon, HamburgerIcon, PlusIcon, ShoppingCartIcon} from "../assets/icons";
-import EditSetAmountModal from "../components/EditSetAmountModal"; // Import the modal component
+import TopNavigationBar from "../../components/navigation/TopNavigationBar";
+import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
+import {BookIcon, EditIcon, HamburgerIcon, PlusIcon, ShoppingCartIcon} from "../../assets/icons";
+import EditSetAmountModal from "../../components/modals/EditSetAmountModal"; // Import the modal component
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useCallback, useEffect, useState} from "react";
-import ListItem from "../components/ListItem";
-import BottomRightCornerButton from "../components/BottomRightCornerButton";
+import ListItem from "../../components/lists/ListItem";
+import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
 import {useIsFocused} from "@react-navigation/native";
-import ConfirmationModal from "../components/ConfirmationModal";
-import log from "../utils/Logger";
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
+import log from "../../utils/Logger";
 
 export default function ShoppingListScreen () {
     const title = "Shopping list";
