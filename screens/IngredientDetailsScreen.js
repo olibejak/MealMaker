@@ -12,6 +12,7 @@ export default function IngredientDetailsScreen({ route, navigation }) {
     const [mealsFromIngredient, setMealsFromIngredient] = useState([]);
     const [isFavorite, setIsFavorite] = useState(false);
     const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
     const starIconToRender = isFavorite ? StarFilledIcon : StarOutlineIcon;
 
     const parsedIngredientName = () => {
@@ -64,12 +65,14 @@ export default function IngredientDetailsScreen({ route, navigation }) {
     };
 
     const handleAddToFridge = () => {
-        // Logic for adding to fridge
+        const ingredientName = ingredient.strIngredient;
+        setSnackbarMessage(`${ingredientName} added to the fridge successfully!`);
         setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to fridge
     };
 
     const handleAddToBasket = () => {
-        // Logic for adding to basket
+        const ingredientName = ingredient.strIngredient;
+        setSnackbarMessage(`${ingredientName} added to the shopping list successfully!`);
         setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to basket
     };
 
@@ -109,7 +112,7 @@ export default function IngredientDetailsScreen({ route, navigation }) {
                 />
             </ScrollView>
             <SnackbarModal
-                textToDisplay={'Added to fridge successfully!'}
+                textToDisplay={snackbarMessage}
                 onDismiss={() => setSnackbarModalVisible(false)}
                 visible={snackbarModalVisible}
             />

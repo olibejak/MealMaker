@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Modal, View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import {Modal, View, Text, StyleSheet, TouchableWithoutFeedback, Platform} from 'react-native';
 
 function SnackbarModal({ textToDisplay, visible, onDismiss }) {
     const [modalVisible, setModalVisible] = useState(visible);
@@ -61,7 +61,14 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     modalContainer: {
-        bottom: 70,
+        ...Platform.select({
+            ios: {
+                bottom: 85,
+            },
+            android: {
+                bottom: 70,
+            },
+        }),
         display: 'flex',
         backgroundColor: '#CAC4D0',
         borderRadius: 8,
