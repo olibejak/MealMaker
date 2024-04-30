@@ -1,15 +1,10 @@
-import {View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, TouchableOpacity, FlatList} from "react-native";
-import TopNavigationBar from "../components/TopNavigationBar";
-import BottomNavigationBar from "../components/BottomNavigationBar";
+import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
+import TopNavigationBar from '../components/TopNavigationBar';
+import BottomNavigationBar from '../components/BottomNavigationBar';
+import SnackbarModal from '../components/SnackbarModal';
+import { BackArrowIcon, FridgeCardIcon, BasketCardIcon, StarOutlineIcon, StarFilledIcon } from '../assets/icons';
+import MealMiniature from '../components/MealMiniature';
 import {useEffect, useState} from "react";
-import {
-    BackArrowIcon,
-    FridgeCardIcon,
-    BasketCardIcon,
-    StarOutlineIcon,
-    StarFilledIcon
-} from "../assets/icons";
-import MealMiniature from "../components/MealMiniature";
 import EditSetAmountModal from "../components/EditSetAmountModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -20,6 +15,8 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const starIconToRender = isFavourite ? StarFilledIcon  : StarOutlineIcon;
     const [selectedStorage, setSelectedStorage] = useState("");
+    const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     useEffect(() => {
         // Retrieve favorites from local storage
@@ -108,14 +105,31 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
         )
     }
 
+    const handleAddToFridge = () => {
+        const ingredientName = ingredient.strIngredient;
+        setSnackbarMessage(`${ingredientName} added to the fridge successfully!`);
+        setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to fridge
+    };
+
+    const handleAddToBasket = () => {
+        const ingredientName = ingredient.strIngredient;
+        setSnackbarMessage(`${ingredientName} added to the shopping list successfully!`);
+        setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to basket
+    };
+
     const handleEditAmount = (storage) => {
         setModalVisible(true);
         setSelectedStorage(storage)
     };
 
-    const handleConfirmEdit = (amount) => {
+    const handleConfirmEdit = async (amount) => {
+        await addIngredientToStorage(amount);
         setModalVisible(false);
-        addIngredientToStorage(amount);
+        if (selectedStorage === "fridgeContent") {
+            handleAddToFridge();
+        } else {
+            handleAddToBasket();
+        }
     };
 
     const addIngredientToStorage = async (amount) => {
@@ -191,6 +205,11 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 onClose={() => setModalVisible(false)}
                 onConfirm={(amount) => handleConfirmEdit(amount)}
                 showDelete={false} // Hide delete button in this screen
+            />
+            <SnackbarModal
+                textToDisplay={snackbarMessage}
+                onDismiss={() => setSnackbarModalVisible(false)}
+                visible={snackbarModalVisible}
             />
         </View>
     );
