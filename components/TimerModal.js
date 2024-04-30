@@ -62,6 +62,10 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
     const handleOk = () => {
         handleAddTimer(timerLabel, `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
         setModalVisible(false);
+        // Reset the state after adding a timer
+        setTimerLabel('');
+        setHours(0);
+        setMinutes(0);
     };
 
     const handleCancel = () => {

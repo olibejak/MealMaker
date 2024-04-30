@@ -3,17 +3,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../assets/icons"; // Replace with actual icons
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
-export default function TimerCard({ label, time, onAddTime, onStartStop, onClose, onReload }) {
-    const [isRunning, setIsRunning] = useState(false);
+export default function TimerCard({ label, time, onAddTime, onStartStop, onClose, onReload, running }) {
+    const [isRunning, setIsRunning] = useState(running);
     const circularProgressRef = useRef();
-
-    const toggleTimer = () => {
-        setIsRunning(!isRunning);
-        onStartStop();
-        if (circularProgressRef.current) {
-            circularProgressRef.current.animate(100, 8000); // Fill the progress to 100% in 8 seconds
-        }
-    };
 
     return (
         <View style={styles.shadowContainer}>
@@ -42,7 +34,7 @@ export default function TimerCard({ label, time, onAddTime, onStartStop, onClose
                         <PlusIcon />
                         <Text style={styles.iconText}>1:00</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={toggleTimer} style={styles.iconBubble}>
+                    <TouchableOpacity onPress={onStartStop} style={styles.iconBubble}>
                         {isRunning ? <PauseIcon /> : <PlayIcon />}
                     </TouchableOpacity>
                 </View>

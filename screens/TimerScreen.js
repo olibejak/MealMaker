@@ -95,6 +95,7 @@ export default function TimerScreen() {
                         onStartStop={() => console.log('Start/Stop timer')}
                         onReset={() => console.log('Reset timer')}
                         onClose={() => handleRemoveTimer(timer.id)}
+                        running={false}
                     />
                 ))}
             </ScrollView>
