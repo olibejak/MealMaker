@@ -7,6 +7,7 @@ import MealMiniature from '../components/MealMiniature';
 import {useEffect, useState} from "react";
 import EditSetAmountModal from "../components/EditSetAmountModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import log from "../utils/Logger";
 
 export default function IngredientDetailsScreen ({ route, navigation }) {
     const { ingredient } = route.params;
@@ -28,7 +29,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                         favIngredient => favIngredient.idIngredient === ingredient.idIngredient) > -1);
                 }
             })
-            .catch((error) => console.error('Error retrieving favorites:', error));
+            .catch((error) => log.error('Error retrieving favorites:', error));
     }, [route]);
 
     const toggleFavorite = async () => {
@@ -47,9 +48,9 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 }
                 // Update local storage
                 AsyncStorage.setItem('favouriteIngredients', JSON.stringify(favouriteIngredients))
-                    .catch((error) => console.error('Error updating favorites:', error));
+                    .catch((error) => log.error('Error updating favorites:', error));
             })
-            .catch((error) => console.error('Error retrieving favorites:', error));
+            .catch((error) => log.error('Error retrieving favorites:', error));
     };
 
 
@@ -71,11 +72,11 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 navigation.navigate("RecipeDetails", { recipe: meal });
             } else {
                 // Handle case where meal data is empty or undefined
-                console.error("Meal data is empty or undefined.");
+                log.error("Meal data is empty or undefined.");
             }
         } catch (error) {
             // Handle fetch or JSON parsing errors
-            console.error("Error fetching meal data:", error);
+            log.error("Error fetching meal data:", error);
         }
     };
 
@@ -87,7 +88,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                     const json = await response.json();
                     setMealsFromIngredient(json.meals);
                 } catch (error) {
-                    console.error("Failed to fetch ingredients or request timed out:", error);
+                    log.error("Failed to fetch ingredients or request timed out:", error);
                 }
             };
             fetchMealsFromIngredient();
@@ -159,7 +160,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
             // Save updated fridge content
             await AsyncStorage.setItem(selectedStorage, JSON.stringify(newContent));
         } catch (error) {
-            console.error("Error adding to storage:", error);
+            log.error("Error adding to storage:", error);
         }
     }
 

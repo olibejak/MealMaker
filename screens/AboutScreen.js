@@ -1,8 +1,9 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Linking } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Linking } from 'react-native';
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import { BookIcon, HamburgerIcon } from "../assets/icons";
+import log from "../utils/Logger";
 
 export default function AboutScreen() {
     const sections = [
@@ -46,7 +47,7 @@ function AboutSectionCard({ title, content }) {
 
     const handlePress = () => {
         if (url) {
-            Linking.openURL(url).catch(err => console.error("Failed to open URL:", err));
+            Linking.openURL(url).catch(err => log.error("Failed to open URL:", err));
         }
     };
 

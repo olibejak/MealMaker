@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, FlatList, Modal, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, StyleSheet, FlatList} from "react-native";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
@@ -8,6 +8,7 @@ import IngredientCard from "../components/IngredientCard";
 import { BookIcon, HamburgerIcon, PlusIcon } from "../assets/icons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from "@react-navigation/native";
+import log from "../utils/Logger";
 
 export default function FridgeScreen({ navigation }) {
     const title = "My fridge";
@@ -25,7 +26,7 @@ export default function FridgeScreen({ navigation }) {
                 setFridgeContent(JSON.parse(content));
             }
         } catch (error) {
-            console.error("Error loading fridge content:", error);
+            log.error("Error loading fridge content:", error);
         }
     }, []);
 
@@ -46,7 +47,7 @@ export default function FridgeScreen({ navigation }) {
                 await AsyncStorage.setItem("fridgeContent", JSON.stringify(fridgeContent));
             }
         } catch (error) {
-            console.error("Error saving fridge content:", error);
+            log.error("Error saving fridge content:", error);
         }
     }
 

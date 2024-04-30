@@ -22,6 +22,7 @@ import {
 import MealMiniature from "../components/MealMiniature";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import log from "../utils/Logger";
 
 export default function RecipeDetailsScreen ( { route, navigation } ) {
     const {recipe} = route.params;
@@ -42,7 +43,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                         favouriteRecipe => favouriteRecipe.idMeal === recipe.idMeal) > -1);
                 }
             })
-            .catch((error) => console.error('Error retrieving favorites:', error));
+            .catch((error) => log.error('Error retrieving favorites:', error));
     }, [route]);
 
     const toggleFavorite = async () => {
@@ -61,9 +62,9 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                 }
                 // Update local storage
                 AsyncStorage.setItem('favouriteRecipes', JSON.stringify(favouriteRecipes))
-                    .catch((error) => console.error('Error updating favorites:', error));
+                    .catch((error) => log.error('Error updating favorites:', error));
             })
-            .catch((error) => console.error('Error retrieving favorites:', error));
+            .catch((error) => log.error('Error retrieving favorites:', error));
     };
 
     const ingredientsList = ingredientKeys.map((key, index) => {
@@ -125,7 +126,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
             // Save updated shopping list content
             await AsyncStorage.setItem("shoppingListContent", JSON.stringify(newContent));
         } catch (error) {
-            console.error("Error adding to shopping list:", error);
+            log.error("Error adding to shopping list:", error);
         }
     }
 
@@ -149,7 +150,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                         }
                     }
                 } catch (error) {
-                    console.error("Failed to fetch ingredients or request timed out:", error);
+                    log.error("Failed to fetch ingredients or request timed out:", error);
                 }
                 finally {
                     setIsLoading(false); // End loading

@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import EditSetAmountModal from "../components/EditSetAmountModal";
 import {useIsFocused} from "@react-navigation/native";
 import SnackbarModal from "../components/SnackbarModal";
+import log from "../utils/Logger";
 
 export default function IngredientsScreen({ navigation }) {
     const [ingredients, setIngredients] = useState([]);
@@ -37,9 +38,9 @@ export default function IngredientsScreen({ navigation }) {
                     setDisplayedIngredients(json.meals.slice(0, 10)); // Initially display only the first 10 items
                     setCurrentIndex(10);
                 } catch (error) {
-                    console.error("Failed to fetch ingredients:", error);
+                    log.error("Failed to fetch ingredients:", error);
                     setIngredients(JSON.parse(await AsyncStorage.getItem("favouriteIngredients")
-                        .catch((error) => console.error("Error loading favourite ingredients:", error))))
+                        .catch((error) => log.error("Error loading favourite ingredients:", error))))
                 } finally {
                     setIsLoading(false);
                 }
@@ -58,7 +59,7 @@ export default function IngredientsScreen({ navigation }) {
                     setFavouriteIngredients(JSON.parse(content));
                 }
             } catch (error) {
-                console.error("Error loading favourite ingredients:", error);
+                log.error("Error loading favourite ingredients:", error);
             }
         }
         if (isFocused) {
@@ -113,7 +114,7 @@ export default function IngredientsScreen({ navigation }) {
             // Save updated fridge content
             await AsyncStorage.setItem(storage, JSON.stringify(newContent));
         } catch (error) {
-            console.error("Error adding to storage:", error);
+            log.error("Error adding to storage:", error);
         }
     }
 

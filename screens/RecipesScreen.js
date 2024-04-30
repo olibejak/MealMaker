@@ -7,6 +7,7 @@ import {BookIcon, HamburgerIcon} from "../assets/icons";
 import React, {useEffect, useState} from "react";
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import log from "../utils/Logger";
 
 export default function RecipesScreen ({navigation}) {
     const title = "Recipes";
@@ -35,9 +36,9 @@ export default function RecipesScreen ({navigation}) {
                         }
                     }
             catch (error) {
-                    console.error("Failed to fetch ingredients or request timed out:", error);
+                    log.error("Failed to fetch ingredients or request timed out:", error);
                 setRecipes(JSON.parse(await AsyncStorage.getItem("favouriteRecipes")
-                    .catch((error) => console.error("Error loading favourite recipes:", error))))
+                    .catch((error) => log.error("Error loading favourite recipes:", error))))
                 } finally {
                     setIsLoading(false)
                 }
@@ -55,7 +56,7 @@ export default function RecipesScreen ({navigation}) {
                     setFavouriteRecipes(JSON.parse(content));
                 }
             } catch (error) {
-                console.error("Error loading favourite recipes:", error);
+                log.error("Error loading favourite recipes:", error);
             }
         }
         if (isFocused) {

@@ -10,6 +10,7 @@ import ListItem from "../components/ListItem";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import {useIsFocused} from "@react-navigation/native";
 import ConfirmationModal from "../components/ConfirmationModal";
+import log from "../utils/Logger";
 
 export default function ShoppingListScreen () {
     const title = "Shopping list";
@@ -39,7 +40,7 @@ export default function ShoppingListScreen () {
             // await addToShoppingList({name: "Butter", amount: "100g", isBought: false});
 
         } catch (error) {
-            console.error("Error loading shopping list content:", error);
+            log.error("Error loading shopping list content:", error);
         }
     }, []);
 
@@ -75,9 +76,9 @@ export default function ShoppingListScreen () {
             //close modal window
             setModalVisible(false);
 
-            console.log('Fridge content updated successfully.');
+            log.info('Fridge content updated successfully.');
         } catch (error) {
-            console.error('Error merging lists:', error);
+            log.error('Error merging lists:', error);
         }
     };
 
@@ -94,11 +95,11 @@ export default function ShoppingListScreen () {
 
                     // Optionally, update state or perform any other action
                 } else {
-                    console.log("Invalid index.");
+                    log.warn("Invalid index.");
                 }
             }
         } catch (error) {
-            console.error("Error updating isBought property:", error);
+            log.error("Error updating isBought property:", error);
         }
     };
 
@@ -132,7 +133,7 @@ export default function ShoppingListScreen () {
                 await AsyncStorage.setItem("shoppingListContent", JSON.stringify(shoppingListContent));
             }
         } catch (error) {
-            console.error("Error saving shopping list content:", error);
+            log.error("Error saving shopping list content:", error);
         }
     }
 

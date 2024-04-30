@@ -76,7 +76,7 @@ export default function NewDiaryEntryScreen() {
                     </View>
                     <BottomRightCornerButton
                         IconComponent={() => <CheckmarkIconBlack />}
-                        onPress={() => console.log('Checkmark pressed')}
+                        onPress={() => log.info('Checkmark pressed')}
                     />
                     <View style={styles.buttonsContainer}>
                         <TouchableOpacity style={styles.button} onPress={takePhoto}>

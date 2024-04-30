@@ -12,6 +12,7 @@ import TopNavigationBar from "../components/TopNavigationBar";
 import { BackArrowIcon, PlusIcon } from "../assets/icons";
 import { useNavigation } from "@react-navigation/native";
 import TimerModal from '../components/TimerModal'
+import log from "../utils/Logger";
 
 export default function TimerScreen() {
     const navigation = useNavigation();
@@ -19,7 +20,7 @@ export default function TimerScreen() {
     const timers = ['20:00', '20:00', '20:00', '20:00', '20:00', '20:00', '20:00'];
 
     const handleAddTimer = (label, time) => {
-        console.log(`Adding new timer: ${label} for ${time}`);
+        log.info(`Adding new timer: ${label} for ${time}`);
         setModalVisible(false);
         // You can implement adding this new timer to your timers array here
     };
@@ -33,8 +34,8 @@ export default function TimerScreen() {
                         label={`Timer ${index + 1}`}
                         key={index}
                         time={time}
-                        onStartStop={() => console.log('Start/Stop timer')}
-                        onReset={() => console.log('Reset timer')}
+                        onStartStop={() => log.info('Start/Stop timer')}
+                        onReset={() => log.info('Reset timer')}
                     />
                 ))}
             </ScrollView>
