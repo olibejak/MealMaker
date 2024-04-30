@@ -1,27 +1,65 @@
-import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, TouchableOpacity, FlatList } from 'react-native';
 import TopNavigationBar from '../components/TopNavigationBar';
 import BottomNavigationBar from '../components/BottomNavigationBar';
 import SnackbarModal from '../components/SnackbarModal';
 import { BackArrowIcon, FridgeCardIcon, BasketCardIcon, StarOutlineIcon, StarFilledIcon } from '../assets/icons';
 import MealMiniature from '../components/MealMiniature';
+import {useEffect, useState} from "react";
+import EditSetAmountModal from "../components/EditSetAmountModal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
-export default function IngredientDetailsScreen({ route, navigation }) {
+export default function IngredientDetailsScreen ({ route, navigation }) {
     const { ingredient } = route.params;
     const [mealsFromIngredient, setMealsFromIngredient] = useState([]);
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [isFavourite, setIsFavourite] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const starIconToRender = isFavourite ? StarFilledIcon  : StarOutlineIcon;
+    const [selectedStorage, setSelectedStorage] = useState("");
     const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    const starIconToRender = isFavorite ? StarFilledIcon : StarOutlineIcon;
+
+    useEffect(() => {
+        // Retrieve favorites from local storage
+        AsyncStorage.getItem('favouriteIngredients')
+            .then((favourites) => {
+                if (favourites) {
+                    const favoriteIngredients = JSON.parse(favourites);
+                    setIsFavourite(favoriteIngredients.findIndex(
+                        favIngredient => favIngredient.idIngredient === ingredient.idIngredient) > -1);
+                }
+            })
+            .catch((error) => console.error('Error retrieving favorites:', error));
+    }, [route]);
+
+    const toggleFavorite = async () => {
+        AsyncStorage.getItem('favouriteIngredients')
+            .then((favourites) => {
+                let favouriteIngredients = favourites ? JSON.parse(favourites) : [];
+                if (isFavourite) {
+                    // Remove from favorites
+                    favouriteIngredients = favouriteIngredients.filter(
+                        (favIngredient) => ingredient.idIngredient !== favIngredient.idIngredient);
+                    setIsFavourite(false)
+                } else {
+                    // Add to favorites
+                    favouriteIngredients.push(ingredient);
+                    setIsFavourite(true)
+                }
+                // Update local storage
+                AsyncStorage.setItem('favouriteIngredients', JSON.stringify(favouriteIngredients))
+                    .catch((error) => console.error('Error updating favorites:', error));
+            })
+            .catch((error) => console.error('Error retrieving favorites:', error));
+    };
+
 
     const parsedIngredientName = () => {
         let parsedString = ingredient.strIngredient.toLowerCase();
         parsedString = parsedString.replace(/ /g, '_');
         return parsedString;
-    };
+    }
 
-    const navigateToMealDetails = async (idMeal) => {
+    const navigateToMealDetails = async(idMeal) => {
         const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`;
         try {
             const response = await fetch(url);
@@ -30,30 +68,33 @@ export default function IngredientDetailsScreen({ route, navigation }) {
 
             if (meals && meals.length > 0) {
                 const meal = meals[0];
-                navigation.navigate('RecipeDetails', { recipe: meal });
+                navigation.navigate("RecipeDetails", { recipe: meal });
             } else {
-                console.error('Meal data is empty or undefined.');
+                // Handle case where meal data is empty or undefined
+                console.error("Meal data is empty or undefined.");
             }
         } catch (error) {
-            console.error('Error fetching meal data:', error);
+            // Handle fetch or JSON parsing errors
+            console.error("Error fetching meal data:", error);
         }
     };
 
     useEffect(() => {
-        const fetchMealsFromIngredient = async () => {
-            const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${parsedIngredientName()}`;
-            try {
-                const response = await fetch(url);
-                const json = await response.json();
-                setMealsFromIngredient(json.meals);
-            } catch (error) {
-                console.error('Failed to fetch ingredients or request timed out:', error);
-            }
-        };
-        fetchMealsFromIngredient();
-    }, []);
+            const fetchMealsFromIngredient = async () => {
+                const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${parsedIngredientName()}`;
+                try {
+                    const response = await fetch(url);
+                    const json = await response.json();
+                    setMealsFromIngredient(json.meals);
+                } catch (error) {
+                    console.error("Failed to fetch ingredients or request timed out:", error);
+                }
+            };
+            fetchMealsFromIngredient();
+        }
+        , [route]);
 
-    const renderMealMiniatures = ({ item, index }) => {
+    const renderMealMiniatures = ({item, index}) => {
         return (
             <MealMiniature
                 key={index}
@@ -61,37 +102,85 @@ export default function IngredientDetailsScreen({ route, navigation }) {
                 mealThumb={item.strMealThumb}
                 onPress={() => navigateToMealDetails(item.idMeal)}
             />
-        );
-    };
+        )
+    }
 
     const handleAddToFridge = () => {
+        console.log("Adding to fridge");
         const ingredientName = ingredient.strIngredient;
         setSnackbarMessage(`${ingredientName} added to the fridge successfully!`);
         setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to fridge
     };
 
     const handleAddToBasket = () => {
+        console.log("Adding to basket");
         const ingredientName = ingredient.strIngredient;
         setSnackbarMessage(`${ingredientName} added to the shopping list successfully!`);
         setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to basket
     };
 
+    const handleEditAmount = (storage) => {
+        setModalVisible(true);
+        setSelectedStorage(storage)
+    };
+
+    const handleConfirmEdit = async (amount) => {
+        await addIngredientToStorage(amount);
+        setModalVisible(false);
+        if (selectedStorage === "fridgeContent") {
+            handleAddToFridge();
+        } else {
+            handleAddToBasket();
+        }
+    };
+
+    const addIngredientToStorage = async (amount) => {
+        const newIngredient = Object.assign({}, ingredient);
+        newIngredient.name = ingredient.strIngredient;
+        newIngredient.amount = amount;
+        try {
+            // Get existing fridge content
+            const existingContent = await AsyncStorage.getItem(selectedStorage);
+            let newContent = [];
+            if (existingContent !== null) {
+                newContent = JSON.parse(existingContent);
+            }
+            // Check if ingredient already exists in the fridge
+            const existingIngredientIndex
+                = newContent.findIndex(item => item.strIngredient === ingredient.strIngredient)
+            if (existingIngredientIndex > -1) {
+                // Ingredient already exists, update its amount by joining with the new amount
+                if(newContent[existingIngredientIndex].amount.trim() === "")
+                    newContent[existingIngredientIndex].amount += `${newIngredient.amount}`;
+                else
+                    newContent[existingIngredientIndex].amount += `, ${newIngredient.amount}`;
+            } else {
+                // Ingredient does not exist, add it to the fridge
+                newContent.push(newIngredient);
+            }
+            // Save updated fridge content
+            await AsyncStorage.setItem(selectedStorage, JSON.stringify(newContent));
+        } catch (error) {
+            console.error("Error adding to storage:", error);
+        }
+    }
+
     return (
         <View style={styles.screen}>
-            <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon} RightIcon={starIconToRender} />
+            <View>
+                <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon}
+                                  RightIcon={starIconToRender} starAction={toggleFavorite} />
+            </View>
             <ScrollView style={styles.scrollableScreen}>
                 <View style={styles.imageContainer}>
-                    <Image
-                        source={{ uri: `https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png` }}
-                        style={styles.image}
-                    />
+                    <Image source={{uri: `https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png`,}} style={styles.image} />
                 </View>
                 <View style={styles.addToButtonsContainer}>
-                    <TouchableOpacity style={styles.addToButton} onPress={handleAddToFridge}>
+                    <TouchableOpacity style={styles.addToButton} onPress={() => handleEditAmount("fridgeContent")}>
                         <Text style={styles.fontButton}>Add to</Text>
-                        <FridgeCardIcon />
+                        <FridgeCardIcon/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.addToButton} onPress={handleAddToBasket}>
+                    <TouchableOpacity style={styles.addToButton} onPress={() => handleEditAmount("shoppingListContent")}>
                         <Text style={styles.fontButton}>Add to</Text>
                         <BasketCardIcon />
                     </TouchableOpacity>
@@ -108,21 +197,28 @@ export default function IngredientDetailsScreen({ route, navigation }) {
                     renderItem={renderMealMiniatures}
                     style={styles.mealsContainer}
                     contentContainerStyle={styles.scrolling}
-                    ListEmptyComponent={<ActivityIndicator style={styles.loadingContainer} size="large" />}
+                    ListEmptyComponent={<ActivityIndicator style={styles.loadingContainer} size="large"/>}
                 />
             </ScrollView>
+            <BottomNavigationBar selected={"Ingredients"} />
+            <EditSetAmountModal
+                visible={modalVisible}
+                ingredient={ingredient}
+                onClose={() => setModalVisible(false)}
+                onConfirm={(amount) => handleConfirmEdit(amount)}
+                showDelete={false} // Hide delete button in this screen
+            />
             <SnackbarModal
                 textToDisplay={snackbarMessage}
                 onDismiss={() => setSnackbarModalVisible(false)}
                 visible={snackbarModalVisible}
             />
-            <BottomNavigationBar selected={'Ingredients'} />
         </View>
     );
-}
+};
 
 const IngredientDetails = ({ ingredient }) => {
-    if (ingredient.strType) {
+    if (ingredient.strType) {  // Checks if strType is not empty, undefined, or null
         return (
             <View style={styles.textContainer}>
                 <Text style={styles.cardTitle}>Type</Text>
@@ -130,7 +226,7 @@ const IngredientDetails = ({ ingredient }) => {
             </View>
         );
     } else {
-        return null;
+        return null;  // Returns null if strType is empty, which means nothing will be rendered
     }
 };
 
