@@ -1,11 +1,50 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../assets/icons"; // Replace with actual icons
+import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../assets/icons";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
-export default function TimerCard({ label, time, onAddTime, onStartStop, onClose, onReload, running }) {
-    const [isRunning, setIsRunning] = useState(running);
-    const circularProgressRef = useRef();
+export default function TimerCard({ id, label, initialTime, onAddTime, onStartStop, onClose, running }) {
+    const [isRunning, setIsRunning] = useState(running); // Initialize with the running state from props
+    const [currentTime, setCurrentTime] = useState(initialTime);
+
+    useEffect(() => {
+        setIsRunning(running); // Update internal state when external changes
+    }, [running]);
+
+    useEffect(() => {
+        let interval = null;
+        if (isRunning) {
+            interval = setInterval(() => {
+                setCurrentTime(prevTime => {
+                    const seconds = timeToSeconds(prevTime) - 1;
+                    if (seconds < 0) {
+                        onClose();
+                        return "00:00";
+                    }
+                    return secondsToTime(seconds);
+                });
+            }, 1000);
+        } else if (!isRunning) {
+            clearInterval(interval);
+        }
+        return () => clearInterval(interval);
+    }, [isRunning]);
+
+    const reloadTimer = () => {
+        setCurrentTime(initialTime);
+        setIsRunning(false);
+    };
+
+    function timeToSeconds(time) {
+        const [minutes, seconds] = time.split(":").map(Number);
+        return minutes * 60 + seconds;
+    }
+
+    function secondsToTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
 
     return (
         <View style={styles.shadowContainer}>
@@ -15,13 +54,16 @@ export default function TimerCard({ label, time, onAddTime, onStartStop, onClose
                     <AnimatedCircularProgress
                         size={180}
                         width={10}
-                        fill={100}
-                        tintColor="#cfbbfd">
+                        fill={(timeToSeconds(currentTime) / timeToSeconds(initialTime)) * 100}
+                        tintColor="#F6F2F9"
+                        backgroundColor="#3d5875"
+                        color="#3d5875">
+
                         {
-                            (fill) => (
+                            () => (
                                 <View style={styles.innerCircle}>
-                                    <Text style={styles.timeText}>{time}</Text>
-                                    <TouchableOpacity onPress={onReload} style={styles.reloadIcon}>
+                                    <Text style={styles.timeText}>{currentTime}</Text>
+                                    <TouchableOpacity onPress={reloadTimer} style={styles.reloadIcon}>
                                         <ReloadIcon />
                                     </TouchableOpacity>
                                 </View>
@@ -37,14 +79,15 @@ export default function TimerCard({ label, time, onAddTime, onStartStop, onClose
                     <TouchableOpacity onPress={onStartStop} style={styles.iconBubble}>
                         {isRunning ? <PauseIcon /> : <PlayIcon />}
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                        <CloseIcon />
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                    <CloseIcon />
-                </TouchableOpacity>
             </View>
         </View>
     );
 }
+
 
 const styles = StyleSheet.create({
     shadowContainer: {

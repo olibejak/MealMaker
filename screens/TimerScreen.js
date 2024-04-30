@@ -32,7 +32,7 @@ export default function TimerScreen() {
     };
 
     const handleAddTimer = async (label, time) => {
-        const newTimer = { id: uuid.v4(), label, time };
+        const newTimer = { id: uuid.v4(), label, time, running: false };
         const updatedTimers = [...timers, newTimer];
         setTimers(updatedTimers);
         setModalVisible(false);
@@ -60,6 +60,14 @@ export default function TimerScreen() {
         }
     };
 
+    const handleStartStop = (id) => {
+        setTimers(prevTimers => prevTimers.map(timer => {
+            if (timer.id === id) {
+                return { ...timer, running: !timer.running };
+            }
+            return timer;
+        }));
+    };
 
     const handleRemoveTimer = async (id) => {
         const updatedTimers = timers.filter(timer => timer.id !== id);
@@ -89,13 +97,13 @@ export default function TimerScreen() {
                 {timers.map(timer => (
                     <TimerCard
                         key={timer.id}
+                        id={timer.id}
                         label={timer.label}
-                        time={timer.time}
-                        onAddTime={() => handleAddTime(timer.id, 60)} // Adding 60 seconds, representing one minute
-                        onStartStop={() => console.log('Start/Stop timer')}
-                        onReset={() => console.log('Reset timer')}
+                        initialTime={timer.time} // Changed 'time' to 'initialTime' as used in TimerCard
+                        onAddTime={() => handleAddTime(timer.id, 60)} // Adding 60 seconds
+                        onStartStop={() => handleStartStop(timer.id)} // Updated to use handleStartStop
                         onClose={() => handleRemoveTimer(timer.id)}
-                        running={false}
+                        running={timer.running} // Pass the running state
                     />
                 ))}
             </ScrollView>
