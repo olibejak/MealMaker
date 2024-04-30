@@ -6,7 +6,7 @@ export default function PhotoThumbnail({ sources, onClose }) {
     // Render item function to display each photo and its close button
     const renderItem = ({ item, index }) => (
         <View style={styles.imageContainer}>
-            <Image source={item} style={styles.miniature} resizeMode='cover' />
+            <Image source={{ uri: item.uri }} style={styles.miniature} resizeMode='cover' />
             <TouchableOpacity style={styles.closeButton} onPress={() => onClose(index)}>
                 <CloseIcon />
             </TouchableOpacity>
@@ -30,7 +30,7 @@ export default function PhotoThumbnail({ sources, onClose }) {
 const styles = StyleSheet.create({
     carouselContainer: {
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
         alignContent: 'center',
     },
@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center', // Centering items vertically within the container
     },
     imageContainer: {
-        width: 100,
-        height: 100,
+        width: 150,
+        height: 150,
         borderRadius: 8,
         marginRight: 15,
         position: 'relative',

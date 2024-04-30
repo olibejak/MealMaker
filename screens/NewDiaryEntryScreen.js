@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform } from 'react-native';
+import {View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform, Image} from 'react-native';
 import {BackArrowIcon, CameraIcon, CheckmarkIconBlack, ImageIcon} from "../assets/icons.js";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import TopNavigationBar from "../components/TopNavigationBar";
@@ -7,14 +7,11 @@ import BottomNavigationBar from "../components/BottomNavigationBar";
 import PhotoThumbnail from "../components/PhotoThumbnail";
 import * as ImagePicker from "expo-image-picker";
 import log from "../utils/Logger";
+import * as FileSystem from "expo-file-system";
 
 export default function NewDiaryEntryScreen() {
     const title = "New Entry";
-    const [photos, setPhotos] = useState([
-        require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'), require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg')
-        // Add more images here
-    ]);
-    const [image, setImage] = useState(null);
+    const [imageUris, setImageUris] = useState([]);
 
     useEffect(() => {
         (async () => {
@@ -32,40 +29,88 @@ export default function NewDiaryEntryScreen() {
         })();
     }, []);
 
+    const handleAddImage = async (uri) => {
+        if (!uri) {
+            log.error("No URI provided to handleAddImage" + uri);
+            return;
+        }
+
+        const fileName = uri.split('/').pop();
+        const newPath = FileSystem.documentDirectory + fileName;
+        log.info('Copying image to:', newPath);
+
+        try {
+            await FileSystem.copyAsync({
+                from: uri,
+                to: newPath
+            });
+            setImageUris(prevUris => [...prevUris, newPath]);
+        } catch (err) {
+            log.error('Error saving the image to filesystem', err);
+            alert('Failed to save the image. Please try again.');
+        }
+    };
+
+
+
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         });
+
         if (!result.canceled) {
-            setImage(result.uri);
+            result.assets.forEach((asset) => log.info(asset.uri));
+            await handleAddImage(result.assets[0].uri);
+        }
+        else {
+            log.info('Image selection cancelled');
         }
     };
 
     const takePhoto = async () => {
         let result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         });
+
         if (!result.canceled) {
-            setImage(result.uri);
+            await handleAddImage(result.assets[0].uri);
+        }
+        else {
+            log.info('Image selection cancelled');
         }
     }
 
-    const handleRemovePhoto = (index) => {
-        setPhotos(photos => photos.filter((_, i) => i !== index));
+    const handleRemovePhoto = async (index) => {
+        const uri = imageUris[index];
+        try {
+            const fileExists = await FileSystem.getInfoAsync(uri);
+            if (fileExists.exists) {
+                await FileSystem.deleteAsync(uri);
+                setImageUris(prevUris => prevUris.filter((_, i) => i !== index));
+            } else {
+                log.warn('File does not exist:', uri);
+            }
+        } catch (error) {
+            log.error('Error removing photo', error);
+            alert('Failed to remove the photo. Please try again.');
+        }
     };
+
+
 
     return (
         <View style={styles.screen}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.screen}>
                 <TopNavigationBar title={title} LeftIcon={BackArrowIcon} />
-                {photos.length > 0 && (
-                    <PhotoThumbnail sources={photos} onClose={handleRemovePhoto} />
+                {imageUris.length > 0 && (
+                    <PhotoThumbnail sources={imageUris.map(uri => ({ uri }))} onClose={handleRemovePhoto} />
+
                 )}
                 <View style={styles.inputContainer}>
                     <View style={styles.inputWrapper}>
