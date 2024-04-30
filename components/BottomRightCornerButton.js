@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, View, StyleSheet } from 'react-native';
+import {TouchableOpacity, View, StyleSheet, Platform} from 'react-native';
 
 export default function BottomRightCornerButton({ IconComponent, SecondIconComponent, onPress, secondOnPress }) {
     return (
@@ -23,7 +23,14 @@ const styles = StyleSheet.create({
         gap: 12,
         position: 'absolute',
         right: 25,
-        bottom: 105,
+        ...Platform.select({
+            ios: {
+                bottom: 105,
+            },
+            android: {
+                bottom: 90,
+            },
+        }),
         padding: 15,
         zIndex: 10, // Make sure it's above everything else
     },
