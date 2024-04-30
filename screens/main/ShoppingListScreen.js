@@ -1,11 +1,11 @@
-import {View, StyleSheet, ScrollView} from "react-native";
+import {View, StyleSheet, ScrollView, Text} from "react-native";
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import {BookIcon, EditIcon, HamburgerIcon, PlusIcon, ShoppingCartIcon} from "../../assets/icons";
 import EditSetAmountModal from "../../components/modals/EditSetAmountModal"; // Import the modal component
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import ListItem from "../../components/lists/ListItem";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
 import {useIsFocused} from "@react-navigation/native";
@@ -147,6 +147,8 @@ export default function ShoppingListScreen () {
             <View>
                 <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             </View>
+            {fridgeContent.length === 0 ? <Text style={styles.emptyText}>No items in the fridge, click + to add some more</Text>
+                :
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 {shoppingListContent.map((ingredient, index) => (
                     <ListItem
@@ -160,7 +162,7 @@ export default function ShoppingListScreen () {
                         isChecked={ingredient.isBought}>
                     </ListItem>
                 ))}
-            </ScrollView>
+            </ScrollView>}
             <BottomRightCornerButton
                 IconComponent={ShoppingCartIcon}
                 onPress={() => setModalVisible(true)}  // Only set modal to visible
@@ -201,6 +203,7 @@ const styles = StyleSheet.create({
         height: '100%',
         top: 0,
         bottom: 0,
+        backgroundColor: '#FFF',
     },
     scrollableScreen: {
         backgroundColor: '#FFF',
@@ -242,16 +245,13 @@ const styles = StyleSheet.create({
         marginTop: 22,
         backgroundColor: 'rgba(0, 0, 0, 0.5)', // Optional: for a dimmed background effect
     },
-    buttonContainer: {
-        flexDirection: 'row',
-        padding: 10,
-    },
-    button: {
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-        backgroundColor: "#2196F3",
-        marginHorizontal: 10,
+    emptyText: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 18,
+        color: '#666',
+        textAlignVertical: 'center',
+        textAlign: 'center',
+        padding: 16,
     },
 
 });

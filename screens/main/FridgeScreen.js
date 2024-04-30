@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, FlatList} from "react-native";
+import {View, StyleSheet, FlatList, Text} from "react-native";
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
@@ -84,13 +84,15 @@ export default function FridgeScreen({ navigation }) {
     return (
         <View style={styles.screen}>
             <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
+            {fridgeContent.length === 0 ? <Text style={styles.emptyText}>No items in the fridge, click + to add some more</Text>
+                :
             <FlatList
                 data={fridgeContent}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
                 style={styles.scrollableScreen}
                 contentContainerStyle={styles.scrolling}
-            />
+            />}
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={openEmptyEditModal}/>
             <BottomNavigationBar selected="Fridge" />
             <EditSetAmountModal
@@ -153,5 +155,13 @@ const styles = StyleSheet.create({
         padding: 10,
         elevation: 2,
         backgroundColor: "#2196F3",
-    }
+    },
+    emptyText: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 18,
+        color: '#666',
+        textAlignVertical: 'center',
+        textAlign: 'center',
+        padding: 16,
+    },
 });
