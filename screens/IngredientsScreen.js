@@ -1,5 +1,5 @@
 import {View, StyleSheet, FlatList, ActivityIndicator, InteractionManager, Text} from "react-native";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import SearchBar from "../components/SearchBar";
@@ -8,6 +8,7 @@ import { BookIcon, HamburgerIcon } from "../assets/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EditSetAmountModal from "../components/EditSetAmountModal";
 import {useIsFocused} from "@react-navigation/native";
+import SnackbarModal from "../components/SnackbarModal";
 
 export default function IngredientsScreen({ navigation }) {
     const [ingredients, setIngredients] = useState([]);
@@ -21,6 +22,8 @@ export default function IngredientsScreen({ navigation }) {
     const [favouriteIngredients, setFavouriteIngredients] = useState([]);
     const [activeFilter, setActiveFilter] = useState(null);
     const isFocused = useIsFocused();
+    const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     useEffect(() => {
         setIsLoading(true);
@@ -114,15 +117,32 @@ export default function IngredientsScreen({ navigation }) {
         }
     }
 
+    const handleAddToFridge = () => {
+        const ingredientName = selectedIngredient.strIngredient;
+        setSnackbarMessage(`${ingredientName} added to the fridge successfully!`);
+        setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to fridge
+    };
+
+    const handleAddToBasket = () => {
+        const ingredientName = selectedIngredient.strIngredient;
+        setSnackbarMessage(`${ingredientName} added to the shopping list successfully!`);
+        setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to basket
+    };
+
     const handleEditAmount = (ingredient, destination) => {
         setSelectedIngredient(ingredient)
         setSelectedDestination(destination)
         setModalVisible(true);
     };
 
-    const handleConfirmEdit = (amount) => {
-        addIngredientToStorage(selectedIngredient, selectedDestination, amount)
+    const handleConfirmEdit = async (amount) => {
+        await addIngredientToStorage(selectedIngredient, selectedDestination, amount)
         setModalVisible(false);
+        if (selectedDestination === "fridgeContent") {
+            handleAddToFridge();
+        } else {
+            handleAddToBasket();
+        }
     };
 
     return (
@@ -168,6 +188,11 @@ export default function IngredientsScreen({ navigation }) {
                 onClose={() => setModalVisible(false)}
                 onConfirm={(amount) => handleConfirmEdit(amount)}
                 showDelete={false} // Hide delete button in this screen
+            />
+            <SnackbarModal
+                textToDisplay={snackbarMessage}
+                onDismiss={() => setSnackbarModalVisible(false)}
+                visible={snackbarModalVisible}
             />
         </View>
     );
