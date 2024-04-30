@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform } from 'react-native';
+import {View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform} from 'react-native';
 import {BackArrowIcon, CameraIcon, CheckmarkIconBlack, ImageIcon} from "../assets/icons.js";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import TopNavigationBar from "../components/TopNavigationBar";
@@ -7,14 +7,27 @@ import BottomNavigationBar from "../components/BottomNavigationBar";
 import PhotoThumbnail from "../components/PhotoThumbnail";
 import * as ImagePicker from "expo-image-picker";
 import log from "../utils/Logger";
+import * as FileSystem from "expo-file-system";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {CommonActions, useFocusEffect} from "@react-navigation/native";
 
-export default function NewDiaryEntryScreen() {
-    const title = "New Entry";
-    const [photos, setPhotos] = useState([
-        require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'), require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg'),require('../assets/testing_images/recipe.jpg')
-        // Add more images here
-    ]);
-    const [image, setImage] = useState(null);
+export default function NewDiaryEntryScreen( { route, navigation } ) {
+    const [imageUris, setImageUris] = useState([]);
+    const [inputText, setInputText] = useState('');
+
+    // Extract diaryEntry from route.params or set it to null if undefined
+    const diaryEntry = route.params?.diaryEntry ?? null;
+
+    useEffect(() => {
+        // Initialize states with content if diaryEntry is passed, otherwise set defaults
+        if (diaryEntry) {
+            setInputText(diaryEntry.text || '');
+            setImageUris(diaryEntry.images || []);
+        } else {
+            setInputText('');
+            setImageUris([]);
+        }
+    }, [diaryEntry]);
 
     useEffect(() => {
         (async () => {
@@ -32,40 +45,127 @@ export default function NewDiaryEntryScreen() {
         })();
     }, []);
 
+    const handleAddImage = async (uri) => {
+        if (!uri) {
+            log.error("No URI provided to handleAddImage" + uri);
+            return;
+        }
+
+        const fileName = uri.split('/').pop();
+        const newPath = FileSystem.documentDirectory + fileName;
+
+        try {
+            await FileSystem.copyAsync({
+                from: uri,
+                to: newPath
+            });
+            setImageUris(prevUris => [...prevUris, { uri: newPath }]); // Store it as an object with uri property
+        } catch (err) {
+            log.error('Error saving the image to filesystem', err);
+            alert('Failed to save the image. Please try again.');
+        }
+    };
+
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
+
         if (!result.canceled) {
-            setImage(result.uri);
+            await handleAddImage(result.assets[0].uri);
+        }
+        else {
+            log.info('Image selection cancelled');
         }
     };
 
     const takePhoto = async () => {
         let result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
+
         if (!result.canceled) {
-            setImage(result.uri);
+            await handleAddImage(result.assets[0].uri);
+        }
+        else {
+            log.info('Image selection cancelled');
         }
     }
 
-    const handleRemovePhoto = (index) => {
-        setPhotos(photos => photos.filter((_, i) => i !== index));
+    const handleRemovePhoto = async (index) => {
+        const uri = imageUris[index].uri;
+        try {
+            const fileExists = await FileSystem.getInfoAsync(uri);
+            if (fileExists.exists) {
+                await FileSystem.deleteAsync(uri);
+                setImageUris(prevUris => prevUris.filter((_, i) => i !== index));
+            } else {
+                log.warn('File does not exist:', uri);
+            }
+        } catch (error) {
+            log.error('Error removing photo', error);
+            alert('Failed to remove the photo. Please try again.');
+        }
+        imageUris[index] = null;
     };
+
+    const saveEntry = async () => {
+        const storage = await AsyncStorage.getItem('diaryContent');
+        let diaryContent = storage ? JSON.parse(storage) : [];
+
+        // Extract the first line to use as the title
+        const firstLine = inputText.split('\n')[0] || 'Untitled Entry'; // Default title if the first line is empty
+
+        const newEntry = {
+            ...diaryEntry,
+            title: firstLine, // Set or update the title based on the first line of the input text
+            text: inputText,
+            images: imageUris,
+        };
+
+        if (diaryEntry) {
+            // Update the existing entry in diaryContent
+            const index = diaryContent.findIndex(item => item.id === diaryEntry.id);
+            if (index !== -1) {
+                diaryContent[index] = newEntry;
+            } else {
+                // Handle the case where diaryEntry might not exist in diaryContent
+                newEntry.id = diaryContent.length + 1; // Assign a new ID
+                diaryContent.push(newEntry);
+            }
+        } else {
+            // Add a new entry
+            newEntry.id = diaryContent.length + 1; // Assign a new ID
+            diaryContent.push(newEntry);
+        }
+
+        await AsyncStorage.setItem('diaryContent', JSON.stringify(diaryContent));
+
+        // Reset the navigation stack to Diary screen and navigate to the new entry
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    { name: 'Diary'},
+                ],
+            })
+        );
+        navigation.navigate('DiaryEntryDetail', { diaryEntry: newEntry });
+    };
+
 
     return (
         <View style={styles.screen}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.screen}>
-                <TopNavigationBar title={title} LeftIcon={BackArrowIcon} />
-                {photos.length > 0 && (
-                    <PhotoThumbnail sources={photos} onClose={handleRemovePhoto} />
+                <TopNavigationBar title={diaryEntry ? 'Edit Entry' : 'New Entry'} LeftIcon={BackArrowIcon} />
+                {imageUris.length > 0 && (
+                    <PhotoThumbnail sources={imageUris.map(uri => ({ uri }))} onClose={handleRemovePhoto} />
                 )}
                 <View style={styles.inputContainer}>
                     <View style={styles.inputWrapper}>
@@ -73,11 +173,13 @@ export default function NewDiaryEntryScreen() {
                             placeholder="Input text"
                             style={styles.inputText}
                             multiline={true}
+                            value={inputText}
+                            onChangeText={setInputText}
                         />
                     </View>
                     <BottomRightCornerButton
                         IconComponent={() => <CheckmarkIconBlack />}
-                        onPress={() => log.info('Checkmark pressed')}
+                        onPress={saveEntry}
                     />
                     <View style={styles.buttonsContainer}>
                         <TouchableOpacity style={styles.button} onPress={takePhoto}>
