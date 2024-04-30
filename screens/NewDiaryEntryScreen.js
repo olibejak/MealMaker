@@ -6,6 +6,7 @@ import TopNavigationBar from "../components/TopNavigationBar";
 import BottomNavigationBar from "../components/BottomNavigationBar";
 import PhotoThumbnail from "../components/PhotoThumbnail";
 import * as ImagePicker from "expo-image-picker";
+import log from "../utils/Logger";
 
 export default function NewDiaryEntryScreen() {
     const title = "New Entry";
