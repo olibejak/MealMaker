@@ -106,14 +106,12 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     }
 
     const handleAddToFridge = () => {
-        console.log("Adding to fridge");
         const ingredientName = ingredient.strIngredient;
         setSnackbarMessage(`${ingredientName} added to the fridge successfully!`);
         setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to fridge
     };
 
     const handleAddToBasket = () => {
-        console.log("Adding to basket");
         const ingredientName = ingredient.strIngredient;
         setSnackbarMessage(`${ingredientName} added to the shopping list successfully!`);
         setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to basket
@@ -326,6 +324,20 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#48454E',
         lineHeight: 24,
+    },
+    fontButton: {
+        fontFamily: 'Roboto-Medium',
+        fontSize: 16,
+        letterSpacing: 0.5,
+        marginLeft: 5,
+    },
+    fontSmall: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 12,
+        letterSpacing: 0.5,
+    },
+    textCenter: {
+        textAlign: 'center',
     },
     imageContainer: {
         display: 'flex',
