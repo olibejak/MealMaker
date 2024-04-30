@@ -9,6 +9,7 @@ import * as ImagePicker from "expo-image-picker";
 import log from "../utils/Logger";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {CommonActions, useFocusEffect} from "@react-navigation/native";
 
 export default function NewDiaryEntryScreen( { route, navigation } ) {
     const [imageUris, setImageUris] = useState([]);
@@ -17,16 +18,18 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
     // Extract diaryEntry from route.params or set it to null if undefined
     const diaryEntry = route.params?.diaryEntry ?? null;
 
-    useEffect(() => {
-        // Initialize states with content if diaryEntry is passed, otherwise set defaults
-        if (diaryEntry) {
-            setInputText(diaryEntry.text || '');
-            setImageUris(diaryEntry.images || []);
-        } else {
-            setInputText('');
-            setImageUris([]);
-        }
-    }, [diaryEntry]);
+    // Focus Effect to reset state whenever the screen is focused
+    useFocusEffect(
+        React.useCallback(() => {
+            if (diaryEntry) {
+                setInputText(diaryEntry.text || '');
+                setImageUris(diaryEntry.images || []);
+            } else {
+                setInputText('');
+                setImageUris([]);
+            }
+        }, [diaryEntry])
+    );
 
     useEffect(() => {
         (async () => {
@@ -141,6 +144,15 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
 
         await AsyncStorage.setItem('diaryContent', JSON.stringify(diaryContent));
 
+        // Reset the navigation stack to Diary screen and navigate to the new entry
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    { name: 'Diary'},
+                ],
+            })
+        );
         navigation.navigate('DiaryEntryDetail', { diaryEntry: newEntry });
     };
 
