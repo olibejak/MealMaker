@@ -47,7 +47,7 @@ export default function NewDiaryEntryScreen() {
                 from: uri,
                 to: newPath
             });
-            setImageUris(prevUris => [...prevUris, newPath]);
+            setImageUris(prevUris => [...prevUris, { uri: newPath }]); // Store it as an object with uri property
         } catch (err) {
             log.error('Error saving the image to filesystem', err);
             alert('Failed to save the image. Please try again.');

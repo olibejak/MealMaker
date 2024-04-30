@@ -6,7 +6,7 @@ export default function PhotoThumbnail({ sources, onClose }) {
     // Render item function to display each photo and its close button
     const renderItem = ({ item, index }) => (
         <View style={styles.imageContainer}>
-            <Image source={{ uri: item.uri }} style={styles.miniature} resizeMode='cover' />
+            <Image source={item.uri} style={styles.miniature} resizeMode='cover' />
             <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => onClose(index)}
