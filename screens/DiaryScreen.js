@@ -10,24 +10,27 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../utils/Logger";
 
 export default function MyDiaryScreen({navigation}) {
-    const [isFocused, setIsFocused] = useState(false);
-    const [diaryContent, setDiaryContent] = useState([]);
 
-    const loadDiaryContent = useCallback (async () => {
+    const [diaryContent, setDiaryContent] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const loadDiaryContent = useCallback(async () => {
+        setLoading(true); // Start loading
         try {
-            // Load fridge content
             const content = await AsyncStorage.getItem("diaryContent");
             if (content !== null) {
                 setDiaryContent(JSON.parse(content));
             }
+            setLoading(false); // Loading done
         } catch (error) {
             log.error("Error loading diary content:", error);
+            setLoading(false); // Ensure loading is set to false even if there is an error
         }
     }, []);
 
+
     useEffect(() => {
         return navigation.addListener('focus', () => {
-            setIsFocused(true);
             loadDiaryContent();
         });
     }, [navigation]);
@@ -69,16 +72,17 @@ export default function MyDiaryScreen({navigation}) {
                             actionButton={'delete'}
                         />
                     ))
-                ) : (
+                ) : !loading ? (
                     <View style={styles.emptyContainer}>
-                        <Text style={styles.emptyText}> No diary entries, click + to add some</Text>
+                        <Text style={styles.emptyText}>No diary entries, click + to add some</Text>
                     </View>
-                )}
+                ) : null}
             </ScrollView>
             <BottomNavigationBar/>
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => navigation.navigate('NewDiaryEntry')} />
         </View>
     );
+
 }
 
 const styles = StyleSheet.create({
