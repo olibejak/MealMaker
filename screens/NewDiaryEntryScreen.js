@@ -123,23 +123,31 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
         const storage = await AsyncStorage.getItem('diaryContent');
         let diaryContent = storage ? JSON.parse(storage) : [];
 
-        const firstLine = inputText.split('\n')[0];
-        const newEntry = diaryEntry ? { ...diaryEntry, text: inputText, images: imageUris } : {
-            id: diaryContent.length + 1,
-            title: firstLine,
-            date: new Date().toLocaleDateString(),
+        // Extract the first line to use as the title
+        const firstLine = inputText.split('\n')[0] || 'Untitled Entry'; // Default title if the first line is empty
+
+        const newEntry = {
+            ...diaryEntry,
+            title: firstLine, // Set or update the title based on the first line of the input text
             text: inputText,
             images: imageUris,
+            date: diaryEntry ? diaryEntry.date : new Date().toLocaleDateString(), // Keep the original date if editing, otherwise use the current date
         };
 
-        if (!diaryEntry) {
-            diaryContent.push(newEntry);
-        } else {
+        if (diaryEntry) {
             // Update the existing entry in diaryContent
             const index = diaryContent.findIndex(item => item.id === diaryEntry.id);
             if (index !== -1) {
                 diaryContent[index] = newEntry;
+            } else {
+                // Handle the case where diaryEntry might not exist in diaryContent
+                newEntry.id = diaryContent.length + 1; // Assign a new ID
+                diaryContent.push(newEntry);
             }
+        } else {
+            // Add a new entry
+            newEntry.id = diaryContent.length + 1; // Assign a new ID
+            diaryContent.push(newEntry);
         }
 
         await AsyncStorage.setItem('diaryContent', JSON.stringify(diaryContent));
