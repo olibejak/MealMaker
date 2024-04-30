@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform, Image} from 'react-native';
+import {View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform} from 'react-native';
 import {BackArrowIcon, CameraIcon, CheckmarkIconBlack, ImageIcon} from "../assets/icons.js";
 import BottomRightCornerButton from "../components/BottomRightCornerButton";
 import TopNavigationBar from "../components/TopNavigationBar";
@@ -8,10 +8,13 @@ import PhotoThumbnail from "../components/PhotoThumbnail";
 import * as ImagePicker from "expo-image-picker";
 import log from "../utils/Logger";
 import * as FileSystem from "expo-file-system";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function NewDiaryEntryScreen() {
     const title = "New Entry";
     const [imageUris, setImageUris] = useState([]);
+    const [inputText, setInputText] = useState('');
+
 
     useEffect(() => {
         (async () => {
@@ -57,7 +60,7 @@ export default function NewDiaryEntryScreen() {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
 
@@ -74,7 +77,7 @@ export default function NewDiaryEntryScreen() {
         let result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
 
@@ -102,6 +105,33 @@ export default function NewDiaryEntryScreen() {
         }
     };
 
+    const saveEntry = async () => {
+        const storage = await AsyncStorage.getItem('diaryContent');
+        let diaryContent = storage ? JSON.parse(storage) : []; // Initialize as an array if null
+
+        const firstLine = inputText.split('\n')[0]; // Get the first line to use as a title
+        const newEntry = {
+            id: diaryContent.length + 1,
+            title: firstLine,
+            date: new Date().toLocaleDateString(),
+            text: inputText,
+            images: imageUris,
+        };
+
+        diaryContent.push(newEntry);
+        await AsyncStorage.setItem('diaryContent', JSON.stringify(diaryContent));
+
+        // Clear the current input
+        setInputText('');
+        setImageUris([]); // Optionally clear images as well
+
+        // TODO
+        // Navigate to the diary entry detail screen or show a success message
+        // navigation.navigate('DiaryEntryDetail', { recipeId: newEntry.id });
+
+    };
+
+
 
 
     return (
@@ -110,7 +140,6 @@ export default function NewDiaryEntryScreen() {
                 <TopNavigationBar title={title} LeftIcon={BackArrowIcon} />
                 {imageUris.length > 0 && (
                     <PhotoThumbnail sources={imageUris.map(uri => ({ uri }))} onClose={handleRemovePhoto} />
-
                 )}
                 <View style={styles.inputContainer}>
                     <View style={styles.inputWrapper}>
@@ -118,11 +147,13 @@ export default function NewDiaryEntryScreen() {
                             placeholder="Input text"
                             style={styles.inputText}
                             multiline={true}
+                            value={inputText}
+                            onChangeText={setInputText}
                         />
                     </View>
                     <BottomRightCornerButton
                         IconComponent={() => <CheckmarkIconBlack />}
-                        onPress={() => log.info('Checkmark pressed')}
+                        onPress={saveEntry}
                     />
                     <View style={styles.buttonsContainer}>
                         <TouchableOpacity style={styles.button} onPress={takePhoto}>

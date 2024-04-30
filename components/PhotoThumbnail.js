@@ -7,7 +7,11 @@ export default function PhotoThumbnail({ sources, onClose }) {
     const renderItem = ({ item, index }) => (
         <View style={styles.imageContainer}>
             <Image source={{ uri: item.uri }} style={styles.miniature} resizeMode='cover' />
-            <TouchableOpacity style={styles.closeButton} onPress={() => onClose(index)}>
+            <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => onClose(index)}
+                hitSlop={{ top: 25, bottom: 25, left: 25, right: 25 }}
+            >
                 <CloseIcon />
             </TouchableOpacity>
         </View>
@@ -68,6 +72,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: 'rgba(255, 255, 255, 0.8)',
         zIndex: 1, // This ensures it stays on top
+        padding: 12, // Padding to expand the clickable area while keeping the icon size unchanged
     },
 });
 
