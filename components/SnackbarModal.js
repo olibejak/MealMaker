@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
             },
         }),
         display: 'flex',
-        backgroundColor: '#CAC4D0',
+        backgroundColor: '#fff',
         borderRadius: 8,
         padding: 20,
         width: '100%',
