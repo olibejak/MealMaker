@@ -8,11 +8,10 @@ import BottomRightCornerButton from "../components/BottomRightCornerButton";
 
 export default function DiaryEntryDetailScreen( { route, navigation } ) {
     const {diaryEntry} = route.params;
-    const title = "My first Recipe";
 
     return (
         <View style={styles.screen}>
-            <TopNavigationBar title={title} LeftIcon={BackArrowIcon}/>
+            <TopNavigationBar title={diaryEntry.title} LeftIcon={BackArrowIcon}/>
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 <View style={styles.contentContainer}>
                     <View style={styles.textContainer}>
@@ -29,7 +28,7 @@ export default function DiaryEntryDetailScreen( { route, navigation } ) {
             </ScrollView>
             <BottomRightCornerButton
                 IconComponent={PencilIcon}
-                onPress={() => navigation.navigate('NewDiaryEntry')}
+                onPress={() => navigation.navigate('NewDiaryEntry', { diaryEntry: diaryEntry })}
             />
             <BottomNavigationBar />
         </View>

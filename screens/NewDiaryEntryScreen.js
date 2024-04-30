@@ -10,11 +10,20 @@ import log from "../utils/Logger";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function NewDiaryEntryScreen() {
-    const title = "New Entry";
+export default function NewDiaryEntryScreen( { route, navigation } ) {
     const [imageUris, setImageUris] = useState([]);
     const [inputText, setInputText] = useState('');
 
+    // Extract diaryEntry from route.params or set it to null if undefined
+    const diaryEntry = route.params?.diaryEntry ?? null;
+
+    useEffect(() => {
+        // When diaryEntry is passed, initialize states with its content
+        if (diaryEntry) {
+            setInputText(diaryEntry.text);
+            setImageUris(diaryEntry.images);
+        }
+    }, [diaryEntry]);
 
     useEffect(() => {
         (async () => {
@@ -54,8 +63,6 @@ export default function NewDiaryEntryScreen() {
         }
     };
 
-
-
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -90,7 +97,7 @@ export default function NewDiaryEntryScreen() {
     }
 
     const handleRemovePhoto = async (index) => {
-        const uri = imageUris[index];
+        const uri = imageUris[index].uri;
         try {
             const fileExists = await FileSystem.getInfoAsync(uri);
             if (fileExists.exists) {
@@ -107,10 +114,10 @@ export default function NewDiaryEntryScreen() {
 
     const saveEntry = async () => {
         const storage = await AsyncStorage.getItem('diaryContent');
-        let diaryContent = storage ? JSON.parse(storage) : []; // Initialize as an array if null
+        let diaryContent = storage ? JSON.parse(storage) : [];
 
-        const firstLine = inputText.split('\n')[0]; // Get the first line to use as a title
-        const newEntry = {
+        const firstLine = inputText.split('\n')[0];
+        const newEntry = diaryEntry ? { ...diaryEntry, text: inputText, images: imageUris } : {
             id: diaryContent.length + 1,
             title: firstLine,
             date: new Date().toLocaleDateString(),
@@ -118,26 +125,27 @@ export default function NewDiaryEntryScreen() {
             images: imageUris,
         };
 
-        diaryContent.push(newEntry);
+        if (!diaryEntry) {
+            diaryContent.push(newEntry);
+        } else {
+            // Update the existing entry in diaryContent
+            const index = diaryContent.findIndex(item => item.id === diaryEntry.id);
+            if (index !== -1) {
+                diaryContent[index] = newEntry;
+            }
+        }
+
         await AsyncStorage.setItem('diaryContent', JSON.stringify(diaryContent));
 
-        // Clear the current input
-        setInputText('');
-        setImageUris([]); // Optionally clear images as well
 
-        // TODO
-        // Navigate to the diary entry detail screen or show a success message
-        // navigation.navigate('DiaryEntryDetail', { recipeId: newEntry.id });
-
+        navigation.navigate('DiaryEntryDetail', { diaryEntry: newEntry });
     };
-
-
 
 
     return (
         <View style={styles.screen}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.screen}>
-                <TopNavigationBar title={title} LeftIcon={BackArrowIcon} />
+                <TopNavigationBar title={diaryEntry ? 'Edit Entry' : 'New Entry'} LeftIcon={BackArrowIcon} />
                 {imageUris.length > 0 && (
                     <PhotoThumbnail sources={imageUris.map(uri => ({ uri }))} onClose={handleRemovePhoto} />
                 )}

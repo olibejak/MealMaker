@@ -32,7 +32,7 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon, starActio
                 <TouchableOpacity style={styles.icon} onPress={LeftAction}>
                     <LeftIcon />
                 </TouchableOpacity>
-                <Text style={styles.fontLarge}>{title}</Text>
+                <Text style={styles.fontLarge} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
                 {RightIcon ? (
                     <TouchableOpacity style={styles.icon} onPress={RightAction}>
                         <RightIcon />
@@ -87,5 +87,12 @@ const styles = StyleSheet.create({
     fontLarge: {
         fontFamily: 'Roboto-Regular',
         fontSize: 22,
+        flex: 1,
+        textAlign: 'center',
+        marginLeft: 10,
+        marginRight: 10,
+        flexShrink: 1, // This allows the text to shrink if necessary to fit into the available space
+
+
     }
 });
