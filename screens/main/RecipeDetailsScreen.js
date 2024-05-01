@@ -23,6 +23,7 @@ import MealMiniature from "../../components/image/MealMiniature";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../../utils/Logger";
+import SnackbarModal from "../../components/modals/SnackbarModal";
 
 export default function RecipeDetailsScreen ( { route, navigation } ) {
     const {recipe} = route.params;
@@ -32,6 +33,8 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
     const starIconToRender = isFavourite ? StarFilledIcon  : StarOutlineIcon;
     const ingredientKeys = Object.keys(recipe).filter(key => key.startsWith('strIngredient'));
     const amountKeys = Object.keys(recipe).filter(key => key.startsWith('strMeasure'));
+    const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     useEffect(() => {
         // Retrieve favorites from local storage
@@ -125,6 +128,10 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
 
             // Save updated shopping list content
             await AsyncStorage.setItem("shoppingListContent", JSON.stringify(newContent));
+
+            // Display Snackbar
+            setSnackbarMessage('Ingredients added to shopping list!')
+            setSnackbarModalVisible(true);
         } catch (error) {
             log.error("Error adding to shopping list:", error);
         }
@@ -218,6 +225,11 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                 onPress={navigateToStepByStepRecipeScreen}
             />
             <BottomNavigationBar selected={"Ingredients"} />
+            <SnackbarModal
+                textToDisplay={snackbarMessage}
+                onDismiss={() => setSnackbarModalVisible(false)}
+                visible={snackbarModalVisible}
+            />
         </View>
     );
 };
