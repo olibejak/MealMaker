@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {TouchableOpacity, View, Text, StyleSheet, Modal, Platform} from 'react-native';
+import {TouchableOpacity, View, Text, StyleSheet, Modal, Platform, TouchableWithoutFeedback} from 'react-native';
 import { CloseIcon, CheckmarkIcon, StarFilledIcon } from '../../assets/icons';
 
 const FilterCategoriesModal = ({ visible, onSelectCategory, onClose, context, activeFilter }) => {
@@ -38,28 +38,32 @@ const FilterCategoriesModal = ({ visible, onSelectCategory, onClose, context, ac
             animationType="fade"
             onRequestClose={onClose}
         >
-            <View style={styles.modalOverlay}>
-                <View style={styles.mainContainer}>
-                    <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                        <CloseIcon />
-                    </TouchableOpacity>
-                    <View style={styles.buttonsContainer}>
-                        {categories.map((category) => (
-                            <TouchableOpacity
-                                key={category}
-                                style={[styles.button, selectedCategory === category && styles.selected]}
-                                onPress={() => handleSelectCategory(category)}
-                            >
-                                {selectedCategory === category && <CheckmarkIcon style={styles.icon} />}
-                                {(category === "Favourite ingredients" || category === "Favourite recipes") && selectedCategory !== category && (
-                                    <StarFilledIcon style={styles.star} />
-                                )}
-                                <Text style={styles.text}>{category}</Text>
+            <TouchableWithoutFeedback onPress={onClose}>
+                <View style={styles.modalOverlay}>
+                    <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                        <View style={styles.mainContainer}>
+                            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                                <CloseIcon />
                             </TouchableOpacity>
-                        ))}
-                    </View>
+                            <View style={styles.buttonsContainer}>
+                                {categories.map((category) => (
+                                    <TouchableOpacity
+                                        key={category}
+                                        style={[styles.button, selectedCategory === category && styles.selected]}
+                                        onPress={() => handleSelectCategory(category)}
+                                    >
+                                        {selectedCategory === category && <CheckmarkIcon style={styles.icon} />}
+                                        {(category === "Favourite ingredients" || category === "Favourite recipes") && selectedCategory !== category && (
+                                            <StarFilledIcon style={styles.star} />
+                                        )}
+                                        <Text style={styles.text}>{category}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
         </Modal>
     );
 };

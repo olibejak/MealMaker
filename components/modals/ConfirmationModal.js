@@ -1,4 +1,4 @@
-import {Modal, Text, TouchableOpacity, View} from "react-native";
+import {Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import React from "react";
 
 export default function ConfirmationModal ({ onConfirm, onCancel, visible }) {
@@ -10,22 +10,26 @@ export default function ConfirmationModal ({ onConfirm, onCancel, visible }) {
             onRequestClose={onCancel}
             statusBarTranslucent={true}
         >
-            <View style={styles.modalBackground}>
-                <View style={styles.modalContainer}>
-                    <Text style={styles.modalTitle}>Move items into fridge?</Text>
-                    <Text style={styles.modalMessage}>
-                        This will move all selected items from the shopping list into the fridge.
-                    </Text>
-                    <View style={styles.modalButtonContainer}>
-                        <TouchableOpacity onPress={onCancel}>
-                            <Text style={styles.modalCancelText}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={onConfirm}>
-                            <Text style={styles.modalConfirmText}>Confirm</Text>
-                        </TouchableOpacity>
-                    </View>
+            <TouchableWithoutFeedback onPress={onCancel}>
+                <View style={styles.modalBackground}>
+                    <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                        <View style={styles.modalContainer}>
+                            <Text style={styles.modalTitle}>Move items into fridge?</Text>
+                            <Text style={styles.modalMessage}>
+                                This will move all selected items from the shopping list into the fridge.
+                            </Text>
+                            <View style={styles.modalButtonContainer}>
+                                <TouchableOpacity onPress={onCancel}>
+                                    <Text style={styles.modalCancelText}>Cancel</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={onConfirm}>
+                                    <Text style={styles.modalConfirmText}>Confirm</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
         </Modal>
     );
 }

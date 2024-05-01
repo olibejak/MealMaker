@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Modal,
     View,
@@ -6,16 +6,13 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    Platform,
-    KeyboardAvoidingView
+    KeyboardAvoidingView, TouchableWithoutFeedback
 } from 'react-native';
-import {useIsFocused} from "@react-navigation/native";
 
 function EditSetAmountModal({ visible, ingredient, onClose, deleteIngredient, showDelete, onConfirm }) {
     const [amount, setAmount] = useState(ingredient?.amount || '');
     const [title, setTitle] = useState(ingredient?.name || ''); // Default to empty if no name
     const [editableTitle, setTitleEditable] = useState(false);
-    const isFocused = useIsFocused();
 
     useEffect(() => {
         if (ingredient) {
@@ -55,46 +52,51 @@ function EditSetAmountModal({ visible, ingredient, onClose, deleteIngredient, sh
             onRequestClose={onClose}
             statusBarTranslucent={true}
         >
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalBackground}>
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalTitleInput}>
-                        <TextInput
-                            style={styles.modalText}
-                            onChangeText={(text) => setTitle(text)}
-                            value={title}
-                            autoFocus={editableTitle}
-                            placeholder="Enter new title"
-                            editable={editableTitle}
-                        />
-                    </View>
-                    <View style={styles.titleSeparator} />
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.inputTitle}>Amount</Text>
-                        <TextInput
-                            style={styles.modalInput}
-                            value={amount}
-                            onChangeText={(text) => setAmount(text)}
-                            placeholder="Enter amount"
-                            autoFocus={!editableTitle}
-                        />
-                    </View>
-                    <View style={styles.modalButtonContainer}>
-                        {showDelete ? (
-                            <TouchableOpacity onPress={handleDelete}>
-                                <Text style={styles.modalDeleteText}>Delete</Text>
-                            </TouchableOpacity>
-                        ) : <View style={styles.placeholderButton}></View>}
-                        <View style={styles.twoButtonContainer}>
-                            <TouchableOpacity onPress={onClose}>
-                                <Text style={styles.modalCancelText}>Cancel</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={handleConfirm}>
-                                <Text style={styles.modalConfirmText}>Confirm</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+            <TouchableWithoutFeedback onPress={onClose}>
+                <View style={styles.modalBackground}>
+                    <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                        <KeyboardAvoidingView style={styles.modalContainer}>
+                            <TextInput
+                                style={styles.modalText}
+                                onChangeText={setTitle}
+                                value={title}
+                                autoFocus={editableTitle}
+                                placeholder="Enter new title"
+                                placeholderTextColor={'#625b70'}
+                                editable={editableTitle}
+                            />
+                            <View style={styles.titleSeparator} />
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.inputTitle}>Amount</Text>
+                                <TextInput
+                                    style={styles.modalInput}
+                                    value={amount}
+                                    onChangeText={setAmount}
+                                    placeholder="Enter amount"
+                                    placeholderTextColor={'#625b70'}
+                                    autoFocus={!editableTitle}
+                                />
+                            </View>
+                            <View style={styles.modalButtonContainer}>
+                                {showDelete ?
+                                    <TouchableOpacity onPress={handleDelete}>
+                                        <Text style={styles.modalDeleteText}>Delete</Text>
+                                    </TouchableOpacity>
+                                    :
+                                    <View style={styles.modalDeleteText}></View>}
+                                <View style={styles.twoButtonContainer}>
+                                    <TouchableOpacity onPress={onClose}>
+                                        <Text style={styles.modalCancelText}>Cancel</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={handleConfirm}>
+                                        <Text style={styles.modalConfirmText}>Confirm</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </KeyboardAvoidingView>
+                    </TouchableWithoutFeedback>
                 </View>
-            </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
         </Modal>
     );
 }
@@ -120,7 +122,8 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 5
+        elevation: 5,
+        bottom: 36,
     },
     titleSeparator: {
         alignSelf: 'stretch',
@@ -134,22 +137,15 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         marginTop: 6,
     },
-    modalTitle: {
-        alignSelf: "flex-start",
-        padding: 10,
-    },
-    modalTitleInput: {
-        alignSelf: "flex-start",
-        width: '100%', // Make sure it occupies the whole line
-        padding: 10, // Padding for easier text entry
-        paddingLeft: 0, // Remove padding on the left
-        marginBottom: 4, // Space to separator
-    },
     modalText: {
         fontFamily: 'Roboto-Regular',
         fontSize: 36,
         color: '#1d1b20',
         textAlign: 'left',
+        alignSelf: 'flex-start',
+        paddingTop: 6,
+        paddingBottom: 12,
+        paddingLeft: 16,
     },
     inputTitle: {
         position: 'absolute',
@@ -170,7 +166,7 @@ const styles = StyleSheet.create({
         borderColor: "#6750a3",
         borderRadius: 5,
         width: '100%',
-        marginBottom: 15,
+        marginBottom: 3,
         fontSize: 18,
         padding: 12,
         textAlign: 'center',
@@ -181,6 +177,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
+        marginTop: 8,
+        marginBottom: 0,
     },
     twoButtonContainer: {
         flexDirection: 'row',
@@ -204,12 +202,7 @@ const styles = StyleSheet.create({
         color: '#B3261E',
         padding: 10,
         paddingRight: 5,
-    },
-    placeholderButton: {
-        opacity: 0, // Invisible
-        paddingHorizontal: 10, // Same padding as the Delete button
-        paddingVertical: 10, // Same padding as the Delete button
-    },
+    }
 });
 
 export default EditSetAmountModal;

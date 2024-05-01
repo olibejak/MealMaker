@@ -83,6 +83,7 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
                 <View style={styles.modalView}>
                     <TextInput
                         placeholder="Enter label"
+                        placeholderTextColor={'#625b70'}
                         value={timerLabel}
                         onChangeText={setTimerLabel}
                         style={styles.inputText}
