@@ -1,7 +1,7 @@
 import {Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import React from "react";
 
-export default function ConfirmationModal ({ onConfirm, onCancel, visible }) {
+export default function ConfirmationModal ({ onConfirm, onCancel, visible, title, text }) {
     return (
         <Modal
             animationType="fade"
@@ -14,9 +14,9 @@ export default function ConfirmationModal ({ onConfirm, onCancel, visible }) {
                 <View style={styles.modalBackground}>
                     <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
                         <View style={styles.modalContainer}>
-                            <Text style={styles.modalTitle}>Move items into fridge?</Text>
+                            <Text style={styles.modalTitle}>{title}</Text>
                             <Text style={styles.modalMessage}>
-                                This will move all selected items from the shopping list into the fridge.
+                                {text}
                             </Text>
                             <View style={styles.modalButtonContainer}>
                                 <TouchableOpacity onPress={onCancel}>
