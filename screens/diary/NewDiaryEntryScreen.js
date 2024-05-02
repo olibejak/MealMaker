@@ -20,9 +20,11 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
 
     useEffect(() => {
         if (diaryEntry) {
+            // Set the input text and image uris to the values of the diary entry (edit entry)
             setInputText(diaryEntry.text || '');
             setImageUris(diaryEntry.images || []);
         } else {
+            // Reset the input text and image uris (new entry)
             setInputText('');
             setImageUris([]);
         }
