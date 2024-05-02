@@ -9,29 +9,24 @@ import * as ImagePicker from "expo-image-picker";
 import log from "../../utils/Logger";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {CommonActions, useIsFocused} from "@react-navigation/native";
+import {CommonActions} from "@react-navigation/native";
 
 export default function NewDiaryEntryScreen( { route, navigation } ) {
     const [imageUris, setImageUris] = useState([]);
     const [inputText, setInputText] = useState('');
-
-    const isFocused = useIsFocused();
 
     // Extract diaryEntry from route.params or set it to null if undefined
     const diaryEntry = route.params?.diaryEntry ?? null;
 
     useEffect(() => {
         if (diaryEntry) {
-            // Set the input text and image uris to the values of the diary entry (edit diary entry case)
-            setInputText(diaryEntry.text);
-            setImageUris(diaryEntry.images);
-        } else if (isFocused) {
-            // Reset the input text and image uris when the screen is focused (new diary entry case)
+            setInputText(diaryEntry.text || '');
+            setImageUris(diaryEntry.images || []);
+        } else {
             setInputText('');
             setImageUris([]);
         }
-    }, [diaryEntry, isFocused]);
-
+    }, [diaryEntry]);
 
     useEffect(() => {
         (async () => {
