@@ -9,7 +9,7 @@ import * as ImagePicker from "expo-image-picker";
 import log from "../../utils/Logger";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {CommonActions, useFocusEffect} from "@react-navigation/native";
+import {CommonActions} from "@react-navigation/native";
 
 export default function NewDiaryEntryScreen( { route, navigation } ) {
     const [imageUris, setImageUris] = useState([]);
@@ -19,11 +19,12 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
     const diaryEntry = route.params?.diaryEntry ?? null;
 
     useEffect(() => {
-        // Initialize states with content if diaryEntry is passed, otherwise set defaults
         if (diaryEntry) {
+            // Set the input text and image uris to the values of the diary entry (edit entry)
             setInputText(diaryEntry.text || '');
             setImageUris(diaryEntry.images || []);
         } else {
+            // Reset the input text and image uris (new entry)
             setInputText('');
             setImageUris([]);
         }

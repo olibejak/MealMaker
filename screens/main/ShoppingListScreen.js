@@ -175,6 +175,8 @@ export default function ShoppingListScreen () {
                     onConfirm={() => moveToFridge()}
                     onCancel={() => setModalVisible(false)}
                     visible={modalVisible}
+                    title={'Move items into fridge?'}
+                    text={'This will move all selected items from the shopping list into the fridge.'}
                 />
             )}
             {editModalVisible && ( // Render the edit modal conditionally
