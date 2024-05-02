@@ -21,27 +21,17 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
     const diaryEntry = route.params?.diaryEntry ?? null;
 
     useEffect(() => {
-        if (isFocused && !diaryEntry) {
-            // Reset only when focused and there's no diaryEntry (new entry)
-            setInputText('');
-            setImageUris([]);
-        } else if (diaryEntry) {
-            // If editing an existing entry, load the existing data (edit entry)
+        if (diaryEntry) {
+            // Set the input text and image uris to the values of the diary entry (edit diary entry case)
             setInputText(diaryEntry.text);
             setImageUris(diaryEntry.images);
-        }
-    }, [isFocused, diaryEntry]);
-
-    useEffect(() => {
-        // Initialize states with content if diaryEntry is passed, otherwise set defaults
-        if (diaryEntry) {
-            setInputText(diaryEntry.text || '');
-            setImageUris(diaryEntry.images || []);
-        } else {
+        } else if (isFocused) {
+            // Reset the input text and image uris when the screen is focused (new diary entry case)
             setInputText('');
             setImageUris([]);
         }
-    }, [diaryEntry]);
+    }, [diaryEntry, isFocused]);
+
 
     useEffect(() => {
         (async () => {
