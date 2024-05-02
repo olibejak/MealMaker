@@ -57,7 +57,7 @@ export default function TimerCard({ label, initialTime, onAddTime, onStartStop, 
                         fill={(timeToSeconds(currentTime) / timeToSeconds(initialTime)) * 100}
                         tintColor="#cfbbfd"  // This will now act like the "background"
                         backgroundColor="#F6F2F9" // This will act like the "fill color"
-                        rotation={360}
+                        rotation={0}
                     >
                         {
                             () => (

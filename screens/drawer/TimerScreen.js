@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     ScrollView,
@@ -103,15 +103,16 @@ export default function TimerScreen() {
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 {timers.map(timer => (
                     <TimerCard
-                        key={timer.id}
+                        key={`${timer.id}-${timer.time}`}
                         id={timer.id}
                         label={timer.label}
-                        initialTime={timer.time} // Changed 'time' to 'initialTime' as used in TimerCard
-                        onAddTime={() => handleAddTime(timer.id, 60)} // Adding 60 seconds
-                        onStartStop={() => handleStartStop(timer.id)} // Updated to use handleStartStop
+                        initialTime={timer.time}
+                        onAddTime={() => handleAddTime(timer.id, 60)}
+                        onStartStop={() => handleStartStop(timer.id)}
                         onClose={() => handleRemoveTimer(timer.id)}
-                        running={timer.running} // Pass the running state
+                        running={timer.running}
                     />
+
                 ))}
             </ScrollView>
             <TimerModal
