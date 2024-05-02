@@ -9,14 +9,28 @@ import * as ImagePicker from "expo-image-picker";
 import log from "../../utils/Logger";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {CommonActions, useFocusEffect} from "@react-navigation/native";
+import {CommonActions, useIsFocused} from "@react-navigation/native";
 
 export default function NewDiaryEntryScreen( { route, navigation } ) {
     const [imageUris, setImageUris] = useState([]);
     const [inputText, setInputText] = useState('');
 
+    const isFocused = useIsFocused();
+
     // Extract diaryEntry from route.params or set it to null if undefined
     const diaryEntry = route.params?.diaryEntry ?? null;
+
+    useEffect(() => {
+        if (isFocused && !diaryEntry) {
+            // Reset only when focused and there's no diaryEntry (new entry)
+            setInputText('');
+            setImageUris([]);
+        } else if (diaryEntry) {
+            // If editing an existing entry, load the existing data (edit entry)
+            setInputText(diaryEntry.text);
+            setImageUris(diaryEntry.images);
+        }
+    }, [isFocused, diaryEntry]);
 
     useEffect(() => {
         // Initialize states with content if diaryEntry is passed, otherwise set defaults
