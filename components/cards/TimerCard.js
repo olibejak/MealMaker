@@ -18,8 +18,8 @@ export default function TimerCard({ label, initialTime, onAddTime, onStartStop, 
                 setCurrentTime(prevTime => {
                     const seconds = timeToSeconds(prevTime) - 1;
                     if (seconds < 0) {
-                        onClose();
                         return "00:00";
+                        //timer completed show modal window and run alarm
                     }
                     return secondsToTime(seconds);
                 });
