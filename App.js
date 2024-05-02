@@ -3,9 +3,10 @@
 import * as React from 'react';
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
-import DrawerNavigation from './components/DrawerNavigator';
+import DrawerNavigation from './components/navigation/DrawerNavigator';
 import {useCallback, useEffect} from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Import the new DrawerNavigation component
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import log from "./utils/Logger"; // Import the new DrawerNavigation component
 
 export default function App() {
 
@@ -32,7 +33,7 @@ export default function App() {
                 await AsyncStorage.setItem("favouriteRecipes", JSON.stringify([]));
             }
         } catch (error) {
-            console.error("Error initializing local storage:", error);
+            log.error("Error initializing local storage:", error);
         }
     }, []);
 
