@@ -25,12 +25,14 @@ export default function TimerCard({ id, label, currentTime, initialTime, onAddTi
                         tintColor="#cfbbfd"
                         backgroundColor="#F6F2F9"
                         rotation={0}
-                        duration={0}
                     >
                         {
                             () => (
                                 <View style={styles.innerCircle}>
                                     <Text style={styles.timeText}>{currentTime}</Text>
+                                    <TouchableOpacity onPress={reloadTimer} style={styles.reloadIcon}>
+                                        <ReloadIcon />
+                                    </TouchableOpacity>
                                 </View>
                             )
                         }
@@ -68,12 +70,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
+        //  Shadow
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.5,
         shadowRadius: 1,
+        // Android elevation
         elevation: 3,
         position: 'relative',
+
     },
     leftSection: {
         alignItems: 'center',
@@ -99,6 +104,12 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Medium',
         color: '#333',
         textAlign: 'center',
+    },
+    reloadIcon: {
+        // Additional styling for the button if needed
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 15,
     },
     iconText: {
         textAlign: 'center',
@@ -133,4 +144,3 @@ const styles = StyleSheet.create({
         height: '100%',
     },
 });
-

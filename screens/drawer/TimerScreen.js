@@ -78,8 +78,13 @@ export default function TimerScreen() {
     const handleAddTime = (id, additionalSeconds) => {
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
-                const totalSeconds = timeToSeconds(timer.currentTime) + additionalSeconds;
-                return { ...timer, currentTime: secondsToTime(totalSeconds) };
+                const totalSecondsCurrent = timeToSeconds(timer.currentTime) + additionalSeconds;
+                const totalSecondsInitial = timeToSeconds(timer.time) + additionalSeconds;
+                return {
+                    ...timer,
+                    currentTime: secondsToTime(totalSecondsCurrent),
+                    time: secondsToTime(totalSecondsInitial)
+                };
             }
             return timer;
         }));
