@@ -34,6 +34,7 @@ export default function TimerScreen() {
                     if (seconds < 0) {
                         clearInterval(interval);
                         handleTimerFinished(timer);
+                        return { ...timer };
                     }
                     return { ...timer, currentTime: secondsToTime(seconds) };
                 }
@@ -85,6 +86,7 @@ export default function TimerScreen() {
     };
 
     const handleAddTime = (id, additionalSeconds) => {
+        console.log(`Adding time to timer ${id}: ${additionalSeconds} seconds`);
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
                 const totalSecondsCurrent = timeToSeconds(timer.currentTime) + additionalSeconds;
@@ -115,6 +117,7 @@ export default function TimerScreen() {
             }
             return timer;
         }));
+        setFinishedModalVisible(false);
     };
 
     const handleRemoveTimer = async (id) => {
@@ -145,7 +148,7 @@ export default function TimerScreen() {
                 {timers.length > 0 ? (
                     timers.map(timer => (
                         <TimerCard
-                            key={`${timer.id}-${timer.currentTime}`}
+                            key={`${timer.id}-${timer.currentTime}`} // Ensures re-render if currentTime changes
                             id={timer.id}
                             label={timer.label}
                             currentTime={timer.currentTime}
@@ -173,8 +176,23 @@ export default function TimerScreen() {
             <TimerFinishedModal
                 label={finishedTimerLabel}
                 visible={finishedModalVisible}
-                onStopTimer={() => setFinishedModalVisible(false)}
-                onAddOneMinute={() => handleAddTime(finishedTimerLabel, 60)}
+                onStopTimer={() => {
+                    const timer = timers.find(t => t.label === finishedTimerLabel);
+                    if (timer) {
+                        handleReload(timer.id);
+                    }
+                    setFinishedModalVisible(false);
+                    return { ...timer, isRunning: false };
+
+                }}
+                onAddOneMinute={() => {
+                    const timer = timers.find(t => t.label === finishedTimerLabel);
+                    if (timer) {
+                        handleAddTime(timer.id, 60);
+                        setFinishedModalVisible(false);
+                        return { ...timer, isRunning: true };
+                    }
+                }}
             />
         </View>
     );
