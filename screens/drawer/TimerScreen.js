@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Audio } from 'expo-av';
+import * as Haptics from 'expo-haptics';
 import {
     View,
     ScrollView,
@@ -19,7 +21,7 @@ import log from "../../utils/Logger";
 export default function TimerScreen() {
     const [modalVisible, setModalVisible] = useState(false);
     const [finishedModalVisible, setFinishedModalVisible] = useState(false);
-    const [finishedTimerLabel, setFinishedTimerLabel] = useState('');
+    const [finishedTimerId, setFinishedTimerId] = useState(null); // Changed from label to ID
     const [timers, setTimers] = useState([]);
 
     useEffect(() => {
@@ -63,7 +65,7 @@ export default function TimerScreen() {
     };
 
     const handleTimerFinished = (timer) => {
-        setFinishedTimerLabel(timer.label);
+        setFinishedTimerId(timer.id); // Use timer ID instead of label
         setFinishedModalVisible(true);
     };
 
@@ -141,6 +143,16 @@ export default function TimerScreen() {
         return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 
+    function addOneMinute(finishedTimerId) {
+        handleAddTime(finishedTimerId, 60);
+        setFinishedModalVisible(false)
+    }
+
+    function stopTimer(finishedTimerId) {
+        handleReload(finishedTimerId);
+        setFinishedModalVisible(false);
+    }
+
     return (
         <View style={styles.screen}>
             <TopNavigationBar title="Timer" LeftIcon={BackArrowIcon} />
@@ -174,25 +186,10 @@ export default function TimerScreen() {
             <BottomNavigationBar />
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => setModalVisible(true)} />
             <TimerFinishedModal
-                label={finishedTimerLabel}
+                timerId={finishedTimerId} // Changed to pass timerId
                 visible={finishedModalVisible}
-                onStopTimer={() => {
-                    const timer = timers.find(t => t.label === finishedTimerLabel);
-                    if (timer) {
-                        handleReload(timer.id);
-                    }
-                    setFinishedModalVisible(false);
-                    return { ...timer, isRunning: false };
-
-                }}
-                onAddOneMinute={() => {
-                    const timer = timers.find(t => t.label === finishedTimerLabel);
-                    if (timer) {
-                        handleAddTime(timer.id, 60);
-                        setFinishedModalVisible(false);
-                        return { ...timer, isRunning: true };
-                    }
-                }}
+                onStopTimer={() => stopTimer(finishedTimerId)}
+                onAddOneMinute={() => addOneMinute(finishedTimerId)}
             />
         </View>
     );
