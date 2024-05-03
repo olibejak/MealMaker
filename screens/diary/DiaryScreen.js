@@ -74,7 +74,7 @@ export default function MyDiaryScreen({navigation}) {
                     ))
                 ) : !loading ? (
                     <View style={styles.emptyContainer}>
-                        <Text style={styles.emptyText}>No diary entries, click + to add some</Text>
+                        <Text style={styles.emptyText}>No diary entries, tap + to add some</Text>
                     </View>
                 ) : null}
             </ScrollView>

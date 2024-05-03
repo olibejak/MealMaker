@@ -3,6 +3,7 @@ import {
     View,
     ScrollView,
     StyleSheet,
+    Text
 } from 'react-native';
 import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -53,7 +54,7 @@ export default function TimerScreen() {
                 setTimers(timersWithUniqueIds);
             }
         } catch (error) {
-            console.error('Failed to load timers from AsyncStorage:', error);
+            log.error('Failed to load timers from AsyncStorage:', error);
         }
     };
 
@@ -132,21 +133,27 @@ export default function TimerScreen() {
     return (
         <View style={styles.screen}>
             <TopNavigationBar title="Timer" LeftIcon={BackArrowIcon} />
-            <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                {timers.map(timer => (
-                    <TimerCard
-                        key={`${timer.id}-${timer.currentTime}`}
-                        id={timer.id}
-                        label={timer.label}
-                        currentTime={timer.currentTime}
-                        initialTime={timer.time}
-                        onAddTime={() => handleAddTime(timer.id, 60)}
-                        onStartStop={() => handleStartStop(timer.id)}
-                        onClose={() => handleRemoveTimer(timer.id)}
-                        reloadTimer={() => handleReload(timer.id)} // Ensure this matches what is expected in TimerCard
-                        running={timer.isRunning}
-                    />
-                ))}
+            <ScrollView style={styles.scrollableScreen} contentContainerStyle={timers.length === 0 ? styles.emptyScrolling : styles.scrolling}>
+                {timers.length > 0 ? (
+                    timers.map(timer => (
+                        <TimerCard
+                            key={`${timer.id}-${timer.currentTime}`}
+                            id={timer.id}
+                            label={timer.label}
+                            currentTime={timer.currentTime}
+                            initialTime={timer.time}
+                            onAddTime={() => handleAddTime(timer.id, 60)}
+                            onStartStop={() => handleStartStop(timer.id)}
+                            onClose={() => handleRemoveTimer(timer.id)}
+                            reloadTimer={() => handleReload(timer.id)}
+                            running={timer.isRunning}
+                        />
+                    ))
+                ) : (
+                    <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>No timers set. Tap + to add a new timer.</Text>
+                    </View>
+                )}
             </ScrollView>
             <TimerModal
                 modalVisible={modalVisible}
@@ -177,12 +184,21 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     scrolling: {
-        alignItems: 'stretch',
         paddingTop: 16,
         paddingBottom: 60,
     },
-    contentContainer: {
-        paddingBottom: 80,
-        padding: 16,
+    emptyScrolling: {
+        flexGrow: 1,
+        justifyContent: 'center',
+    },
+    emptyContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: 18,
+        color: '#666',
+        textAlign: 'center',
     },
 });
