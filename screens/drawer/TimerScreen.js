@@ -99,6 +99,15 @@ export default function TimerScreen() {
         }));
     };
 
+    const handleReload = (id) => {
+        setTimers(timers => timers.map(timer => {
+            if (timer.id === id) {
+                return { ...timer, currentTime: timer.time };
+            }
+            return timer;
+        }));
+    };
+
     const handleRemoveTimer = async (id) => {
         const updatedTimers = timers.filter(timer => timer.id !== id);
         setTimers(updatedTimers);
@@ -130,10 +139,11 @@ export default function TimerScreen() {
                         id={timer.id}
                         label={timer.label}
                         currentTime={timer.currentTime}
-                        initialTime={timer.time}  // Ensure this prop is defined and passed
+                        initialTime={timer.time}
                         onAddTime={() => handleAddTime(timer.id, 60)}
                         onStartStop={() => handleStartStop(timer.id)}
                         onClose={() => handleRemoveTimer(timer.id)}
+                        onReload={() => handleReload(timer.id)}
                         running={timer.isRunning}
                     />
                 ))}
