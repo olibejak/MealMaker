@@ -3,7 +3,6 @@ import {
     View,
     ScrollView,
     StyleSheet,
-
 } from 'react-native';
 import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,8 +11,7 @@ import BottomRightCornerButton from "../../components/buttons/BottomRightCornerB
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import { BackArrowIcon, PlusIcon } from "../../assets/icons";
-import { useNavigation } from "@react-navigation/native";
-import TimerModal from '../../components/modals/TimerModal'
+import TimerModal from '../../components/modals/TimerModal';
 import log from "../../utils/Logger";
 
 export default function TimerScreen() {
@@ -24,13 +22,34 @@ export default function TimerScreen() {
         loadTimers();
     }, []);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTimers(timers => timers.map(timer => {
+                if (timer.isRunning) {
+                    const seconds = timeToSeconds(timer.currentTime) - 1;
+                    if (seconds < 0) {
+                        clearInterval(interval);
+                        return { ...timer, currentTime: "00:00", isRunning: false };
+                    }
+                    return { ...timer, currentTime: secondsToTime(seconds) };
+                }
+                return timer;
+            }));
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [timers]);
+
     const loadTimers = async () => {
         try {
             const storedTimers = await AsyncStorage.getItem('timers');
             if (storedTimers !== null) {
                 const parsedTimers = JSON.parse(storedTimers);
-                // Ensure all loaded timers have a unique ID
-                const timersWithUniqueIds = parsedTimers.map(timer => ({...timer, id: timer.id || uuid.v4()}));
+                const timersWithUniqueIds = parsedTimers.map(timer => ({
+                    ...timer,
+                    id: timer.id || uuid.v4(),
+                    currentTime: timer.currentTime || timer.time,
+                    isRunning: timer.isRunning || false
+                }));
                 setTimers(timersWithUniqueIds);
             }
         } catch (error) {
@@ -39,7 +58,13 @@ export default function TimerScreen() {
     };
 
     const handleAddTimer = async (label, time) => {
-        const newTimer = { id: uuid.v4(), label, time, running: false };
+        const newTimer = {
+            id: uuid.v4(),
+            label,
+            time,
+            currentTime: time,
+            isRunning: false
+        };
         const updatedTimers = [...timers, newTimer];
         setTimers(updatedTimers);
         setModalVisible(false);
@@ -50,27 +75,20 @@ export default function TimerScreen() {
         }
     };
 
-    const handleAddTime = async (id, additionalSeconds) => {
-        const updatedTimers = timers.map(timer => {
+    const handleAddTime = (id, additionalSeconds) => {
+        setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
-                const totalSeconds = timeToSeconds(timer.time) + additionalSeconds;
-                const newTime = secondsToTime(totalSeconds);
-                return { ...timer, time: newTime };
+                const totalSeconds = timeToSeconds(timer.currentTime) + additionalSeconds;
+                return { ...timer, currentTime: secondsToTime(totalSeconds) };
             }
             return timer;
-        });
-        setTimers(updatedTimers);
-        try {
-            await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
-        } catch (error) {
-            console.error('Failed to update timer time:', error);
-        }
+        }));
     };
 
     const handleStartStop = (id) => {
         setTimers(prevTimers => prevTimers.map(timer => {
             if (timer.id === id) {
-                return { ...timer, running: !timer.running };
+                return { ...timer, isRunning: !timer.isRunning };
             }
             return timer;
         }));
@@ -103,16 +121,15 @@ export default function TimerScreen() {
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
                 {timers.map(timer => (
                     <TimerCard
-                        key={`${timer.id}-${timer.time}`}
+                        key={`${timer.id}-${timer.currentTime}`}
                         id={timer.id}
                         label={timer.label}
-                        initialTime={timer.time}
+                        initialTime={timer.currentTime}
                         onAddTime={() => handleAddTime(timer.id, 60)}
                         onStartStop={() => handleStartStop(timer.id)}
                         onClose={() => handleRemoveTimer(timer.id)}
-                        running={timer.running}
+                        running={timer.isRunning}
                     />
-
                 ))}
             </ScrollView>
             <TimerModal

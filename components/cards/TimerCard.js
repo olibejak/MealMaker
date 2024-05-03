@@ -1,51 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../../assets/icons";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
-export default function TimerCard({ label, initialTime, onAddTime, onStartStop, onClose, running }) {
-    const [isRunning, setIsRunning] = useState(running); // Initialize with the running state from props
-    const [currentTime, setCurrentTime] = useState(initialTime);
-
-    useEffect(() => {
-        setIsRunning(running); // Update internal state when external changes
-    }, [running]);
-
-    useEffect(() => {
-        let interval = null;
-        if (isRunning) {
-            interval = setInterval(() => {
-                setCurrentTime(prevTime => {
-                    const seconds = timeToSeconds(prevTime) - 1;
-                    if (seconds < 0) {
-                        return "00:00";
-                        //timer completed show modal window and run alarm
-                    }
-                    return secondsToTime(seconds);
-                });
-            }, 1000);
-        } else if (!isRunning) {
-            clearInterval(interval);
-        }
-        return () => clearInterval(interval);
-    }, [isRunning]);
-
-    const reloadTimer = () => {
-        setCurrentTime(initialTime);
-        setIsRunning(false);
-    };
-
-    function timeToSeconds(time) {
-        const [minutes, seconds] = time.split(":").map(Number);
-        return minutes * 60 + seconds;
-    }
-
-    function secondsToTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-
+export default function TimerCard({ id, label, currentTime, onAddTime, onStartStop, onClose, running }) {
     return (
         <View style={styles.shadowContainer}>
             <View style={styles.card}>
@@ -63,21 +21,18 @@ export default function TimerCard({ label, initialTime, onAddTime, onStartStop, 
                             () => (
                                 <View style={styles.innerCircle}>
                                     <Text style={styles.timeText}>{currentTime}</Text>
-                                    <TouchableOpacity onPress={reloadTimer} style={styles.reloadIcon}>
-                                        <ReloadIcon />
-                                    </TouchableOpacity>
                                 </View>
                             )
                         }
                     </AnimatedCircularProgress>
                 </View>
                 <View style={styles.buttonGroup}>
-                    <TouchableOpacity onPress={() => onAddTime()} style={[styles.iconBubble, styles.addTimeButton]}>
+                    <TouchableOpacity onPress={onAddTime} style={[styles.iconBubble, styles.addTimeButton]}>
                         <PlusIcon />
                         <Text style={styles.iconText}>1:00</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={onStartStop} style={styles.iconBubble}>
-                        {isRunning ? <PauseIcon /> : <PlayIcon />}
+                        {running ? <PauseIcon /> : <PlayIcon />}
                     </TouchableOpacity>
                     <TouchableOpacity onPress={onClose} style={styles.closeButton}>
                         <CloseIcon />
@@ -88,6 +43,13 @@ export default function TimerCard({ label, initialTime, onAddTime, onStartStop, 
     );
 }
 
+// Helper functions needed to calculate the fill for the progress circle.
+function timeToSeconds(time) {
+    const [minutes, seconds] = time.split(":").map(Number);
+    return minutes * 60 + seconds;
+}
+
+// Styles remain unchanged
 const styles = StyleSheet.create({
     shadowContainer: {
         paddingHorizontal: 4,
@@ -103,15 +65,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
-        //  Shadow
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.5,
         shadowRadius: 1,
-        // Android elevation
         elevation: 3,
         position: 'relative',
-
     },
     leftSection: {
         alignItems: 'center',
@@ -130,19 +89,13 @@ const styles = StyleSheet.create({
         right: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '24'
+        padding: 24
     },
     timeText: {
-        fontSize: 40, // Increased font size for larger text
+        fontSize: 40,
         fontFamily: 'Roboto-Medium',
         color: '#333',
         textAlign: 'center',
-    },
-    reloadIcon: {
-        // Additional styling for the button if needed
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 15,
     },
     iconText: {
         textAlign: 'center',
@@ -172,8 +125,9 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
     },
     innerCircle: {
-        justifyContent: 'center', // This will push the time text up and the button down
+        justifyContent: 'center',
         alignItems: 'center',
-        height: '100%', // Ensure the inner circle uses the full height of the circular progress
+        height: '100%',
     },
 });
+
