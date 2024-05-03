@@ -130,8 +130,20 @@ const CheckmarkIconBlack = () => (
     </Svg>
 )
 
-const PlusIcon = () => (
-    <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+const PlusIcon = ({ style }) => (
+    <Svg width={style?.width || "24"} height={style?.height || "24"} viewBox="0 0 24 24" fill="none">
+        <Path
+            d="M12 5v14m7-7H5"
+            stroke={style?.color || "#000"} // Default color is black if no style or color provided
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </Svg>
+);
+
+const SmallPlusIcon = () => (
+    <Svg width="16" height="24" viewBox="0 0 16 16" fill="#625b70">
         <Path
             d="M12 5v14m7-7H5"
             stroke="#000"
@@ -328,6 +340,7 @@ export {
     BackArrowIcon,
     CheckmarkIcon,
     PlusIcon,
+    SmallPlusIcon,
     PencilIcon,
     PotIcon,
     GarbageIcon,

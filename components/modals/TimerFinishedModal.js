@@ -1,5 +1,6 @@
 import { Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import React from "react";
+import { PlusIcon } from "../../assets/icons"; // Adjust the path as necessary
 
 export default function TimerFinishedModal({ label, onStopTimer, onAddOneMinute, visible }) {
     return (
@@ -14,16 +15,17 @@ export default function TimerFinishedModal({ label, onStopTimer, onAddOneMinute,
                 <View style={styles.modalBackground}>
                     <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
                         <View style={styles.modalContainer}>
-                            <Text style={styles.modalTitle}>Timer Finished</Text>
+                            <Text style={styles.modalTitle}>{label} finished</Text>
                             <Text style={styles.modalMessage}>
-                                The timer "{label}" has ended. Would you like to stop the timer or add more time?
+                                Add more time or stop?
                             </Text>
                             <View style={styles.modalButtonContainer}>
-                                <TouchableOpacity onPress={onStopTimer} style={styles.modalButton}>
-                                    <Text style={styles.modalStopText}>Stop Timer</Text>
+                                <TouchableOpacity onPress={onAddOneMinute} style={styles.modalButtonAdd}>
+                                    <PlusIcon style={styles.iconStyle}/>
+                                    <Text style={styles.modalAddTimeText}>1:00</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={onAddOneMinute} style={styles.modalButton}>
-                                    <Text style={styles.modalAddTimeText}>Add 1:00</Text>
+                                <TouchableOpacity onPress={onStopTimer} style={styles.modalButtonStop}>
+                                    <Text style={styles.modalStopText}>Stop</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -39,14 +41,14 @@ const styles = {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dimmed background
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContainer: {
         display: 'flex',
         alignItems: 'center',
         backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 20,
+        borderRadius: 28,
+        padding: 28,
         width: '85%',
         shadowColor: "#000",
         shadowOffset: {
@@ -58,36 +60,44 @@ const styles = {
         elevation: 5
     },
     modalTitle: {
-        fontSize: 22,
-        fontWeight: 'bold',
+        alignSelf: 'flex-start',
+        fontSize: 26,
+        fontFamily: 'Roboto-Regular',
         marginBottom: 16,
     },
     modalMessage: {
+        alignSelf: 'flex-start',
         fontSize: 16,
+        fontFamily: 'Roboto-Regular',
         marginBottom: 24,
-        textAlign: 'center',
     },
     modalButtonContainer: {
+        alignSelf: 'flex-end',
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        width: '100%',
+        justifyContent: 'flex-end',
     },
-    modalButton: {
-        backgroundColor: '#e5e5e5', // Your color for buttons
-        borderRadius: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        elevation: 2,
+    modalButtonAdd: {
+        flexDirection: 'row', // Ensures icon and text are in a row
+        alignItems: 'center', // Align items vertically
+    },
+    modalButtonStop: {
         marginHorizontal: 10,
     },
     modalStopText: {
         fontSize: 16,
-        fontWeight: 'bold',
-        color: '#d9534f', // Color for stop button text
+        fontFamily: 'Roboto-Bold',
+        color: '#6750a3',
+        padding: 10,
     },
     modalAddTimeText: {
         fontSize: 16,
-        fontWeight: 'bold',
-        color: '#5cb85c', // Color for add time button text
+        fontFamily: 'Roboto-Bold',
+        color: '#625b70',
+        padding: 0,
+    },
+    iconStyle: {
+        color: '#625b70',
+        width: '18',  // Smaller width for a smaller icon
+        height: '18', // Smaller height for a smaller icon
     },
 };

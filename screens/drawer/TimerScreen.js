@@ -13,10 +13,13 @@ import BottomNavigationBar from "../../components/navigation/BottomNavigationBar
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import { BackArrowIcon, PlusIcon } from "../../assets/icons";
 import TimerModal from '../../components/modals/TimerModal';
+import TimerFinishedModal from '../../components/modals/TimerFinishedModal';
 import log from "../../utils/Logger";
 
 export default function TimerScreen() {
     const [modalVisible, setModalVisible] = useState(false);
+    const [finishedModalVisible, setFinishedModalVisible] = useState(false);
+    const [finishedTimerLabel, setFinishedTimerLabel] = useState('');
     const [timers, setTimers] = useState([]);
 
     useEffect(() => {
@@ -30,7 +33,7 @@ export default function TimerScreen() {
                     const seconds = timeToSeconds(timer.currentTime) - 1;
                     if (seconds < 0) {
                         clearInterval(interval);
-                        return { ...timer, currentTime: "00:00", isRunning: false };
+                        handleTimerFinished(timer);
                     }
                     return { ...timer, currentTime: secondsToTime(seconds) };
                 }
@@ -56,6 +59,11 @@ export default function TimerScreen() {
         } catch (error) {
             log.error('Failed to load timers from AsyncStorage:', error);
         }
+    };
+
+    const handleTimerFinished = (timer) => {
+        setFinishedTimerLabel(timer.label);
+        setFinishedModalVisible(true);
     };
 
     const handleAddTimer = async (label, time) => {
@@ -162,6 +170,12 @@ export default function TimerScreen() {
             />
             <BottomNavigationBar />
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => setModalVisible(true)} />
+            <TimerFinishedModal
+                label={finishedTimerLabel}
+                visible={finishedModalVisible}
+                onStopTimer={() => setFinishedModalVisible(false)}
+                onAddOneMinute={() => handleAddTime(finishedTimerLabel, 60)}
+            />
         </View>
     );
 }
