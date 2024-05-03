@@ -25,6 +25,7 @@ export default function TimerCard({ id, label, currentTime, initialTime, onAddTi
                         tintColor="#cfbbfd"
                         backgroundColor="#F6F2F9"
                         rotation={0}
+                        duration={0}
                     >
                         {
                             () => (
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
         right: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 24
+        padding: '24'
     },
     timeText: {
         fontSize: 40,

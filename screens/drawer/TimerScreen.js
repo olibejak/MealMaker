@@ -102,7 +102,7 @@ export default function TimerScreen() {
     const handleReload = (id) => {
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
-                return { ...timer, currentTime: timer.time };
+                return { ...timer, currentTime: timer.time, isRunning: false};
             }
             return timer;
         }));
@@ -143,7 +143,7 @@ export default function TimerScreen() {
                         onAddTime={() => handleAddTime(timer.id, 60)}
                         onStartStop={() => handleStartStop(timer.id)}
                         onClose={() => handleRemoveTimer(timer.id)}
-                        onReload={() => handleReload(timer.id)}
+                        reloadTimer={() => handleReload(timer.id)} // Ensure this matches what is expected in TimerCard
                         running={timer.isRunning}
                     />
                 ))}
