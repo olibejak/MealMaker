@@ -124,7 +124,8 @@ export default function TimerScreen() {
                         key={`${timer.id}-${timer.currentTime}`}
                         id={timer.id}
                         label={timer.label}
-                        initialTime={timer.currentTime}
+                        currentTime={timer.currentTime}
+                        initialTime={timer.time}  // Ensure this prop is defined and passed
                         onAddTime={() => handleAddTime(timer.id, 60)}
                         onStartStop={() => handleStartStop(timer.id)}
                         onClose={() => handleRemoveTimer(timer.id)}

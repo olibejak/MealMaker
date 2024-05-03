@@ -3,7 +3,16 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../../assets/icons";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
-export default function TimerCard({ id, label, currentTime, onAddTime, onStartStop, onClose, running }) {
+export default function TimerCard({ id, label, currentTime, initialTime, onAddTime, onStartStop, onClose, running }) {
+    // Helper function to convert time string to total seconds
+    function timeToSeconds(time) {
+        const [minutes, seconds] = time.split(":").map(Number);
+        return minutes * 60 + seconds;
+    }
+
+    // Calculate fill percentage for progress circle
+    const fill = (timeToSeconds(currentTime) / timeToSeconds(initialTime)) * 100;
+
     return (
         <View style={styles.shadowContainer}>
             <View style={styles.card}>
@@ -12,10 +21,11 @@ export default function TimerCard({ id, label, currentTime, onAddTime, onStartSt
                     <AnimatedCircularProgress
                         size={180}
                         width={10}
-                        fill={(timeToSeconds(currentTime) / timeToSeconds(initialTime)) * 100}
-                        tintColor="#cfbbfd"  // This will now act like the "background"
-                        backgroundColor="#F6F2F9" // This will act like the "fill color"
+                        fill={fill}
+                        tintColor="#cfbbfd"
+                        backgroundColor="#F6F2F9"
                         rotation={0}
+                        duration={0}
                     >
                         {
                             () => (
@@ -43,13 +53,6 @@ export default function TimerCard({ id, label, currentTime, onAddTime, onStartSt
     );
 }
 
-// Helper functions needed to calculate the fill for the progress circle.
-function timeToSeconds(time) {
-    const [minutes, seconds] = time.split(":").map(Number);
-    return minutes * 60 + seconds;
-}
-
-// Styles remain unchanged
 const styles = StyleSheet.create({
     shadowContainer: {
         paddingHorizontal: 4,
