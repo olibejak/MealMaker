@@ -23,6 +23,8 @@ export default function TimerScreen() {
     const [finishedModalVisible, setFinishedModalVisible] = useState(false);
     const [finishedTimerId, setFinishedTimerId] = useState(null); // Changed from label to ID
     const [timers, setTimers] = useState([]);
+    const [currentSoundObject, setCurrentSoundObject] = useState(null);
+
 
     useEffect(() => {
         loadTimers();
@@ -64,9 +66,22 @@ export default function TimerScreen() {
         }
     };
 
-    const handleTimerFinished = (timer) => {
-        setFinishedTimerId(timer.id); // Use timer ID instead of label
+    const handleTimerFinished = async (timer) => {
+        const soundObject = new Audio.Sound();
+        try {
+            await soundObject.loadAsync(require('../../assets/sounds/alarm.mp3'));
+            await soundObject.playAsync();
+        } catch (error) {
+            console.error('Error playing sound:', error);
+        }
+
+        // Start vibration
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+        // Set state to show finished modal and store sound object
+        setFinishedTimerId(timer.id);
         setFinishedModalVisible(true);
+        setCurrentSoundObject(soundObject);
     };
 
     const handleAddTimer = async (label, time) => {
@@ -88,7 +103,6 @@ export default function TimerScreen() {
     };
 
     const handleAddTime = (id, additionalSeconds) => {
-        console.log(`Adding time to timer ${id}: ${additionalSeconds} seconds`);
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
                 const totalSecondsCurrent = timeToSeconds(timer.currentTime) + additionalSeconds;
@@ -144,11 +158,25 @@ export default function TimerScreen() {
     }
 
     function addOneMinute(finishedTimerId) {
+        // Stop the sound and vibration first
+        if (currentSoundObject) {
+            currentSoundObject.stopAsync();
+            setCurrentSoundObject(null); // Clear the sound object from state
+        }
+
+        // Now add the time
         handleAddTime(finishedTimerId, 60);
-        setFinishedModalVisible(false)
+        setFinishedModalVisible(false);
     }
 
     function stopTimer(finishedTimerId) {
+        // Stop the sound and vibration first
+        if (currentSoundObject) {
+            currentSoundObject.stopAsync();
+            setCurrentSoundObject(null); // Clear the sound object from state
+        }
+
+        // Reset the timer
         handleReload(finishedTimerId);
         setFinishedModalVisible(false);
     }
