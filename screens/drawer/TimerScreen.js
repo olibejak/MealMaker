@@ -23,7 +23,8 @@ export default function TimerScreen() {
     const [finishedModalVisible, setFinishedModalVisible] = useState(false);
     const [finishedTimerId, setFinishedTimerId] = useState(null); // Changed from label to ID
     const [timers, setTimers] = useState([]);
-    const [currentSoundObject, setCurrentSoundObject] = useState(null);
+    const [soundObjects, setSoundObjects] = useState({});
+
 
 
     useEffect(() => {
@@ -33,20 +34,19 @@ export default function TimerScreen() {
     useEffect(() => {
         const interval = setInterval(() => {
             setTimers(timers => timers.map(timer => {
-                if (timer.isRunning) {
-                    const seconds = timeToSeconds(timer.currentTime) - 1;
-                    if (seconds < 0) {
-                        clearInterval(interval);
-                        handleTimerFinished(timer);
-                        return { ...timer };
-                    }
-                    return { ...timer, currentTime: secondsToTime(seconds) };
+                if (!timer.isRunning) return timer;
+
+                const seconds = timeToSeconds(timer.currentTime) - 1;
+                if (seconds < 0) {
+                    handleTimerFinished(timer);
+                    return { ...timer, isRunning: false };
                 }
-                return timer;
+                return { ...timer, currentTime: secondsToTime(seconds) };
             }));
         }, 1000);
+
         return () => clearInterval(interval);
-    }, [timers]);
+    }, []);
 
     const loadTimers = async () => {
         try {
@@ -78,10 +78,15 @@ export default function TimerScreen() {
         // Start vibration
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
+        // Update the sound objects state
+        setSoundObjects(prev => ({
+            ...prev,
+            [timer.id]: soundObject
+        }));
+
         // Set state to show finished modal and store sound object
         setFinishedTimerId(timer.id);
         setFinishedModalVisible(true);
-        setCurrentSoundObject(soundObject);
     };
 
     const handleAddTimer = async (label, time) => {
@@ -159,9 +164,13 @@ export default function TimerScreen() {
 
     function addOneMinute(finishedTimerId) {
         // Stop the sound and vibration first
-        if (currentSoundObject) {
-            currentSoundObject.stopAsync();
-            setCurrentSoundObject(null); // Clear the sound object from state
+        if (soundObjects[finishedTimerId]) {
+            soundObjects[finishedTimerId].stopAsync();
+            setSoundObjects(prev => {
+                const updated = { ...prev };
+                delete updated[finishedTimerId];
+                return updated;
+            });
         }
 
         // Now add the time
@@ -171,9 +180,13 @@ export default function TimerScreen() {
 
     function stopTimer(finishedTimerId) {
         // Stop the sound and vibration first
-        if (currentSoundObject) {
-            currentSoundObject.stopAsync();
-            setCurrentSoundObject(null); // Clear the sound object from state
+        if (soundObjects[finishedTimerId]) {
+            soundObjects[finishedTimerId].stopAsync();
+            setSoundObjects(prev => {
+                const updated = { ...prev };
+                delete updated[finishedTimerId];
+                return updated;
+            });
         }
 
         // Reset the timer
@@ -214,6 +227,7 @@ export default function TimerScreen() {
             <BottomNavigationBar />
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => setModalVisible(true)} />
             <TimerFinishedModal
+                label={timers.find(timer => timer.id === finishedTimerId)?.label || ''}
                 timerId={finishedTimerId} // Changed to pass timerId
                 visible={finishedModalVisible}
                 onStopTimer={() => stopTimer(finishedTimerId)}
