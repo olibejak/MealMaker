@@ -8,11 +8,14 @@ import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import {BackArrowIcon, PlusIcon} from "../../assets/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../../utils/Logger";
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
 
 export default function MyDiaryScreen({navigation}) {
 
     const [diaryContent, setDiaryContent] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedDiaryEntry, setSelectedDiaryEntry] = useState(null);
 
     const loadDiaryContent = useCallback(async () => {
         setLoading(true); // Start loading
@@ -30,14 +33,15 @@ export default function MyDiaryScreen({navigation}) {
 
 
     useEffect(() => {
-        return navigation.addListener('focus', () => {
-            loadDiaryContent();
+        return navigation.addListener('focus', async () => {
+            await loadDiaryContent();
         });
     }, [navigation]);
 
 
-    const deleteDiaryEntry = async (diaryId) => {
+    const deleteDiaryEntry = async () => {
         try {
+            const diaryId = selectedDiaryEntry.id;
             // Filter out the diary entry with the given id
             const updatedDiaryContent = diaryContent.filter(entry => entry.id !== diaryId);
 
@@ -47,6 +51,9 @@ export default function MyDiaryScreen({navigation}) {
             // Save the updated diary content to AsyncStorage
             await AsyncStorage.setItem('diaryContent', JSON.stringify(updatedDiaryContent));
             log.info('Diary entry deleted successfully');
+
+            // Close the modal
+            setModalVisible(false);
         } catch (error) {
             log.error('Error deleting diary entry:', error);
             alert('Failed to delete the diary entry. Please try again.');
@@ -68,7 +75,10 @@ export default function MyDiaryScreen({navigation}) {
                             image={diaryEntry.images[0]}
                             description={diaryEntry.text}
                             onPressDetails={() => navigation.navigate('DiaryEntryDetail', { diaryEntry: diaryEntry })}
-                            onPressSecondary={() => deleteDiaryEntry(diaryEntry.id)}
+                            onPressSecondary={() => {
+                                setSelectedDiaryEntry(diaryEntry);
+                                setModalVisible(true);
+                            }}
                             actionButton={'delete'}
                         />
                     ))
@@ -78,6 +88,15 @@ export default function MyDiaryScreen({navigation}) {
                     </View>
                 ) : null}
             </ScrollView>
+            {modalVisible && (
+                <ConfirmationModal
+                    onConfirm={deleteDiaryEntry}  // Here you should directly pass the function reference
+                    onCancel={() => setModalVisible(false)}
+                    visible={modalVisible}
+                    title={'Delete diary entry'}
+                    text={'Are you sure you want to delete this diary entry?'}
+                />
+            )}
             <BottomNavigationBar/>
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => navigation.navigate('NewDiaryEntry')} />
         </View>

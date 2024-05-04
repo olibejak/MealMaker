@@ -11,7 +11,12 @@ export default function TopNavigationBar({ title, LeftIcon, RightIcon, starActio
             navigation.openDrawer();  // Opens the drawer when the hamburger icon is pressed
         }
         if (LeftIcon.name === 'BackArrowIcon') {
-            navigation.goBack();  // Goes back to the previous screen when the back arrow is pressed
+            if (navigation.canGoBack()) {
+                navigation.goBack();  // Goes back to the previous screen when the back arrow is pressed
+            }
+            else {
+                navigation.navigate('Recipes')
+            }
         }
     };
 

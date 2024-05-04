@@ -66,7 +66,7 @@ function DrawerNavigator() {
     return (
         <Drawer.Navigator
             backBehavior="history"
-            initialRouteName="Ingredients"
+            initialRouteName="Recipes"
             drawerContent={(props) => <CustomDrawerContent {...props} />}
             screenOptions={{
                 headerShown: false,
