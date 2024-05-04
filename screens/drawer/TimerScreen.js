@@ -173,6 +173,13 @@ export default function TimerScreen() {
             });
         }
 
+        setTimers(prevTimers => prevTimers.map(timer => {
+            if (timer.id === finishedTimerId) {
+                return { ...timer, isRunning: true };
+            }
+            return timer;
+        }));
+
         // Now add the time
         handleAddTime(finishedTimerId, 60);
         setFinishedModalVisible(false);
