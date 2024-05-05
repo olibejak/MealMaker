@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Audio } from 'expo-av';
-import * as Haptics from 'expo-haptics';
 import {
     View,
     ScrollView,
@@ -22,7 +21,7 @@ import log from "../../utils/Logger";
 export default function TimerScreen() {
     const [modalVisible, setModalVisible] = useState(false);
     const [finishedModalVisible, setFinishedModalVisible] = useState(false);
-    const [finishedTimerId, setFinishedTimerId] = useState(null); // Changed from label to ID
+    const [finishedTimersQueue, setFinishedTimersQueue] = useState([]);
     const [timers, setTimers] = useState([]);
     const [soundObjects, setSoundObjects] = useState({});
     const VIBRATION_PATTERN = [500, 500];
@@ -50,11 +49,12 @@ export default function TimerScreen() {
     }, []);
 
     useEffect(() => {
-        if (finishedModalVisible && soundObjects[finishedTimerId]) {
+        if (finishedTimersQueue.length > 0) {
+            const currentFinishedTimerId = finishedTimersQueue[0]; // Always work with the first item in the queue
             // Play sound when modal is visible
             const playSound = async () => {
                 try {
-                    await soundObjects[finishedTimerId].playAsync();
+                    await soundObjects[currentFinishedTimerId].playAsync();
                 } catch (error) {
                     console.error('Error playing sound:', error);
                 }
@@ -62,24 +62,29 @@ export default function TimerScreen() {
             playSound();
 
             // Start continuous vibration using the pattern
-            Vibration.vibrate(VIBRATION_PATTERN, true); // The second argument true means repeat indefinitely
+            Vibration.vibrate(VIBRATION_PATTERN, true); // Repeat indefinitely
+
+            // Make the modal visible
+            setFinishedModalVisible(true);
         } else {
-            // Stop sound when modal is not visible
-            if (soundObjects[finishedTimerId]) {
-                const stopSound = async () => {
-                    await soundObjects[finishedTimerId].stopAsync();
-                };
-                stopSound();
-            }
+            // Stop sound for all sound objects when queue is empty
+            Object.values(soundObjects).forEach(async (soundObject) => {
+                try {
+                    await soundObject.stopAsync();
+                } catch (error) {
+                    console.error('Error stopping sound:', error);
+                }
+            });
             // Stop vibration when modal is not visible
             Vibration.cancel();
+            setFinishedModalVisible(false);
         }
 
         // Cleanup function to stop vibration when component unmounts
         return () => {
             Vibration.cancel();
         };
-    }, [finishedModalVisible, finishedTimerId, soundObjects]);
+    }, [finishedTimersQueue, soundObjects]);
 
     const loadTimers = async () => {
         try {
@@ -114,12 +119,9 @@ export default function TimerScreen() {
             [timer.id]: soundObject
         }));
 
-        // Set state to show finished modal
-        setFinishedTimerId(timer.id);
-        setFinishedModalVisible(true);
+        // Add to finished timers queue
+        setFinishedTimersQueue(prevQueue => [...prevQueue, timer.id]);
     };
-
-
 
     const handleAddTimer = async (label, time) => {
         const newTimer = {
@@ -195,42 +197,27 @@ export default function TimerScreen() {
     }
 
     function addOneMinute(finishedTimerId) {
-        // Stop the sound and vibration first
-        if (soundObjects[finishedTimerId]) {
-            soundObjects[finishedTimerId].stopAsync();
-            setSoundObjects(prev => {
-                const updated = { ...prev };
-                delete updated[finishedTimerId];
-                return updated;
-            });
-        }
+        // Remove the finished timer from the queue
+        setFinishedTimersQueue(queue => queue.filter(id => id !== finishedTimerId));
 
-        setTimers(prevTimers => prevTimers.map(timer => {
+        // Add the time
+        handleAddTime(finishedTimerId, 60);
+
+        // Set the timer to running
+        setTimers(timers => timers.map(timer => {
             if (timer.id === finishedTimerId) {
                 return { ...timer, isRunning: true };
             }
             return timer;
         }));
-
-        // Now add the time
-        handleAddTime(finishedTimerId, 60);
-        setFinishedModalVisible(false);
     }
 
     function stopTimer(finishedTimerId) {
-        // Stop the sound and vibration first
-        if (soundObjects[finishedTimerId]) {
-            soundObjects[finishedTimerId].stopAsync();
-            setSoundObjects(prev => {
-                const updated = { ...prev };
-                delete updated[finishedTimerId];
-                return updated;
-            });
-        }
+        // Remove the finished timer from the queue
+        setFinishedTimersQueue(queue => queue.filter(id => id !== finishedTimerId));
 
         // Reset the timer
         handleReload(finishedTimerId);
-        setFinishedModalVisible(false);
     }
 
     return (
@@ -266,11 +253,11 @@ export default function TimerScreen() {
             <BottomNavigationBar />
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => setModalVisible(true)} />
             <TimerFinishedModal
-                label={timers.find(timer => timer.id === finishedTimerId)?.label || ''}
-                timerId={finishedTimerId} // Changed to pass timerId
+                label={timers.find(timer => timer.id === finishedTimersQueue[0])?.label || ''}
+                timerId={finishedTimersQueue[0]} // Work with the first item in the queue
                 visible={finishedModalVisible}
-                onStopTimer={() => stopTimer(finishedTimerId)}
-                onAddOneMinute={() => addOneMinute(finishedTimerId)}
+                onStopTimer={() => stopTimer(finishedTimersQueue[0])}
+                onAddOneMinute={() => addOneMinute(finishedTimersQueue[0])}
             />
         </View>
     );
