@@ -5,7 +5,8 @@ import {
     View,
     ScrollView,
     StyleSheet,
-    Text
+    Text,
+    Vibration
 } from 'react-native';
 import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,7 +25,7 @@ export default function TimerScreen() {
     const [finishedTimerId, setFinishedTimerId] = useState(null); // Changed from label to ID
     const [timers, setTimers] = useState([]);
     const [soundObjects, setSoundObjects] = useState({});
-
+    const VIBRATION_PATTERN = [500, 500];
 
 
     useEffect(() => {
@@ -48,6 +49,38 @@ export default function TimerScreen() {
         return () => clearInterval(interval);
     }, []);
 
+    useEffect(() => {
+        if (finishedModalVisible && soundObjects[finishedTimerId]) {
+            // Play sound when modal is visible
+            const playSound = async () => {
+                try {
+                    await soundObjects[finishedTimerId].playAsync();
+                } catch (error) {
+                    console.error('Error playing sound:', error);
+                }
+            };
+            playSound();
+
+            // Start continuous vibration using the pattern
+            Vibration.vibrate(VIBRATION_PATTERN, true); // The second argument true means repeat indefinitely
+        } else {
+            // Stop sound when modal is not visible
+            if (soundObjects[finishedTimerId]) {
+                const stopSound = async () => {
+                    await soundObjects[finishedTimerId].stopAsync();
+                };
+                stopSound();
+            }
+            // Stop vibration when modal is not visible
+            Vibration.cancel();
+        }
+
+        // Cleanup function to stop vibration when component unmounts
+        return () => {
+            Vibration.cancel();
+        };
+    }, [finishedModalVisible, finishedTimerId, soundObjects]);
+
     const loadTimers = async () => {
         try {
             const storedTimers = await AsyncStorage.getItem('timers');
@@ -70,13 +103,10 @@ export default function TimerScreen() {
         const soundObject = new Audio.Sound();
         try {
             await soundObject.loadAsync(require('../../assets/sounds/alarm.mp3'));
-            await soundObject.playAsync();
+            await soundObject.setIsLoopingAsync(true);
         } catch (error) {
-            console.error('Error playing sound:', error);
+            console.error('Error loading sound:', error);
         }
-
-        // Start vibration
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
         // Update the sound objects state
         setSoundObjects(prev => ({
@@ -84,10 +114,12 @@ export default function TimerScreen() {
             [timer.id]: soundObject
         }));
 
-        // Set state to show finished modal and store sound object
+        // Set state to show finished modal
         setFinishedTimerId(timer.id);
         setFinishedModalVisible(true);
     };
+
+
 
     const handleAddTimer = async (label, time) => {
         const newTimer = {
