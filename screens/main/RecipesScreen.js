@@ -115,11 +115,11 @@ export default function RecipesScreen ({navigation}) {
             <FlatList
                 data={activeFilter === "Favourite recipes" ?
                     favouriteRecipes.filter(item => activeSearch ?
-                        item && item.strMeal && item.strMeal.toLowerCase().startsWith(activeSearch.trim()) : true)
+                        item && item.strMeal && item.strMeal.toLowerCase().includes(activeSearch.trim()) : true)
                     : recipes
                     .filter(item => activeFilter ? item && item.strCategory && item.strCategory === activeFilter : true)
                     .filter(item => activeSearch ?
-                        item && item.strMeal && item.strMeal.toLowerCase().startsWith(activeSearch.trim()) : true)
+                        item && item.strMeal && item.strMeal.toLowerCase().includes(activeSearch.trim()) : true)
                 }
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}

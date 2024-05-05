@@ -4,10 +4,11 @@ import BottomNavigationBar from '../../components/navigation/BottomNavigationBar
 import SnackbarModal from '../../components/modals/SnackbarModal';
 import { BackArrowIcon, FridgeCardIcon, BasketCardIcon, StarOutlineIcon, StarFilledIcon } from '../../assets/icons';
 import MealMiniature from '../../components/image/MealMiniature';
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import EditSetAmountModal from "../../components/modals/EditSetAmountModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../../utils/Logger";
+import {useIsFocused} from "@react-navigation/native";
 
 export default function IngredientDetailsScreen ({ route, navigation }) {
     const { ingredient } = route.params;
@@ -18,6 +19,19 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     const [selectedStorage, setSelectedStorage] = useState("");
     const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
+    const scrollViewRef = useRef(null);
+    const isFocused = useIsFocused();
+
+    const handleScrollToTop = () => {
+        if (scrollViewRef.current) {
+            scrollViewRef.current.scrollTo({x: 0, y: 0, animated: false});
+        }
+    };
+
+    // Scroll to top when the screen is focused
+    if (isFocused) {
+        handleScrollToTop();
+    }
 
     useEffect(() => {
         // Retrieve favorites from local storage
@@ -170,7 +184,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon}
                                   RightIcon={starIconToRender} starAction={toggleFavorite} />
             </View>
-            <ScrollView style={styles.scrollableScreen}>
+            <ScrollView style={styles.scrollableScreen} ref={scrollViewRef}>
                 <View style={styles.imageContainer}>
                     <Image source={{uri: `https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png`,}} style={styles.image} />
                 </View>
