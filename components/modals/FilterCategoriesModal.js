@@ -37,6 +37,7 @@ const FilterCategoriesModal = ({ visible, onSelectCategory, onClose, context, ac
             transparent={true}
             animationType="fade"
             onRequestClose={onClose}
+            statusBarTranslucent={true}
         >
             <TouchableWithoutFeedback onPress={onClose}>
                 <View style={styles.modalOverlay}>

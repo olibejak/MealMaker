@@ -11,7 +11,7 @@ const RecipeCard = ({
                         onPressSecondary,
                         actionButton // 'cook' or 'delete'
                     }) => {
-    const [isLoading, setIsLoading] = useState(image ? true : false);
+    const [isLoading, setIsLoading] = useState(!!image);
 
     const renderActionButton = () => {
         switch (actionButton) {
@@ -36,7 +36,7 @@ const RecipeCard = ({
     };
 
     return (
-        <View style={styles.card}>
+        <TouchableOpacity style={styles.card} onPress={onPressDetails}>
             <View>
                 {isLoading && (
                     <ActivityIndicator size="large" style={StyleSheet.absoluteFill} />
@@ -62,7 +62,7 @@ const RecipeCard = ({
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 
