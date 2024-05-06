@@ -1,19 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../../assets/icons"; // Replace with actual icons
+import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../../assets/icons";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
-export default function TimerCard({ label, time, onAddTime, onStartStop, onClose, onReload }) {
-    const [isRunning, setIsRunning] = useState(false);
-    const circularProgressRef = useRef();
+export default function TimerCard({ id, label, currentTime, initialTime, onAddTime, onStartStop, onClose, running, reloadTimer }) {
+    // Helper function to convert time string to total seconds
+    function timeToSeconds(time) {
+        const [minutes, seconds] = time.split(":").map(Number);
+        return minutes * 60 + seconds;
+    }
 
-    const toggleTimer = () => {
-        setIsRunning(!isRunning);
-        onStartStop();
-        if (circularProgressRef.current) {
-            circularProgressRef.current.animate(100, 8000); // Fill the progress to 100% in 8 seconds
-        }
-    };
+    // Calculate fill percentage for progress circle
+    const fill = (timeToSeconds(currentTime) / timeToSeconds(initialTime)) * 100;
 
     return (
         <View style={styles.shadowContainer}>
@@ -23,13 +21,17 @@ export default function TimerCard({ label, time, onAddTime, onStartStop, onClose
                     <AnimatedCircularProgress
                         size={180}
                         width={10}
-                        fill={100}
-                        tintColor="#cfbbfd">
+                        fill={fill}
+                        tintColor="#cfbbfd"
+                        backgroundColor="#F6F2F9"
+                        rotation={0}
+                        duration={0}
+                    >
                         {
-                            (fill) => (
+                            () => (
                                 <View style={styles.innerCircle}>
-                                    <Text style={styles.timeText}>{time}</Text>
-                                    <TouchableOpacity onPress={onReload} style={styles.reloadIcon}>
+                                    <Text style={styles.timeText}>{currentTime}</Text>
+                                    <TouchableOpacity onPress={reloadTimer} style={styles.reloadIcon}>
                                         <ReloadIcon />
                                     </TouchableOpacity>
                                 </View>
@@ -42,13 +44,13 @@ export default function TimerCard({ label, time, onAddTime, onStartStop, onClose
                         <PlusIcon />
                         <Text style={styles.iconText}>1:00</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={toggleTimer} style={styles.iconBubble}>
-                        {isRunning ? <PauseIcon /> : <PlayIcon />}
+                    <TouchableOpacity onPress={onStartStop} style={styles.iconBubble}>
+                        {running ? <PauseIcon /> : <PlayIcon />}
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                        <CloseIcon />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                    <CloseIcon />
-                </TouchableOpacity>
             </View>
         </View>
     );
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
         padding: '24'
     },
     timeText: {
-        fontSize: 40, // Increased font size for larger text
+        fontSize: 40,
         fontFamily: 'Roboto-Medium',
         color: '#333',
         textAlign: 'center',
@@ -138,8 +140,8 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
     },
     innerCircle: {
-        justifyContent: 'center', // This will push the time text up and the button down
+        justifyContent: 'center',
         alignItems: 'center',
-        height: '100%', // Ensure the inner circle uses the full height of the circular progress
+        height: '100%',
     },
 });

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { FlatList, Modal, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Modal, Text, TextInput, TouchableOpacity, View, FlatList, StyleSheet } from "react-native";
 
-function NumberSelector({ onChange, value, max }) {
+function NumberSelector({ onChange, value, max, unit }) {
     const itemHeight = 80; // Height of each item
     const data = Array.from({ length: max + 1 }, (_, i) => ({
         key: `${i}`
@@ -30,9 +30,7 @@ function NumberSelector({ onChange, value, max }) {
                 ref={flatListRef}
                 data={data}
                 renderItem={({ item }) => (
-                    <Text style={styles.numberItem}>
-                        {item.key}
-                    </Text>
+                    <Text style={styles.numberItem}>{item.key}</Text>
                 )}
                 keyExtractor={(item, index) => `${item.key}-${index}`}
                 showsVerticalScrollIndicator={false}
@@ -42,33 +40,29 @@ function NumberSelector({ onChange, value, max }) {
                 snapToInterval={itemHeight}
                 onMomentumScrollEnd={handleScrollEnd}
             />
+            <Text style={styles.unitStyle}>{unit}</Text>
         </View>
     );
 }
 
 export default function TimerModal({ modalVisible, setModalVisible, handleAddTimer }) {
     const [timerLabel, setTimerLabel] = useState('');
-    const [hours, setHours] = useState(0); // Changed to integer
-    const [minutes, setMinutes] = useState(0); // Changed to integer
-
-    const onHoursChange = (newHour) => {
-        setHours(newHour.toString().padStart(2, '0')); // Ensure string formatting after handling as number
-    };
-
-    const onMinutesChange = (newMinute) => {
-        setMinutes(newMinute.toString().padStart(2, '0')); // Ensure string formatting after handling as number
-    };
+    const [hours, setHours] = useState(0);
+    const [minutes, setMinutes] = useState(0);
 
     const handleOk = () => {
         handleAddTimer(timerLabel, `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
         setModalVisible(false);
+        setTimerLabel('');
+        setHours(0);
+        setMinutes(0);
     };
 
     const handleCancel = () => {
-        setTimerLabel('');
         setModalVisible(false);
-        setHours(0); // Reset to integer
-        setMinutes(0); // Reset to integer
+        setTimerLabel('');
+        setHours(0);
+        setMinutes(0);
     };
 
     return (
@@ -83,26 +77,22 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
                 <View style={styles.modalView}>
                     <TextInput
                         placeholder="Enter label"
-                        placeholderTextColor={'#625b70'}
                         value={timerLabel}
                         onChangeText={setTimerLabel}
                         style={styles.inputText}
+                        placeholderTextColor={'#625b70'}
                     />
                     <View style={styles.timeSelector}>
-                        <View style={styles.numberSelectorContainer}>
-                            <NumberSelector onChange={onHoursChange} value={hours.toString()} max={179} />
-                        </View>
+                        <NumberSelector onChange={setHours} value={hours.toString()} max={99} unit="m" />
                         <Text style={styles.separator}>:</Text>
-                        <View style={styles.numberSelectorContainer}>
-                            <NumberSelector onChange={onMinutesChange} value={minutes.toString()} max={59} />
-                        </View>
+                        <NumberSelector onChange={setMinutes} value={minutes.toString()} max={59} unit="s" />
                     </View>
-                    <View style={styles.buttonContainer}>
+                    <View style={styles.modalButtonContainer}>
                         <TouchableOpacity onPress={handleCancel} style={styles.textButton}>
-                            <Text style={styles.cancelButtonLabel}>Cancel</Text>
+                            <Text style={styles.modalCancelText}>Cancel</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleOk} style={[styles.textButton, styles.rightButton]}>
-                            <Text style={styles.confirmButtonLabel}>Confirm</Text>
+                            <Text style={styles.modalConfirmText}>Confirm</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -111,17 +101,16 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
     );
 }
 
-// Continue using your existing StyleSheet declarations
-
-
 const styles = StyleSheet.create({
     modalView: {
-        width: '70%',
+        display: 'flex',
+        width: '75%',
         margin: 20,
         backgroundColor: '#eae5ef',
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
+        justifyContent: 'center',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -132,9 +121,9 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     inputText: {
-        height: 50, // Maintaining the current height
-        width: 210, // Total width based on the width of two selectors and the separator
-        textAlignVertical: 'center', // Center text vertically
+        height: 50,
+        width: '100%',
+        textAlignVertical: 'center',
         borderRadius: 12,
         marginBottom: 16,
         paddingHorizontal: 16,
@@ -146,61 +135,67 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     timeSelector: {
+        display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         alignContent: 'center',
     },
     numberSelectorContainer: {
-        height: 80, // Increased height for the selected number
-        width: 100, // Increased width of the rectangle
-        overflow: 'hidden', // Ensures that only the area within the container is visible
-        alignItems: 'center', // Centers the items horizontally
-        justifyContent: 'center', // Centers the items vertically
-        backgroundColor: '#e5dfe8', // Background color of the rectangle
-        borderRadius: 10, // Optional: Adds rounded corners
+        display: 'flex',
+        flexDirection: 'row',
+        paddingHorizontal: 15,
+        height: 80,
+        overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#e5dfe8',
+        flex: 1,
+        borderRadius: 10,
     },
     numberItem: {
-        height: 80, // Increased height of each number item
+        height: 80,
         textAlign: 'center',
-        lineHeight: 80, // Aligns text vertically within the item
-        fontSize: 36, // Larger font size for better visibility
+        lineHeight: 80,
+        fontSize: 36,
+        fontFamily: 'Roboto-Regular',
+        width: 55,
+    },
+    unitStyle: {
+        alignSelf: 'flex-end',
+        marginBottom: 22,
+        width: 20,
+        fontSize: 20,
+        color: '#625b70',
         fontFamily: 'Roboto-Regular',
     },
     separator: {
         fontFamily: 'Roboto-Regular',
         textAlign: 'center',
-        fontSize: 36, // Larger font size for the separator
+        fontSize: 36,
+        padding: 3,
     },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end', // Align buttons to the right
-        alignItems: 'center',
-        alignContent: 'center',
+    modalButtonContainer: {
         marginTop: 20,
-        width: '100%',
+        display: 'flex',
+        alignSelf: 'flex-end',
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
     },
-    textButtonLabel: {
+    modalCancelText: {
+        fontSize: 16,
+        fontFamily: 'Roboto-Bold',
         color: '#625b70',
+        padding: 10,
+        paddingBottom: 0,
+    },
+    modalConfirmText: {
         fontSize: 16,
-        fontFamily: 'Roboto-Medium',
-    },
-    textButton: {
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-    },
-    confirmButtonLabel: {
-        color: '#6750a3', // Purple color for the "Confirm" button
-        fontSize: 16,
-        fontFamily: 'Roboto-Bold', // Bold font for emphasis
-    },
-    cancelButtonLabel: {
-        color: '#625b70', // Grey color for the "Cancel" button
-        fontSize: 16,
-        fontFamily: 'Roboto-Bold', // Bold font for emphasis
-    },
-    rightButton: {
-        marginLeft: 10, // Adds space between the "Cancel" and "Ok" buttons
+        fontFamily: 'Roboto-Bold',
+        color: '#6750a3',
+        padding: 10,
+        paddingBottom: 0,
+        paddingRight: 2,
     },
     centeredView: {
         flex: 1,
@@ -208,4 +203,4 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
-})
+});
