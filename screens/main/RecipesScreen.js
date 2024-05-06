@@ -1,4 +1,5 @@
 import {View, StyleSheet, ActivityIndicator, FlatList, Text} from "react-native";
+import { Accelerometer } from 'expo-sensors';
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import RecipeCard from "../../components/cards/RecipeCard";
@@ -9,6 +10,7 @@ import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../../utils/Logger";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
+import accelerometer from "expo-sensors/src/Accelerometer";
 
 export default function RecipesScreen ({navigation}) {
     const title = "Recipes";
@@ -23,6 +25,43 @@ export default function RecipesScreen ({navigation}) {
     const [favouriteRecipes, setFavouriteRecipes] = useState([]);
     const isFocused = useIsFocused();
     const flatListRef = useRef(null);
+
+    // Accelerometer
+    const accelerometer = () => {
+        let subscription;
+        const threshold = 2; // Adjust this value based on the sensitivity you want
+
+        const handleUpdate = ({x, y, z}) => {
+            const acceleration = Math.sqrt(x ** 2 + y ** 2 + z ** 2);
+            if (acceleration > threshold) {
+                handleShake();
+            }
+        };
+
+        Accelerometer.setUpdateInterval(100); // Set the update interval (in milliseconds)
+
+        Accelerometer.isAvailableAsync().then(available => {
+            if (available) {
+                subscription = Accelerometer.addListener(handleUpdate);
+            }
+        });
+
+        return () => {
+            if (subscription) {
+                subscription.remove();
+            }
+        };
+    // }
+    };
+
+    const handleShake = () => {
+        if (!isLoading) {
+            const randomIndex = Math.floor(Math.random() * recipes.length);
+            const randomRecipe = recipes[randomIndex];
+            console.log(recipes[recipes]);
+            navigation.navigate("RecipeDetails", {recipe: randomRecipe});
+        }
+    };
 
     useEffect(() => {
         const fetchRecipesFromAPI = async () => {
@@ -47,7 +86,8 @@ export default function RecipesScreen ({navigation}) {
             }
         };
         fetchRecipesFromAPI();
-    }, []);
+        accelerometer();
+    }, [isFocused]);
 
     useEffect( () => {
         const loadFavouriteRecipes = async () => {
