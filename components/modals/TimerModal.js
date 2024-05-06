@@ -80,18 +80,19 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
                         value={timerLabel}
                         onChangeText={setTimerLabel}
                         style={styles.inputText}
+                        placeholderTextColor={'#625b70'}
                     />
                     <View style={styles.timeSelector}>
                         <NumberSelector onChange={setHours} value={hours.toString()} max={179} unit="m" />
                         <Text style={styles.separator}>:</Text>
                         <NumberSelector onChange={setMinutes} value={minutes.toString()} max={59} unit="s" />
                     </View>
-                    <View style={styles.buttonContainer}>
+                    <View style={styles.modalButtonContainer}>
                         <TouchableOpacity onPress={handleCancel} style={styles.textButton}>
-                            <Text style={styles.cancelButtonLabel}>Cancel</Text>
+                            <Text style={styles.modalCancelText}>Cancel</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleOk} style={[styles.textButton, styles.rightButton]}>
-                            <Text style={styles.confirmButtonLabel}>Confirm</Text>
+                            <Text style={styles.modalConfirmText}>Confirm</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -102,12 +103,14 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
 
 const styles = StyleSheet.create({
     modalView: {
-        width: '70%',
+        display: 'flex',
+        width: '75%',
         margin: 20,
         backgroundColor: '#eae5ef',
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
+        justifyContent: 'center',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -119,7 +122,7 @@ const styles = StyleSheet.create({
     },
     inputText: {
         height: 50,
-        width: 210,
+        width: '100%',
         textAlignVertical: 'center',
         borderRadius: 12,
         marginBottom: 16,
@@ -132,18 +135,22 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     timeSelector: {
+        display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         alignContent: 'center',
     },
     numberSelectorContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        paddingHorizontal: 20,
         height: 80,
-        width: 100,
         overflow: 'hidden',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#e5dfe8',
+        flex: 1,
         borderRadius: 10,
     },
     numberItem: {
@@ -152,45 +159,43 @@ const styles = StyleSheet.create({
         lineHeight: 80,
         fontSize: 36,
         fontFamily: 'Roboto-Regular',
-        paddingRight: 15,
+        width: 45,
     },
     unitStyle: {
-        position: 'absolute',
-        right: 10,
-        bottom: 20,
+        alignSelf: 'flex-end',
+        marginBottom: 22,
+        width: 20,
         fontSize: 20,
-        color: 'gray',
+        color: '#625b70',
         fontFamily: 'Roboto-Regular',
     },
     separator: {
         fontFamily: 'Roboto-Regular',
         textAlign: 'center',
         fontSize: 36,
+        padding: 3,
     },
-    buttonContainer: {
+    modalButtonContainer: {
+        marginTop: 20,
+        display: 'flex',
+        alignSelf: 'flex-end',
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        alignItems: 'center',
-        alignContent: 'center',
-        marginTop: 20,
-        width: '100%',
     },
-    textButton: {
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-    },
-    confirmButtonLabel: {
-        color: '#6750a3',
+    modalCancelText: {
         fontSize: 16,
         fontFamily: 'Roboto-Bold',
-    },
-    cancelButtonLabel: {
         color: '#625b70',
+        padding: 10,
+        paddingBottom: 0,
+    },
+    modalConfirmText: {
         fontSize: 16,
         fontFamily: 'Roboto-Bold',
-    },
-    rightButton: {
-        marginLeft: 10,
+        color: '#6750a3',
+        padding: 10,
+        paddingBottom: 0,
+        paddingRight: 2,
     },
     centeredView: {
         flex: 1,
