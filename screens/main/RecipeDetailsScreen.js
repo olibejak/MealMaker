@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {
     BackArrowIcon,
     BasketCardIcon,
@@ -24,6 +24,7 @@ import BottomRightCornerButton from "../../components/buttons/BottomRightCornerB
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../../utils/Logger";
 import SnackbarModal from "../../components/modals/SnackbarModal";
+import {useIsFocused} from "@react-navigation/native";
 
 export default function RecipeDetailsScreen ( { route, navigation } ) {
     const {recipe} = route.params;
@@ -35,9 +36,24 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
     const amountKeys = Object.keys(recipe).filter(key => key.startsWith('strMeasure'));
     const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
+    const scrollViewRef = useRef(null);
+    const isFocused = useIsFocused();
 
     useEffect(() => {
-        // Retrieve favorites from local storage
+        const handleScrollToTop = () => {
+            if (scrollViewRef.current) {
+                scrollViewRef.current.scrollTo({x: 0, y: 0, animated: false});
+            }
+        };
+
+        // Scroll to top when the screen is focused
+        if (isFocused) {
+            handleScrollToTop();
+        }
+    }, [isFocused]);
+
+    useEffect(() => {
+        // Retrieve favourites from local storage
         AsyncStorage.getItem('favouriteRecipes')
             .then((favourites) => {
                 if (favourites) {
@@ -46,28 +62,28 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                         favouriteRecipe => favouriteRecipe.idMeal === recipe.idMeal) > -1);
                 }
             })
-            .catch((error) => log.error('Error retrieving favorites:', error));
+            .catch((error) => log.error('Error retrieving favourites:', error));
     }, [route]);
 
-    const toggleFavorite = async () => {
+    const toggleFavourite = async () => {
         AsyncStorage.getItem('favouriteRecipes')
             .then((favourites) => {
                 let favouriteRecipes = favourites ? JSON.parse(favourites) : [];
                 if (isFavourite) {
-                    // Remove from favorites
+                    // Remove from favourites
                     favouriteRecipes = favouriteRecipes.filter(
                         (favouriteRecipe) => recipe.idMeal !== favouriteRecipe.idMeal);
                     setIsFavourite(false)
                 } else {
-                    // Add to favorites
+                    // Add to favourites
                     favouriteRecipes.push(recipe);
                     setIsFavourite(true)
                 }
                 // Update local storage
                 AsyncStorage.setItem('favouriteRecipes', JSON.stringify(favouriteRecipes))
-                    .catch((error) => log.error('Error updating favorites:', error));
+                    .catch((error) => log.error('Error updating favourites:', error));
             })
-            .catch((error) => log.error('Error retrieving favorites:', error));
+            .catch((error) => log.error('Error retrieving favourites:', error));
     };
 
     const ingredientsList = ingredientKeys.map((key, index) => {
@@ -182,9 +198,9 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
         <View style={styles.screen}>
             <View>
                 <TopNavigationBar title={recipe.strMeal} LeftIcon={BackArrowIcon}
-                                  RightIcon={starIconToRender} starAction={toggleFavorite} />
+                                  RightIcon={starIconToRender} starAction={toggleFavourite} />
             </View>
-            <ScrollView style={styles.scrollableScreen}>
+            <ScrollView style={styles.scrollableScreen} ref={scrollViewRef}>
                 <View style={styles.imageContainer}>
                     <Image source={{uri: `${recipe.strMealThumb}`,}} style={styles.image} />
                 </View>

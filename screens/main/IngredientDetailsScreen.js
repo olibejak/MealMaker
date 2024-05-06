@@ -22,16 +22,18 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     const scrollViewRef = useRef(null);
     const isFocused = useIsFocused();
 
-    const handleScrollToTop = () => {
-        if (scrollViewRef.current) {
-            scrollViewRef.current.scrollTo({x: 0, y: 0, animated: false});
-        }
-    };
+    useEffect(() => {
+        const handleScrollToTop = () => {
+            if (scrollViewRef.current) {
+                scrollViewRef.current.scrollTo({x: 0, y: 0, animated: false});
+            }
+        };
 
-    // Scroll to top when the screen is focused
-    if (isFocused) {
-        handleScrollToTop();
-    }
+        // Scroll to top when the screen is focused
+        if (isFocused) {
+            handleScrollToTop();
+        }
+    }, [isFocused]);
 
     useEffect(() => {
         // Retrieve favorites from local storage

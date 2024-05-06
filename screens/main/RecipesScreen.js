@@ -3,11 +3,12 @@ import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import RecipeCard from "../../components/cards/RecipeCard";
 import SearchBar from "../../components/searchbar/SearchBar";
-import {BookIcon, HamburgerIcon} from "../../assets/icons";
-import React, {useEffect, useState} from "react";
+import {ArrowDropUp, BookIcon, HamburgerIcon} from "../../assets/icons";
+import React, {useEffect, useRef, useState} from "react";
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../../utils/Logger";
+import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
 
 export default function RecipesScreen ({navigation}) {
     const title = "Recipes";
@@ -21,6 +22,7 @@ export default function RecipesScreen ({navigation}) {
     const [isLoading, setIsLoading] = useState(true);
     const [favouriteRecipes, setFavouriteRecipes] = useState([]);
     const isFocused = useIsFocused();
+    const flatListRef = useRef(null);
 
     useEffect(() => {
         const fetchRecipesFromAPI = async () => {
@@ -113,6 +115,7 @@ export default function RecipesScreen ({navigation}) {
                 <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             </View>
             <FlatList
+                ref={flatListRef}
                 data={activeFilter === "Favourite recipes" ?
                     favouriteRecipes.filter(item => activeSearch ?
                         item && item.strMeal && item.strMeal.toLowerCase().includes(activeSearch.trim()) : true)
@@ -147,6 +150,8 @@ export default function RecipesScreen ({navigation}) {
                 onEndReachedThreshold={0.7}
                 initialNumToRender={10}
             />
+            <BottomRightCornerButton IconComponent={ArrowDropUp}
+                                     onPress={() => flatListRef.current.scrollToOffset({offset: 0, animated: true})}/>
             <View>
                 <BottomNavigationBar selected={selectedBottomBar} />
             </View>
@@ -173,7 +178,7 @@ const styles = StyleSheet.create({
     },
     scrolling: {
         alignItems: 'stretch',
-        paddingBottom: 16,
+        paddingBottom: 100,
     },
     iconSize: {
         width: 24,

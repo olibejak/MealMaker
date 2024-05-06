@@ -4,12 +4,13 @@ import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import SearchBar from "../../components/searchbar/SearchBar";
 import IngredientCard from "../../components/cards/IngredientCard";
-import { BookIcon, HamburgerIcon } from "../../assets/icons";
+import {ArrowDropUp, BookIcon, HamburgerIcon, PlusIcon} from "../../assets/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EditSetAmountModal from "../../components/modals/EditSetAmountModal";
 import {useIsFocused, useNavigationState} from "@react-navigation/native";
 import SnackbarModal from "../../components/modals/SnackbarModal";
 import log from "../../utils/Logger";
+import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
 
 export default function IngredientsScreen({ navigation }) {
     const [ingredients, setIngredients] = useState([]);
@@ -26,12 +27,6 @@ export default function IngredientsScreen({ navigation }) {
     const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const flatListRef = useRef(null);
-
-    useEffect(() => {
-        if (isFocused && flatListRef.current) {
-            flatListRef.current.scrollToOffset({offset: 0, animated: false});
-        }
-    }, [isFocused]);
 
     useEffect(() => {
         setIsLoading(true);
@@ -190,6 +185,8 @@ export default function IngredientsScreen({ navigation }) {
                 onEndReachedThreshold={0.7}
                 initialNumToRender={10}
             />
+            <BottomRightCornerButton IconComponent={ArrowDropUp}
+                                     onPress={() => flatListRef.current.scrollToOffset({offset: 0, animated: true})}/>
             <BottomNavigationBar />
             <EditSetAmountModal
                 visible={modalVisible}
@@ -228,7 +225,7 @@ const styles = StyleSheet.create({
     scrolling: {
         alignItems: 'stretch',
         overflow: 'visible',
-        paddingBottom: 16,
+        paddingBottom: 100,
     },
 
     iconSize: {
