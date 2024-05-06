@@ -83,7 +83,7 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
                         placeholderTextColor={'#625b70'}
                     />
                     <View style={styles.timeSelector}>
-                        <NumberSelector onChange={setHours} value={hours.toString()} max={179} unit="m" />
+                        <NumberSelector onChange={setHours} value={hours.toString()} max={99} unit="m" />
                         <Text style={styles.separator}>:</Text>
                         <NumberSelector onChange={setMinutes} value={minutes.toString()} max={59} unit="s" />
                     </View>
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     numberSelectorContainer: {
         display: 'flex',
         flexDirection: 'row',
-        paddingHorizontal: 20,
+        paddingHorizontal: 15,
         height: 80,
         overflow: 'hidden',
         alignItems: 'center',
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
         lineHeight: 80,
         fontSize: 36,
         fontFamily: 'Roboto-Regular',
-        width: 45,
+        width: 55,
     },
     unitStyle: {
         alignSelf: 'flex-end',
