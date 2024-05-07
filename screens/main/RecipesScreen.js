@@ -10,7 +10,6 @@ import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../../utils/Logger";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
-import accelerometer from "expo-sensors/src/Accelerometer";
 
 export default function RecipesScreen ({navigation}) {
     const title = "Recipes";
@@ -26,44 +25,8 @@ export default function RecipesScreen ({navigation}) {
     const isFocused = useIsFocused();
     const flatListRef = useRef(null);
 
-    // Accelerometer
-    const accelerometer = () => {
-        let subscription;
-        const threshold = 2; // Adjust this value based on the sensitivity you want
-
-        const handleUpdate = ({x, y, z}) => {
-            const acceleration = Math.sqrt(x ** 2 + y ** 2 + z ** 2);
-            if (acceleration > threshold) {
-                handleShake();
-            }
-        };
-
-        Accelerometer.setUpdateInterval(100); // Set the update interval (in milliseconds)
-
-        Accelerometer.isAvailableAsync().then(available => {
-            if (available) {
-                subscription = Accelerometer.addListener(handleUpdate);
-            }
-        });
-
-        return () => {
-            if (subscription) {
-                subscription.remove();
-            }
-        };
-    // }
-    };
-
-    const handleShake = () => {
-        if (!isLoading) {
-            const randomIndex = Math.floor(Math.random() * recipes.length);
-            const randomRecipe = recipes[randomIndex];
-            console.log(recipes[recipes]);
-            navigation.navigate("RecipeDetails", {recipe: randomRecipe});
-        }
-    };
-
     useEffect(() => {
+        let fetchedRecipes = [];
         const fetchRecipesFromAPI = async () => {
             for (let i = 97; i <= 122; ++i) {
                 const char = String.fromCharCode(i);
@@ -72,22 +35,59 @@ export default function RecipesScreen ({navigation}) {
                     const response = await fetch(url);
                     const json = await response.json();
                     if (json.meals) {
-                        setRecipes(prevRecipes =>
-                            [...prevRecipes, ...json.meals]);
-                        }
+                        log.info(recipes.length)
+                        setRecipes(prevRecipes => [...prevRecipes, ...json.meals]);
                     }
-            catch (error) {
+                }
+                catch (error) {
                     log.error("Failed to fetch ingredients or request timed out:", error);
-                setRecipes(JSON.parse(await AsyncStorage.getItem("favouriteRecipes")
-                    .catch((error) => log.error("Error loading favourite recipes:", error))))
+                    setRecipes(JSON.parse(await AsyncStorage.getItem("favouriteRecipes")
+                        .catch((error) => log.error("Error loading favourite recipes:", error))))
                 } finally {
                     setIsLoading(false)
                 }
             }
         };
         fetchRecipesFromAPI();
-        accelerometer();
     }, [isFocused]);
+
+    // Accelerometer
+    useEffect(() => {
+        let subscription;
+        const threshold = 2; // Adjust this value based on the sensitivity you want
+
+        const handleUpdate = ({ x, y, z }) => {
+            const acceleration = Math.sqrt(x ** 2 + y ** 2 + z ** 2);
+            if (acceleration > threshold) {
+                handleShake();
+            }
+        };
+
+        if (isFocused) {
+            Accelerometer.setUpdateInterval(100); // Set the update interval (in milliseconds)
+            Accelerometer.isAvailableAsync().then((available) => {
+                if (available) {
+                    subscription = Accelerometer.addListener(handleUpdate);
+                }
+            });
+        }
+
+        return () => {
+            if (subscription) {
+                subscription.remove();
+            }
+        };
+    }, [recipes]);
+
+    const handleShake = () => {
+        log.info("Shaken")
+        if (recipes.length > 0) {
+            const randomIndex = Math.floor(Math.random() * recipes.length);
+            const randomRecipe = recipes[randomIndex];
+            log.info(`Random recipe: ${randomRecipe.strMeal}`);
+            navigation.navigate("RecipeDetails", {recipe: randomRecipe});
+        }
+    };
 
     useEffect( () => {
         const loadFavouriteRecipes = async () => {
