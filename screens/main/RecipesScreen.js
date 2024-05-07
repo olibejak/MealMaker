@@ -1,4 +1,5 @@
 import {View, StyleSheet, ActivityIndicator, FlatList, Text} from "react-native";
+import { Accelerometer } from 'expo-sensors';
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import RecipeCard from "../../components/cards/RecipeCard";
@@ -25,6 +26,7 @@ export default function RecipesScreen ({navigation}) {
     const flatListRef = useRef(null);
 
     useEffect(() => {
+        let fetchedRecipes = [];
         const fetchRecipesFromAPI = async () => {
             for (let i = 97; i <= 122; ++i) {
                 const char = String.fromCharCode(i);
@@ -33,21 +35,59 @@ export default function RecipesScreen ({navigation}) {
                     const response = await fetch(url);
                     const json = await response.json();
                     if (json.meals) {
-                        setRecipes(prevRecipes =>
-                            [...prevRecipes, ...json.meals]);
-                        }
+                        log.info(recipes.length)
+                        setRecipes(prevRecipes => [...prevRecipes, ...json.meals]);
                     }
-            catch (error) {
+                }
+                catch (error) {
                     log.error("Failed to fetch ingredients or request timed out:", error);
-                setRecipes(JSON.parse(await AsyncStorage.getItem("favouriteRecipes")
-                    .catch((error) => log.error("Error loading favourite recipes:", error))))
+                    setRecipes(JSON.parse(await AsyncStorage.getItem("favouriteRecipes")
+                        .catch((error) => log.error("Error loading favourite recipes:", error))))
                 } finally {
                     setIsLoading(false)
                 }
             }
         };
         fetchRecipesFromAPI();
-    }, []);
+    }, [isFocused]);
+
+    // Accelerometer
+    useEffect(() => {
+        let subscription;
+        const threshold = 2; // Adjust this value based on the sensitivity you want
+
+        const handleUpdate = ({ x, y, z }) => {
+            const acceleration = Math.sqrt(x ** 2 + y ** 2 + z ** 2);
+            if (acceleration > threshold) {
+                handleShake();
+            }
+        };
+
+        if (isFocused) {
+            Accelerometer.setUpdateInterval(100); // Set the update interval (in milliseconds)
+            Accelerometer.isAvailableAsync().then((available) => {
+                if (available) {
+                    subscription = Accelerometer.addListener(handleUpdate);
+                }
+            });
+        }
+
+        return () => {
+            if (subscription) {
+                subscription.remove();
+            }
+        };
+    }, [recipes]);
+
+    const handleShake = () => {
+        log.info("Shaken")
+        if (recipes.length > 0) {
+            const randomIndex = Math.floor(Math.random() * recipes.length);
+            const randomRecipe = recipes[randomIndex];
+            log.info(`Random recipe: ${randomRecipe.strMeal}`);
+            navigation.navigate("RecipeDetails", {recipe: randomRecipe});
+        }
+    };
 
     useEffect( () => {
         const loadFavouriteRecipes = async () => {
