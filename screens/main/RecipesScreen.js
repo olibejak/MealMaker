@@ -35,7 +35,6 @@ export default function RecipesScreen ({navigation}) {
                     const response = await fetch(url);
                     const json = await response.json();
                     if (json.meals) {
-                        log.info(recipes.length)
                         setRecipes(prevRecipes => [...prevRecipes, ...json.meals]);
                     }
                 }
@@ -80,7 +79,6 @@ export default function RecipesScreen ({navigation}) {
     }, [recipes]);
 
     const handleShake = () => {
-        log.info("Shaken")
         if (recipes.length > 0) {
             const randomIndex = Math.floor(Math.random() * recipes.length);
             const randomRecipe = recipes[randomIndex];
