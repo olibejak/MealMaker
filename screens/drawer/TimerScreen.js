@@ -17,6 +17,8 @@ import { BackArrowIcon, PlusIcon } from "../../assets/icons";
 import TimerModal from '../../components/modals/TimerModal';
 import TimerFinishedModal from '../../components/modals/TimerFinishedModal';
 import log from "../../utils/Logger";
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import * as Notifications from "expo-notifications";
 
 export default function TimerScreen() {
     const [modalVisible, setModalVisible] = useState(false);
@@ -25,10 +27,18 @@ export default function TimerScreen() {
     const [timers, setTimers] = useState([]);
     const [soundObjects, setSoundObjects] = useState({});
     const VIBRATION_PATTERN = [500, 500];
+    const navigation = useNavigation();
 
 
     useEffect(() => {
         loadTimers();
+    }, []);
+
+    useEffect(() => {
+        const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+            const { data } = response.notification.request.content;
+        });
+        return () => subscription.remove();
     }, []);
 
     useEffect(() => {
@@ -118,6 +128,15 @@ export default function TimerScreen() {
             ...prev,
             [timer.id]: soundObject
         }));
+
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: "Timer Finished!",
+                body: `${timer.label} timer has finished.`,
+                data: { screen: 'TimerScreen' },
+            },
+            trigger: null, // Set to null to fire it immediately
+        });
 
         // Add to finished timers queue
         setFinishedTimersQueue(prevQueue => [...prevQueue, timer.id]);
