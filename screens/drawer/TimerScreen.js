@@ -147,22 +147,23 @@ export default function TimerScreen() {
     const handleAddTime = (id, additionalSeconds) => {
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
-                const now = Date.now();
-                let newEndTime;
-                if (timer.isRunning) {
-                    // If the timer is running, simply add to the existing end time
-                    newEndTime = timer.endTime ? timer.endTime + (additionalSeconds * 1000) : now + (additionalSeconds * 1000);
-                } else {
-                    // If the timer is not running or has just finished, calculate new end time from now
-                    newEndTime = now + (additionalSeconds * 1000);
-                    timer.isRunning = true; // Restart the timer if it was stopped
+                if (!timer.time || !timer.currentTime) {
+                    console.error("Timer data is incomplete", timer);
+                    return timer; // skip this timer if its data is incomplete
                 }
 
+                const now = Date.now();
+                let newEndTime = timer.endTime ? timer.endTime + additionalSeconds * 1000 : now + additionalSeconds * 1000;
+
+                // Safely parse and add seconds
                 const totalSecondsCurrent = timeToSeconds(timer.currentTime) + additionalSeconds;
+                const totalSecondsTime = timeToSeconds(timer.time) + additionalSeconds;
+
                 return {
                     ...timer,
                     currentTime: secondsToTime(totalSecondsCurrent),
-                    endTime: newEndTime
+                    time: secondsToTime(totalSecondsTime),
+                    endTime: newEndTime,
                 };
             }
             return timer;
