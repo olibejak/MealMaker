@@ -1,14 +1,37 @@
 // App.js
+// noinspection UnreachableCodeJS
 
 import * as React from 'react';
+import * as Notifications from 'expo-notifications';
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import DrawerNavigation from './components/navigation/DrawerNavigator';
 import {useCallback, useEffect} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import log from "./utils/Logger"; // Import the new DrawerNavigation component
+import log from "./utils/Logger";
 
 export default function App() {
+
+    async function registerForPushNotificationsAsync() {
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status !== 'granted') {
+            alert('For full functionality, enable notifications in your device settings.');
+            return;
+        }
+
+        Notifications.setNotificationHandler({
+            handleNotification: async ({ receivedNotification }) => {
+                const isAppForeground = receivedNotification.foreground;
+                // Only show alerts when the app is backgrounded
+                return {
+                    shouldShowAlert: !isAppForeground,
+                    shouldPlaySound: true,
+                    shouldSetBadge: false,
+                };
+            },
+        });
+        return (await Notifications.getExpoPushTokenAsync()).data;
+    }
 
     // initialize storage for fridge and shopping list
     const initializeLocalStorage = useCallback(async () => {
@@ -39,6 +62,8 @@ export default function App() {
 
     useEffect(() => {
         initializeLocalStorage();
+        Notifications.dismissAllNotificationsAsync();
+        registerForPushNotificationsAsync();
     }, [initializeLocalStorage]);
 
     const [fontsLoaded, error] = useFonts({

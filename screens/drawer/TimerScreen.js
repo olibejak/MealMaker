@@ -1,22 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Audio } from 'expo-av';
-import {
-    View,
-    ScrollView,
-    StyleSheet,
-    Text,
-    Vibration
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Audio} from 'expo-av';
+import {ScrollView, StyleSheet, Text, Vibration, View} from 'react-native';
 import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TimerCard from "../../components/cards/TimerCard";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
-import { BackArrowIcon, PlusIcon } from "../../assets/icons";
+import {BackArrowIcon, PlusIcon} from "../../assets/icons";
 import TimerModal from '../../components/modals/TimerModal';
 import TimerFinishedModal from '../../components/modals/TimerFinishedModal';
 import log from "../../utils/Logger";
+import * as Notifications from "expo-notifications";
 
 export default function TimerScreen() {
     const [modalVisible, setModalVisible] = useState(false);
@@ -25,7 +20,6 @@ export default function TimerScreen() {
     const [timers, setTimers] = useState([]);
     const [soundObjects, setSoundObjects] = useState({});
     const VIBRATION_PATTERN = [500, 500];
-
 
     useEffect(() => {
         loadTimers();
@@ -36,54 +30,63 @@ export default function TimerScreen() {
             setTimers(timers => timers.map(timer => {
                 if (!timer.isRunning) return timer;
 
-                const seconds = timeToSeconds(timer.currentTime) - 1;
-                if (seconds < 0) {
+                const now = Date.now();
+                const timeRemaining = Math.max(timer.endTime - now, 0);
+
+                if (timeRemaining === 0) {
                     handleTimerFinished(timer);
-                    return { ...timer, isRunning: false };
+                    return { ...timer, isRunning: false, currentTime: "00:00"};
                 }
-                return { ...timer, currentTime: secondsToTime(seconds) };
+
+                return { ...timer, currentTime: secondsToTime(Math.floor(timeRemaining / 1000)) };
             }));
-        }, 1000);
+        }, 100);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [timers]);
 
     useEffect(() => {
         if (finishedTimersQueue.length > 0) {
-            const currentFinishedTimerId = finishedTimersQueue[0]; // Always work with the first item in the queue
-            // Play sound when modal is visible
-            const playSound = async () => {
-                try {
-                    await soundObjects[currentFinishedTimerId].playAsync();
-                } catch (error) {
-                    console.error('Error playing sound:', error);
-                }
-            };
-            playSound();
-
-            // Start continuous vibration using the pattern
-            Vibration.vibrate(VIBRATION_PATTERN, true); // Repeat indefinitely
-
-            // Make the modal visible
+            const timerId = finishedTimersQueue[0];
             setFinishedModalVisible(true);
+
+            const playSoundAndVibrate = async () => {
+                if (!soundObjects[timerId]) {
+                    const soundObject = new Audio.Sound();
+                    try {
+                        await soundObject.loadAsync(require('../../assets/sounds/alarm.mp3'));
+                        await soundObject.setIsLoopingAsync(true);
+                        await soundObject.playAsync();
+                        setSoundObjects(prev => ({
+                            ...prev,
+                            [timerId]: soundObject
+                        }));
+                    } catch (error) {
+                        log.error('Error loading sound:', error);
+                    }
+                } else {
+                    try {
+                        await soundObjects[timerId].playAsync();
+                    } catch (error) {
+                        log.error('Error playing sound:', error);
+                    }
+                }
+
+                Vibration.vibrate(VIBRATION_PATTERN, true);
+            };
+
+            playSoundAndVibrate();
         } else {
-            // Stop sound for all sound objects when queue is empty
             Object.values(soundObjects).forEach(async (soundObject) => {
                 try {
                     await soundObject.stopAsync();
                 } catch (error) {
-                    console.error('Error stopping sound:', error);
+                    log.error('Error stopping sound:', error);
                 }
             });
-            // Stop vibration when modal is not visible
             Vibration.cancel();
             setFinishedModalVisible(false);
         }
-
-        // Cleanup function to stop vibration when component unmounts
-        return () => {
-            Vibration.cancel();
-        };
     }, [finishedTimersQueue, soundObjects]);
 
     const loadTimers = async () => {
@@ -95,7 +98,8 @@ export default function TimerScreen() {
                     ...timer,
                     id: timer.id || uuid.v4(),
                     currentTime: timer.currentTime || timer.time,
-                    isRunning: timer.isRunning || false
+                    isRunning: timer.isRunning || false,
+                    endTime: timer.endTime || null
                 }));
                 setTimers(timersWithUniqueIds);
             }
@@ -104,22 +108,7 @@ export default function TimerScreen() {
         }
     };
 
-    const handleTimerFinished = async (timer) => {
-        const soundObject = new Audio.Sound();
-        try {
-            await soundObject.loadAsync(require('../../assets/sounds/alarm.mp3'));
-            await soundObject.setIsLoopingAsync(true);
-        } catch (error) {
-            console.error('Error loading sound:', error);
-        }
-
-        // Update the sound objects state
-        setSoundObjects(prev => ({
-            ...prev,
-            [timer.id]: soundObject
-        }));
-
-        // Add to finished timers queue
+    const handleTimerFinished = (timer) => {
         setFinishedTimersQueue(prevQueue => [...prevQueue, timer.id]);
     };
 
@@ -129,7 +118,8 @@ export default function TimerScreen() {
             label,
             time,
             currentTime: time,
-            isRunning: false
+            isRunning: false,
+            endTime: null
         };
         const updatedTimers = [...timers, newTimer];
         setTimers(updatedTimers);
@@ -137,51 +127,118 @@ export default function TimerScreen() {
         try {
             await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
         } catch (error) {
-            console.error('Failed to save timers:', error);
+            log.error('Failed to save timers:', error);
         }
     };
 
-    const handleAddTime = (id, additionalSeconds) => {
+    const handleAddTime = async (id, additionalSeconds) => {
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
-                const totalSecondsCurrent = timeToSeconds(timer.currentTime) + additionalSeconds;
-                const totalSecondsInitial = timeToSeconds(timer.time) + additionalSeconds;
+                const now = Date.now();
+                let newEndTime;
+                let totalSecondsCurrent;
+                let totalSecondsTime = timeToSeconds(timer.time) + additionalSeconds;
+
+                if (timer.isRunning) {
+                    newEndTime = (timer.endTime ? timer.endTime : now) + additionalSeconds * 1000;
+                    totalSecondsCurrent = timeToSeconds(timer.currentTime) + additionalSeconds;
+
+                    if (timer.notificationId) {
+                        Notifications.cancelScheduledNotificationAsync(timer.notificationId)
+                            .then(() => scheduleNotification(timer, totalSecondsCurrent))
+                            .then(newNotificationId => {
+                                return {
+                                    ...timer,
+                                    currentTime: secondsToTime(totalSecondsCurrent),
+                                    time: secondsToTime(totalSecondsTime),
+                                    endTime: newEndTime,
+                                    notificationId: newNotificationId
+                                };
+                            })
+                            .catch(error => console.error('Error updating notification:', error));
+                    }
+                } else {
+                    newEndTime = now + totalSecondsTime * 1000;
+                    totalSecondsCurrent = totalSecondsTime;
+                }
+
                 return {
                     ...timer,
                     currentTime: secondsToTime(totalSecondsCurrent),
-                    time: secondsToTime(totalSecondsInitial)
+                    time: secondsToTime(totalSecondsTime),
+                    endTime: newEndTime,
                 };
             }
             return timer;
         }));
     };
 
-    const handleStartStop = (id) => {
+    const handleStartStop = async (id) => {
         setTimers(prevTimers => prevTimers.map(timer => {
             if (timer.id === id) {
-                return { ...timer, isRunning: !timer.isRunning };
+                if (timer.isRunning) {
+                    Notifications.cancelScheduledNotificationAsync(timer.notificationId);
+                    return { ...timer, isRunning: false, endTime: null, notificationId: null };
+                } else {
+                    const now = Date.now();
+                    const remainingTimeInSeconds = timeToSeconds(timer.currentTime);
+                    const endTime = now + remainingTimeInSeconds * 1000;
+
+                    scheduleNotification(timer, remainingTimeInSeconds)
+                        .then(notificationId => {
+                            // Update the state with the new notificationId after it's scheduled
+                            setTimers((currentTimers) => currentTimers.map(t =>
+                                t.id === timer.id ? { ...t, isRunning: true, endTime, notificationId } : t
+                            ));
+                        });
+
+                    // Return the timer with old state because the actual notificationId will be set asynchronously
+                    return { ...timer, isRunning: true, endTime };
+                }
             }
             return timer;
         }));
     };
 
-    const handleReload = (id) => {
+    const scheduleNotification = async (timer, seconds) => {
+        return await Notifications.scheduleNotificationAsync({
+            content: {
+                title: "Timer finished",
+                body: `${timer.label} has finished`,
+                data: {id: timer.id},
+            },
+            trigger: {seconds: seconds},
+        });
+    };
+
+    const handleReload = async (id) => {
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
-                return { ...timer, currentTime: timer.time, isRunning: false};
+                if (timer.notificationId) {
+                    Notifications.cancelScheduledNotificationAsync(timer.notificationId)
+                        .catch(error => log.error('Error cancelling notification:', error));
+                }
+                return { ...timer, currentTime: timer.time, isRunning: false, endTime: null, notificationId: null };
             }
             return timer;
         }));
         setFinishedModalVisible(false);
     };
 
+
     const handleRemoveTimer = async (id) => {
+        const timerToRemove = timers.find(timer => timer.id === id);
+        if (timerToRemove && timerToRemove.notificationId) {
+            Notifications.cancelScheduledNotificationAsync(timerToRemove.notificationId)
+                .catch(error => log.error('Error cancelling notification on timer removal:', error));
+        }
+
         const updatedTimers = timers.filter(timer => timer.id !== id);
         setTimers(updatedTimers);
         try {
             await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
         } catch (error) {
-            console.error('Failed to remove timer:', error);
+            log.error('Failed to remove timer:', error);
         }
     };
 
@@ -200,9 +257,6 @@ export default function TimerScreen() {
         // Remove the finished timer from the queue
         setFinishedTimersQueue(queue => queue.filter(id => id !== finishedTimerId));
 
-        // Add the time
-        handleAddTime(finishedTimerId, 60);
-
         // Set the timer to running
         setTimers(timers => timers.map(timer => {
             if (timer.id === finishedTimerId) {
@@ -210,6 +264,9 @@ export default function TimerScreen() {
             }
             return timer;
         }));
+
+        // Add the time
+        handleAddTime(finishedTimerId, 60);
     }
 
     function stopTimer(finishedTimerId) {
@@ -254,7 +311,7 @@ export default function TimerScreen() {
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => setModalVisible(true)} />
             <TimerFinishedModal
                 label={timers.find(timer => timer.id === finishedTimersQueue[0])?.label || ''}
-                timerId={finishedTimersQueue[0]} // Work with the first item in the queue
+                timerId={finishedTimersQueue[0]}
                 visible={finishedModalVisible}
                 onStopTimer={() => stopTimer(finishedTimersQueue[0])}
                 onAddOneMinute={() => addOneMinute(finishedTimersQueue[0])}
