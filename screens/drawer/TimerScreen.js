@@ -26,13 +26,6 @@ export default function TimerScreen() {
     }, []);
 
     useEffect(() => {
-        const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-            const { data } = response.notification.request.content;
-        });
-        return () => subscription.remove();
-    }, []);
-
-    useEffect(() => {
         const interval = setInterval(() => {
             setTimers(timers => timers.map(timer => {
                 if (!timer.isRunning) return timer;
