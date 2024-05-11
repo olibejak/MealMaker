@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Audio } from 'expo-av';
-import {
-    View,
-    ScrollView,
-    StyleSheet,
-    Text,
-    Vibration
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Audio} from 'expo-av';
+import {ScrollView, StyleSheet, Text, Vibration, View} from 'react-native';
 import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TimerCard from "../../components/cards/TimerCard";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
-import { BackArrowIcon, PlusIcon } from "../../assets/icons";
+import {BackArrowIcon, PlusIcon} from "../../assets/icons";
 import TimerModal from '../../components/modals/TimerModal';
 import TimerFinishedModal from '../../components/modals/TimerFinishedModal';
 import log from "../../utils/Logger";
@@ -190,14 +184,23 @@ export default function TimerScreen() {
         setTimers(prevTimers => prevTimers.map(timer => {
             if (timer.id === id) {
                 if (timer.isRunning) {
-                    Notifications.cancelScheduledNotificationAsync(timer.notificationId); // Cancel existing notification
+                    Notifications.cancelScheduledNotificationAsync(timer.notificationId);
                     return { ...timer, isRunning: false, endTime: null, notificationId: null };
                 } else {
                     const now = Date.now();
                     const remainingTimeInSeconds = timeToSeconds(timer.currentTime);
                     const endTime = now + remainingTimeInSeconds * 1000;
-                    scheduleNotification(timer, remainingTimeInSeconds); // Schedule a new notification
-                    return { ...timer, isRunning: true, endTime, notificationId: timer.notificationId };
+
+                    scheduleNotification(timer, remainingTimeInSeconds)
+                        .then(notificationId => {
+                            // Update the state with the new notificationId after it's scheduled
+                            setTimers((currentTimers) => currentTimers.map(t =>
+                                t.id === timer.id ? { ...t, isRunning: true, endTime, notificationId } : t
+                            ));
+                        });
+
+                    // Return the timer with old state because the actual notificationId will be set asynchronously
+                    return { ...timer, isRunning: true, endTime };
                 }
             }
             return timer;
@@ -205,15 +208,14 @@ export default function TimerScreen() {
     };
 
     const scheduleNotification = async (timer, seconds) => {
-        const notificationId = await Notifications.scheduleNotificationAsync({
+        return await Notifications.scheduleNotificationAsync({
             content: {
                 title: "Timer finished",
                 body: `${timer.label} has finished`,
-                data: { id: timer.id },
+                data: {id: timer.id},
             },
-            trigger: { seconds: seconds },
+            trigger: {seconds: seconds},
         });
-        return notificationId;
     };
 
     const handleReload = async (id) => {
