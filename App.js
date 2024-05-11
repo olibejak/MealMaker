@@ -24,8 +24,7 @@ export default function App() {
                 const isAppForeground = receivedNotification.foreground;
                 // Only show alerts when the app is backgrounded
                 return {
-                    // shouldShowAlert: !isAppForeground,
-                    shouldShowAlert: true,
+                    shouldShowAlert: !isAppForeground,
                     shouldPlaySound: true,
                     shouldSetBadge: false,
                 };
