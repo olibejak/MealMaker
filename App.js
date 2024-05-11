@@ -9,7 +9,6 @@ import DrawerNavigation from './components/navigation/DrawerNavigator';
 import {useCallback, useEffect} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "./utils/Logger";
-import {Platform} from "react-native"; // Import the new DrawerNavigation component
 
 export default function App() {
 
@@ -25,7 +24,8 @@ export default function App() {
                 const isAppForeground = receivedNotification.foreground;
                 // Only show alerts when the app is backgrounded
                 return {
-                    shouldShowAlert: !isAppForeground,
+                    // shouldShowAlert: !isAppForeground,
+                    shouldShowAlert: true,
                     shouldPlaySound: true,
                     shouldSetBadge: false,
                 };

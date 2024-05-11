@@ -254,9 +254,6 @@ export default function TimerScreen() {
         // Remove the finished timer from the queue
         setFinishedTimersQueue(queue => queue.filter(id => id !== finishedTimerId));
 
-        // Add the time
-        handleAddTime(finishedTimerId, 60);
-
         // Set the timer to running
         setTimers(timers => timers.map(timer => {
             if (timer.id === finishedTimerId) {
@@ -264,6 +261,9 @@ export default function TimerScreen() {
             }
             return timer;
         }));
+
+        // Add the time
+        handleAddTime(finishedTimerId, 60);
     }
 
     function stopTimer(finishedTimerId) {
