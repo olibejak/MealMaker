@@ -69,13 +69,13 @@ export default function TimerScreen() {
                             [timerId]: soundObject
                         }));
                     } catch (error) {
-                        console.error('Error loading sound:', error);
+                        log.error('Error loading sound:', error);
                     }
                 } else {
                     try {
                         await soundObjects[timerId].playAsync();
                     } catch (error) {
-                        console.error('Error playing sound:', error);
+                        log.error('Error playing sound:', error);
                     }
                 }
 
@@ -88,7 +88,7 @@ export default function TimerScreen() {
                 try {
                     await soundObject.stopAsync();
                 } catch (error) {
-                    console.error('Error stopping sound:', error);
+                    log.error('Error stopping sound:', error);
                 }
             });
             Vibration.cancel();
@@ -134,7 +134,7 @@ export default function TimerScreen() {
         try {
             await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
         } catch (error) {
-            console.error('Failed to save timers:', error);
+            log.error('Failed to save timers:', error);
         }
     };
 
@@ -143,7 +143,6 @@ export default function TimerScreen() {
             if (timer.id === id) {
                 const now = Date.now();
                 let newEndTime;
-
                 let totalSecondsCurrent;
                 let totalSecondsTime = timeToSeconds(timer.time) + additionalSeconds;
 
@@ -151,22 +150,23 @@ export default function TimerScreen() {
                     newEndTime = (timer.endTime ? timer.endTime : now) + additionalSeconds * 1000;
                     totalSecondsCurrent = timeToSeconds(timer.currentTime) + additionalSeconds;
 
-                    // Update the notification with the new end time if it is running
                     if (timer.notificationId) {
-                        Notifications.cancelScheduledNotificationAsync(timer.notificationId); // Cancel the old notification first
-                        const newNotificationId = scheduleNotification(timer, totalSecondsCurrent); // Schedule a new notification
-                        return {
-                            ...timer,
-                            currentTime: secondsToTime(totalSecondsCurrent),
-                            time: secondsToTime(totalSecondsTime),
-                            endTime: newEndTime,
-                            notificationId: newNotificationId
-                        };
+                        Notifications.cancelScheduledNotificationAsync(timer.notificationId)
+                            .then(() => scheduleNotification(timer, totalSecondsCurrent))
+                            .then(newNotificationId => {
+                                return {
+                                    ...timer,
+                                    currentTime: secondsToTime(totalSecondsCurrent),
+                                    time: secondsToTime(totalSecondsTime),
+                                    endTime: newEndTime,
+                                    notificationId: newNotificationId
+                                };
+                            })
+                            .catch(error => console.error('Error updating notification:', error));
                     }
                 } else {
-                    // If the timer is not running, reset the endTime and currentTime from now
                     newEndTime = now + totalSecondsTime * 1000;
-                    totalSecondsCurrent = totalSecondsTime; // Set currentTime to full new time if stopped
+                    totalSecondsCurrent = totalSecondsTime;
                 }
 
                 return {
@@ -222,22 +222,30 @@ export default function TimerScreen() {
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
                 if (timer.notificationId) {
-                    Notifications.cancelScheduledNotificationAsync(timer.notificationId);
+                    Notifications.cancelScheduledNotificationAsync(timer.notificationId)
+                        .catch(error => log.error('Error cancelling notification:', error));
                 }
                 return { ...timer, currentTime: timer.time, isRunning: false, endTime: null, notificationId: null };
             }
             return timer;
         }));
         setFinishedModalVisible(false);
-    }
+    };
+
 
     const handleRemoveTimer = async (id) => {
+        const timerToRemove = timers.find(timer => timer.id === id);
+        if (timerToRemove && timerToRemove.notificationId) {
+            Notifications.cancelScheduledNotificationAsync(timerToRemove.notificationId)
+                .catch(error => log.error('Error cancelling notification on timer removal:', error));
+        }
+
         const updatedTimers = timers.filter(timer => timer.id !== id);
         setTimers(updatedTimers);
         try {
             await AsyncStorage.setItem('timers', JSON.stringify(updatedTimers));
         } catch (error) {
-            console.error('Failed to remove timer:', error);
+            log.error('Failed to remove timer:', error);
         }
     };
 
