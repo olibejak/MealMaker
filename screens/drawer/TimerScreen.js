@@ -144,7 +144,7 @@ export default function TimerScreen() {
         }
     };
 
-    const handleAddTime = (id, additionalSeconds) => {
+    const handleAddTime = async (id, additionalSeconds) => {
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
                 const now = Date.now();
@@ -156,9 +156,22 @@ export default function TimerScreen() {
                 if (timer.isRunning) {
                     newEndTime = (timer.endTime ? timer.endTime : now) + additionalSeconds * 1000;
                     totalSecondsCurrent = timeToSeconds(timer.currentTime) + additionalSeconds;
+
+                    // Update the notification with the new end time if it is running
+                    if (timer.notificationId) {
+                        Notifications.cancelScheduledNotificationAsync(timer.notificationId); // Cancel the old notification first
+                        const newNotificationId = scheduleNotification(timer, totalSecondsCurrent); // Schedule a new notification
+                        return {
+                            ...timer,
+                            currentTime: secondsToTime(totalSecondsCurrent),
+                            time: secondsToTime(totalSecondsTime),
+                            endTime: newEndTime,
+                            notificationId: newNotificationId
+                        };
+                    }
                 } else {
                     // If the timer is not running, reset the endTime and currentTime from now
-                    newEndTime = now + additionalSeconds * 1000;
+                    newEndTime = now + totalSecondsTime * 1000;
                     totalSecondsCurrent = totalSecondsTime; // Set currentTime to full new time if stopped
                 }
 
@@ -173,30 +186,48 @@ export default function TimerScreen() {
         }));
     };
 
-    const handleStartStop = (id) => {
+    const handleStartStop = async (id) => {
         setTimers(prevTimers => prevTimers.map(timer => {
             if (timer.id === id) {
                 if (timer.isRunning) {
-                    return { ...timer, isRunning: false, endTime: null };
+                    Notifications.cancelScheduledNotificationAsync(timer.notificationId); // Cancel existing notification
+                    return { ...timer, isRunning: false, endTime: null, notificationId: null };
                 } else {
                     const now = Date.now();
                     const remainingTimeInSeconds = timeToSeconds(timer.currentTime);
-                    return { ...timer, isRunning: true, endTime: now + remainingTimeInSeconds * 1000 };
+                    const endTime = now + remainingTimeInSeconds * 1000;
+                    scheduleNotification(timer, remainingTimeInSeconds); // Schedule a new notification
+                    return { ...timer, isRunning: true, endTime, notificationId: timer.notificationId };
                 }
             }
             return timer;
         }));
     };
 
-    const handleReload = (id) => {
+    const scheduleNotification = async (timer, seconds) => {
+        const notificationId = await Notifications.scheduleNotificationAsync({
+            content: {
+                title: "Timer finished",
+                body: `${timer.label} has finished`,
+                data: { id: timer.id },
+            },
+            trigger: { seconds: seconds },
+        });
+        return notificationId;
+    };
+
+    const handleReload = async (id) => {
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
-                return { ...timer, currentTime: timer.time, isRunning: false, endTime: null };
+                if (timer.notificationId) {
+                    Notifications.cancelScheduledNotificationAsync(timer.notificationId);
+                }
+                return { ...timer, currentTime: timer.time, isRunning: false, endTime: null, notificationId: null };
             }
             return timer;
         }));
         setFinishedModalVisible(false);
-    };
+    }
 
     const handleRemoveTimer = async (id) => {
         const updatedTimers = timers.filter(timer => timer.id !== id);

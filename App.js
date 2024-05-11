@@ -19,21 +19,18 @@ export default function App() {
             alert('For full functionality, enable notifications in your device settings.');
             return;
         }
+
         Notifications.setNotificationHandler({
-            handleNotification: async () => ({
-                shouldShowAlert: true,
-                shouldPlaySound: true,
-                shouldSetBadge: false,
-            }),
+            handleNotification: async ({ receivedNotification }) => {
+                const isAppForeground = receivedNotification.foreground;
+                // Only show alerts when the app is backgrounded
+                return {
+                    shouldShowAlert: !isAppForeground,
+                    shouldPlaySound: true,
+                    shouldSetBadge: false,
+                };
+            },
         });
-        if (Platform.OS === 'android') {
-            Notifications.setNotificationChannelAsync('default', {
-                name: 'default',
-                importance: Notifications.AndroidImportance.MAX,
-                vibrationPattern: [0, 250, 250, 250],
-                lightColor: '#5a569f',
-            });
-        }
         return (await Notifications.getExpoPushTokenAsync()).data;
     }
 
