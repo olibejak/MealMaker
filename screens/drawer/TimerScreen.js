@@ -48,7 +48,7 @@ export default function TimerScreen() {
 
                 if (timeRemaining === 0) {
                     handleTimerFinished(timer);
-                    return { ...timer, isRunning: false, currentTime: timer.time };
+                    return { ...timer, isRunning: false, currentTime: "00:00"};
                 }
 
                 return { ...timer, currentTime: secondsToTime(Math.floor(timeRemaining / 1000)) };
