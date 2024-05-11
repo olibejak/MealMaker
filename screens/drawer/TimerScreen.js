@@ -17,7 +17,6 @@ import { BackArrowIcon, PlusIcon } from "../../assets/icons";
 import TimerModal from '../../components/modals/TimerModal';
 import TimerFinishedModal from '../../components/modals/TimerFinishedModal';
 import log from "../../utils/Logger";
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 import * as Notifications from "expo-notifications";
 
 export default function TimerScreen() {
@@ -27,8 +26,6 @@ export default function TimerScreen() {
     const [timers, setTimers] = useState([]);
     const [soundObjects, setSoundObjects] = useState({});
     const VIBRATION_PATTERN = [500, 500];
-    const navigation = useNavigation();
-
 
     useEffect(() => {
         loadTimers();
@@ -46,38 +43,53 @@ export default function TimerScreen() {
             setTimers(timers => timers.map(timer => {
                 if (!timer.isRunning) return timer;
 
-                const seconds = timeToSeconds(timer.currentTime) - 1;
-                if (seconds < 0) {
+                const now = Date.now();
+                const timeRemaining = Math.max(timer.endTime - now, 0);
+
+                if (timeRemaining === 0) {
                     handleTimerFinished(timer);
-                    return { ...timer, isRunning: false };
+                    return { ...timer, isRunning: false, currentTime: timer.time };
                 }
-                return { ...timer, currentTime: secondsToTime(seconds) };
+
+                return { ...timer, currentTime: secondsToTime(Math.floor(timeRemaining / 1000)) };
             }));
         }, 1000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [timers]);
 
     useEffect(() => {
         if (finishedTimersQueue.length > 0) {
-            const currentFinishedTimerId = finishedTimersQueue[0]; // Always work with the first item in the queue
-            // Play sound when modal is visible
-            const playSound = async () => {
-                try {
-                    await soundObjects[currentFinishedTimerId].playAsync();
-                } catch (error) {
-                    console.error('Error playing sound:', error);
-                }
-            };
-            playSound();
-
-            // Start continuous vibration using the pattern
-            Vibration.vibrate(VIBRATION_PATTERN, true); // Repeat indefinitely
-
-            // Make the modal visible
+            const timerId = finishedTimersQueue[0];
             setFinishedModalVisible(true);
+
+            const playSoundAndVibrate = async () => {
+                if (!soundObjects[timerId]) {
+                    const soundObject = new Audio.Sound();
+                    try {
+                        await soundObject.loadAsync(require('../../assets/sounds/alarm.mp3'));
+                        await soundObject.setIsLoopingAsync(true);
+                        await soundObject.playAsync();
+                        setSoundObjects(prev => ({
+                            ...prev,
+                            [timerId]: soundObject
+                        }));
+                    } catch (error) {
+                        console.error('Error loading sound:', error);
+                    }
+                } else {
+                    try {
+                        await soundObjects[timerId].playAsync();
+                    } catch (error) {
+                        console.error('Error playing sound:', error);
+                    }
+                }
+
+                Vibration.vibrate(VIBRATION_PATTERN, true);
+            };
+
+            playSoundAndVibrate();
         } else {
-            // Stop sound for all sound objects when queue is empty
             Object.values(soundObjects).forEach(async (soundObject) => {
                 try {
                     await soundObject.stopAsync();
@@ -85,15 +97,9 @@ export default function TimerScreen() {
                     console.error('Error stopping sound:', error);
                 }
             });
-            // Stop vibration when modal is not visible
             Vibration.cancel();
             setFinishedModalVisible(false);
         }
-
-        // Cleanup function to stop vibration when component unmounts
-        return () => {
-            Vibration.cancel();
-        };
     }, [finishedTimersQueue, soundObjects]);
 
     const loadTimers = async () => {
@@ -105,7 +111,8 @@ export default function TimerScreen() {
                     ...timer,
                     id: timer.id || uuid.v4(),
                     currentTime: timer.currentTime || timer.time,
-                    isRunning: timer.isRunning || false
+                    isRunning: timer.isRunning || false,
+                    endTime: timer.endTime || null
                 }));
                 setTimers(timersWithUniqueIds);
             }
@@ -114,31 +121,7 @@ export default function TimerScreen() {
         }
     };
 
-    const handleTimerFinished = async (timer) => {
-        const soundObject = new Audio.Sound();
-        try {
-            await soundObject.loadAsync(require('../../assets/sounds/alarm.mp3'));
-            await soundObject.setIsLoopingAsync(true);
-        } catch (error) {
-            console.error('Error loading sound:', error);
-        }
-
-        // Update the sound objects state
-        setSoundObjects(prev => ({
-            ...prev,
-            [timer.id]: soundObject
-        }));
-
-        await Notifications.scheduleNotificationAsync({
-            content: {
-                title: "Timer Finished!",
-                body: `${timer.label} timer has finished.`,
-                data: { screen: 'TimerScreen' },
-            },
-            trigger: null, // Set to null to fire it immediately
-        });
-
-        // Add to finished timers queue
+    const handleTimerFinished = (timer) => {
         setFinishedTimersQueue(prevQueue => [...prevQueue, timer.id]);
     };
 
@@ -148,7 +131,8 @@ export default function TimerScreen() {
             label,
             time,
             currentTime: time,
-            isRunning: false
+            isRunning: false,
+            endTime: null
         };
         const updatedTimers = [...timers, newTimer];
         setTimers(updatedTimers);
@@ -163,12 +147,22 @@ export default function TimerScreen() {
     const handleAddTime = (id, additionalSeconds) => {
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
+                const now = Date.now();
+                let newEndTime;
+                if (timer.isRunning) {
+                    // If the timer is running, simply add to the existing end time
+                    newEndTime = timer.endTime ? timer.endTime + (additionalSeconds * 1000) : now + (additionalSeconds * 1000);
+                } else {
+                    // If the timer is not running or has just finished, calculate new end time from now
+                    newEndTime = now + (additionalSeconds * 1000);
+                    timer.isRunning = true; // Restart the timer if it was stopped
+                }
+
                 const totalSecondsCurrent = timeToSeconds(timer.currentTime) + additionalSeconds;
-                const totalSecondsInitial = timeToSeconds(timer.time) + additionalSeconds;
                 return {
                     ...timer,
                     currentTime: secondsToTime(totalSecondsCurrent),
-                    time: secondsToTime(totalSecondsInitial)
+                    endTime: newEndTime
                 };
             }
             return timer;
@@ -178,7 +172,13 @@ export default function TimerScreen() {
     const handleStartStop = (id) => {
         setTimers(prevTimers => prevTimers.map(timer => {
             if (timer.id === id) {
-                return { ...timer, isRunning: !timer.isRunning };
+                if (timer.isRunning) {
+                    return { ...timer, isRunning: false, endTime: null };
+                } else {
+                    const now = Date.now();
+                    const remainingTimeInSeconds = timeToSeconds(timer.currentTime);
+                    return { ...timer, isRunning: true, endTime: now + remainingTimeInSeconds * 1000 };
+                }
             }
             return timer;
         }));
@@ -187,7 +187,7 @@ export default function TimerScreen() {
     const handleReload = (id) => {
         setTimers(timers => timers.map(timer => {
             if (timer.id === id) {
-                return { ...timer, currentTime: timer.time, isRunning: false};
+                return { ...timer, currentTime: timer.time, isRunning: false, endTime: null };
             }
             return timer;
         }));
@@ -273,7 +273,7 @@ export default function TimerScreen() {
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => setModalVisible(true)} />
             <TimerFinishedModal
                 label={timers.find(timer => timer.id === finishedTimersQueue[0])?.label || ''}
-                timerId={finishedTimersQueue[0]} // Work with the first item in the queue
+                timerId={finishedTimersQueue[0]}
                 visible={finishedModalVisible}
                 onStopTimer={() => stopTimer(finishedTimersQueue[0])}
                 onAddOneMinute={() => addOneMinute(finishedTimersQueue[0])}
