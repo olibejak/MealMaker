@@ -53,7 +53,7 @@ export default function TimerScreen() {
 
                 return { ...timer, currentTime: secondsToTime(Math.floor(timeRemaining / 1000)) };
             }));
-        }, 1000);
+        }, 100);
 
         return () => clearInterval(interval);
     }, [timers]);
