@@ -8,6 +8,7 @@ import DrawerNavigation from './components/navigation/DrawerNavigator';
 import {useCallback, useEffect} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "./utils/Logger";
+import {SettingsProvider} from "./utils/SettingsProvider";
 
 export default function App() {
     // initialize storage for fridge and shopping list
@@ -32,6 +33,10 @@ export default function App() {
             if (favouriteRecipes === null) {
                 await AsyncStorage.setItem("favouriteRecipes", JSON.stringify([]));
             }
+            const settings = await AsyncStorage.getItem("settings");
+            if (settings === null) {
+                await AsyncStorage.setItem("settings", JSON.stringify([]));
+            }
         } catch (error) {
             log.error("Error initializing local storage:", error);
         }
@@ -52,8 +57,10 @@ export default function App() {
     }
 
     return (
-        <NavigationContainer>
-            <DrawerNavigation />
-        </NavigationContainer>
+        <SettingsProvider>
+            <NavigationContainer>
+                <DrawerNavigation />
+            </NavigationContainer>
+        </SettingsProvider>
     );
 }

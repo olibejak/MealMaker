@@ -5,19 +5,21 @@ import BottomNavigationBar from "../../components/navigation/BottomNavigationBar
 import RecipeCard from "../../components/cards/RecipeCard";
 import SearchBar from "../../components/searchbar/SearchBar";
 import {ArrowDropUp, BookIcon, HamburgerIcon} from "../../assets/icons";
-import React, {useEffect, useRef, useState} from "react";
-import {useIsFocused, useNavigation} from "@react-navigation/native";
+import React, {useContext, useEffect, useRef, useState} from "react";
+import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../../utils/Logger";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
+import {SettingsContext} from "../../utils/SettingsProvider";
 
 export default function RecipesScreen ({navigation}) {
+    const { settings } = useContext(SettingsContext);
     const title = "Recipes";
     const filtersOn = false;
     const selectedBottomBar = "Recipes";
-    const [currentIndex, setCurrentIndex] = useState(0); // Index of the last loaded recipe
+    const [currentIndex, setCurrentIndex] = useState(0);
     const [recipes, setRecipes] = useState([]);
-    const [displayedRecipes, setDisplayedRecipes] = useState([]); // Actively displayed recipes
+    const [displayedRecipes, setDisplayedRecipes] = useState([]);
     const [activeFilter, setActiveFilter] = useState(null);
     const [activeSearch, setActiveSearch] = useState('');
     const [favouriteRecipes, setFavouriteRecipes] = useState([]);
@@ -91,7 +93,7 @@ export default function RecipesScreen ({navigation}) {
     }, [recipes]);
 
     const getRandomRecipe = () => {
-        if (recipes.length > 0 && navigation.getState().history[navigation.getState().history.length - 1].key.startsWith("Recipes-")) {
+        if (recipes.length > 0 && navigation.getState().history[navigation.getState().history.length - 1].key.startsWith("Recipes-") && settings.shakeForRandomRecipeEnabled) {
             const randomIndex = Math.floor(Math.random() * recipes.length); // round(<0,1> * recipes length)
             const randomRecipe = recipes[randomIndex];
             log.info(`Random recipe: ${randomRecipe.strMeal}`);

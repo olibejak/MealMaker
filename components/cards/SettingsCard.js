@@ -65,9 +65,13 @@ const CustomSwitch = ({ value, onValueChange }) => {
     );
 };
 
-const SettingsCard = ({ title, description, value, onValueChange, IconComponent }) => {
+const SettingsCard = ({ title, description, value, onValueChange, IconComponent, bottomBorder, topBorder }) => {
     return (
-        <View style={styles.cardContainer}>
+        <View style={[
+            styles.cardContainer,
+            bottomBorder && styles.bottomBorder,
+            topBorder && styles.topBorder
+        ]}>
             <View>
                 <IconComponent />
             </View>
@@ -89,8 +93,15 @@ const styles = StyleSheet.create({
         paddingLeft: 24,
         paddingRight: 24,
         paddingVertical: 16,
+
+    },
+    bottomBorder: {
         borderBottomWidth: 1,
         borderBottomColor: '#E2E2E2',
+    },
+    topBorder: {
+        borderTopWidth: 1,
+        borderTopColor: '#E2E2E2',
     },
     textContainer: {
         flex: 1,

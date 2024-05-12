@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Audio} from 'expo-av';
 import {ScrollView, StyleSheet, Text, Vibration, View} from 'react-native';
 import uuid from 'react-native-uuid';
@@ -12,8 +12,10 @@ import TimerModal from '../../components/modals/TimerModal';
 import TimerFinishedModal from '../../components/modals/TimerFinishedModal';
 import log from "../../utils/Logger";
 import * as Notifications from "expo-notifications";
+import {SettingsContext} from "../../utils/SettingsProvider";
 
 export default function TimerScreen() {
+    const { settings } = useContext(SettingsContext);
     const [modalVisible, setModalVisible] = useState(false);
     const [finishedModalVisible, setFinishedModalVisible] = useState(false);
     const [finishedTimersQueue, setFinishedTimersQueue] = useState([]);
@@ -46,37 +48,59 @@ export default function TimerScreen() {
         return () => clearInterval(interval);
     }, [timers]);
 
+    const playSoundAndVibrate = async (timerId) => {
+        // Handle sound
+        if (settings.soundsEnabled) {
+            if (!soundObjects[timerId]) {
+                const soundObject = new Audio.Sound();
+                try {
+                    // Dynamically load the sound file based on the selected sound
+                    const soundFile = getSoundFile(settings.selectedSound);
+                    await soundObject.loadAsync(soundFile);
+                    await soundObject.setIsLoopingAsync(true);
+                    await soundObject.playAsync();
+                    setSoundObjects(prev => ({
+                        ...prev,
+                        [timerId]: soundObject
+                    }));
+                } catch (error) {
+                    log.error('Error loading sound:', error);
+                }
+            } else {
+                try {
+                    await soundObjects[timerId].playAsync();
+                } catch (error) {
+                    log.error('Error playing sound:', error);
+                }
+            }
+        }
+
+        // Handle vibration
+        if (settings.vibrationsEnabled) {
+            Vibration.vibrate(VIBRATION_PATTERN, true);
+        }
+    };
+
+    const getSoundFile = (soundName) => {
+        switch (soundName) {
+            case 'alarm':
+                return require('../../assets/sounds/alarm.mp3');
+            case 'radar':
+                return require('../../assets/sounds/radar.mp3');
+            case 'morning_flower':
+                return require('../../assets/sounds/morning_flower.mp3');
+            case 'morning_flower_bass':
+                return require('../../assets/sounds/morning_flower_bass.mp3');
+            default:
+                return require('../../assets/sounds/alarm.mp3'); // Default sound
+        }
+    };
+
+// Adjust the useEffect hook that handles the timer completion
     useEffect(() => {
         if (finishedTimersQueue.length > 0) {
-            const timerId = finishedTimersQueue[0];
             setFinishedModalVisible(true);
-
-            const playSoundAndVibrate = async () => {
-                if (!soundObjects[timerId]) {
-                    const soundObject = new Audio.Sound();
-                    try {
-                        await soundObject.loadAsync(require('../../assets/sounds/alarm.mp3'));
-                        await soundObject.setIsLoopingAsync(true);
-                        await soundObject.playAsync();
-                        setSoundObjects(prev => ({
-                            ...prev,
-                            [timerId]: soundObject
-                        }));
-                    } catch (error) {
-                        log.error('Error loading sound:', error);
-                    }
-                } else {
-                    try {
-                        await soundObjects[timerId].playAsync();
-                    } catch (error) {
-                        log.error('Error playing sound:', error);
-                    }
-                }
-
-                Vibration.vibrate(VIBRATION_PATTERN, true);
-            };
-
-            playSoundAndVibrate();
+            playSoundAndVibrate(finishedTimersQueue[0]);
         } else {
             Object.values(soundObjects).forEach(async (soundObject) => {
                 try {
@@ -88,7 +112,8 @@ export default function TimerScreen() {
             Vibration.cancel();
             setFinishedModalVisible(false);
         }
-    }, [finishedTimersQueue, soundObjects]);
+    }, [finishedTimersQueue, settings.soundsEnabled, settings.vibrationsEnabled]); // Add settings as dependencies
+
 
     const loadTimers = async () => {
         try {
@@ -202,15 +227,18 @@ export default function TimerScreen() {
     };
 
     const scheduleNotification = async (timer, seconds) => {
-        return await Notifications.scheduleNotificationAsync({
-            content: {
-                title: "Timer finished",
-                body: `${timer.label} has finished`,
-                data: {id: timer.id},
-            },
-            trigger: {seconds: seconds},
-        });
+        if (settings.notificationsEnabled) {
+            return await Notifications.scheduleNotificationAsync({
+                content: {
+                    title: "Timer finished",
+                    body: `${timer.label} has finished`,
+                    data: { id: timer.id },
+                },
+                trigger: { seconds: seconds },
+            });
+        }
     };
+
 
     const handleReload = async (id) => {
         setTimers(timers => timers.map(timer => {
