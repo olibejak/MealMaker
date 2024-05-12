@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     text: {
         color: '#333',
         fontSize: 16,
+        fontFamily: 'Roboto-Regular',
     },
     star: {
         width: 24,

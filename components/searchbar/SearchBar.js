@@ -125,5 +125,6 @@ const styles = StyleSheet.create({
     filterText: {
         color: '#333',
         fontSize: 16,
+        fontFamily: 'Roboto-Regular',
     },
 });
