@@ -21,7 +21,7 @@ export const SettingsProvider = ({ children }) => {
                     selectedSound: 'alarm',
                     vibrationsEnabled: true,
                     notificationsEnabled: true,
-                    shakeForRandomRecipeEnabled: false,
+                    shakeForRandomRecipeEnabled: true,
                 });
             }
         } catch (error) {
@@ -32,7 +32,7 @@ export const SettingsProvider = ({ children }) => {
                 selectedSound: 'alarm',
                 vibrationsEnabled: true,
                 notificationsEnabled: true,
-                shakeForRandomRecipeEnabled: false,
+                shakeForRandomRecipeEnabled: true,
             });
         }
         setIsLoading(false);  // Set loading to false after settings are loaded
