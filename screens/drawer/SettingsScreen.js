@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
@@ -13,11 +13,15 @@ import {
     VolumeIcon
 } from "../../assets/icons";
 import {SettingsContext} from "../../utils/SettingsProvider";
+import log from "../../utils/Logger";
 
 export default function SettingsScreen({ }) {
     const { settings, updateSettings } = useContext(SettingsContext);
 
-    // Helper function to handle setting changes
+    useEffect(() => {
+        log.info(`Settings updated to: ${JSON.stringify(settings)}`);
+    }, [settings]); // This effect will run after settings state is updated
+
     const handleSettingChange = (settingKey, value) => {
         updateSettings({ [settingKey]: value });
     };

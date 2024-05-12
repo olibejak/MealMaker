@@ -64,7 +64,7 @@ export default function RecipesScreen ({navigation}) {
             }
         };
 
-        if (isFocused && settings.shakeForRandomRecipeEnabled) {
+        if (this.isFocused && settings.shakeForRandomRecipeEnabled) {
             Accelerometer.setUpdateInterval(100); // Set the update interval (in milliseconds)
             Accelerometer.isAvailableAsync().then((available) => {
                 if (available) {
@@ -78,7 +78,7 @@ export default function RecipesScreen ({navigation}) {
                 subscription.remove();
             }
         };
-    }, [recipes, isFocused, settings.shakeForRandomRecipeEnabled]);
+    }, [recipes, this.isFocused, settings.shakeForRandomRecipeEnabled]);
 
     const handleShake = () => {
         if (recipes.length > 0 && settings.shakeForRandomRecipeEnabled) {
