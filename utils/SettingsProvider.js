@@ -18,9 +18,9 @@ export const SettingsProvider = ({ children }) => {
                 // Set default settings if none are stored
                 setSettings({
                     soundsEnabled: true,
+                    selectedSound: 'alarm',
                     vibrationsEnabled: true,
                     notificationsEnabled: true,
-                    flashingEnabled: false,
                     shakeForRandomRecipeEnabled: false,
                 });
             }
@@ -29,9 +29,9 @@ export const SettingsProvider = ({ children }) => {
             // Fallback to default values in case of error
             setSettings({
                 soundsEnabled: true,
+                selectedSound: 'alarm',
                 vibrationsEnabled: true,
                 notificationsEnabled: true,
-                flashingEnabled: false,
                 shakeForRandomRecipeEnabled: false,
             });
         }

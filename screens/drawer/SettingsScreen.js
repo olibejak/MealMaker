@@ -1,11 +1,10 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import SettingsCard from "../../components/cards/SettingsCard";
 import {
     BookIcon,
-    FlashlightIcon,
     HamburgerIcon,
     NotificationIcon,
     PhoneLinkIcon,
@@ -13,14 +12,32 @@ import {
     VolumeIcon
 } from "../../assets/icons";
 import {SettingsContext} from "../../utils/SettingsProvider";
-import log from "../../utils/Logger";
+import {Dropdown} from "react-native-element-dropdown";
 
 export default function SettingsScreen({ }) {
     const { settings, updateSettings } = useContext(SettingsContext);
 
+    // Define the sound options
+    const data = [
+        { label: 'Default', value: 'alarm' },
+        { label: 'Radar', value: 'radar' },
+        { label: 'Morning Flower', value: 'morning_flower' },
+        { label: 'Morning Flower BassBoosted', value: 'morning_flower_bass' }
+    ];
+
+    // State to keep track of the currently selected item
+    const [selectedItem, setSelectedItem] = useState(() => {
+        const foundItem = data.find(item => item.value === settings.selectedSound);
+        return foundItem || { label: 'Default', value: 'alarm' };
+    });
+
+    // Update the selectedItem when settings.selectedSound changes
     useEffect(() => {
-        log.info(`Settings updated to: ${JSON.stringify(settings)}`);
-    }, [settings]); // This effect will run after settings state is updated
+        const foundItem = data.find(item => item.value === settings.selectedSound);
+        if (foundItem) {
+            setSelectedItem(foundItem);
+        }
+    }, [settings.selectedSound]);
 
     const handleSettingChange = (settingKey, value) => {
         updateSettings({ [settingKey]: value });
@@ -36,6 +53,8 @@ export default function SettingsScreen({ }) {
                     value={settings.notificationsEnabled}
                     onValueChange={(value) => handleSettingChange('notificationsEnabled', value)}
                     IconComponent={NotificationIcon}
+                    topBorder={true}
+                    bottomBorder={true}
                 />
                 <SettingsCard
                     title="Sounds"
@@ -43,20 +62,33 @@ export default function SettingsScreen({ }) {
                     value={settings.soundsEnabled}
                     onValueChange={(value) => handleSettingChange('soundsEnabled', value)}
                     IconComponent={VolumeIcon}
+                    borderLinePosition={"top"}
                 />
+                <View style={styles.dropdownContainer}>
+                    <Dropdown
+                        style={styles.dropdown}
+                        placeholderStyle={styles.placeholderStyle}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        inputSearchStyle={styles.inputSearchStyle}
+                        label="label"
+                        value={selectedItem.label}
+                        labelField="label"
+                        valueField="value"
+                        data={data}
+                        placeholder={`Sound: ${selectedItem.label}`}
+                        onChange={item => {
+                            setSelectedItem(item);
+                            handleSettingChange('selectedSound', item.value)
+                        }}
+                    />
+                </View>
                 <SettingsCard
                     title="Vibrations"
                     description="Vibrate when a timer runs out"
                     value={settings.vibrationsEnabled}
                     onValueChange={(value) => handleSettingChange('vibrationsEnabled', value)}
                     IconComponent={VibrationIcon}
-                />
-                <SettingsCard
-                    title="Flashing"
-                    description="Flash the screen when timer ends"
-                    value={settings.flashingEnabled}
-                    onValueChange={(value) => handleSettingChange('flashingEnabled', value)}
-                    IconComponent={FlashlightIcon}
+                    topBorder={true}
                 />
                 <SettingsCard
                     title="Shake for random recipe"
@@ -64,6 +96,8 @@ export default function SettingsScreen({ }) {
                     value={settings.shakeForRandomRecipeEnabled}
                     onValueChange={(value) => handleSettingChange('shakeForRandomRecipeEnabled', value)}
                     IconComponent={PhoneLinkIcon}
+                    topBorder={true}
+                    bottomBorder={true}
                 />
             </ScrollView>
             <BottomNavigationBar selected="Settings" />
@@ -80,7 +114,42 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
     },
     scrollViewContent: {
-        paddingVertical: 16,
-
+        paddingTop: 16,
+        backgroundColor: '#FEF7FF',
+    },
+    dropdownContainer: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        backgroundColor: '#FEF7FF',
+        paddingTop: 0,
+        paddingBottom: 6,
+        paddingLeft: 66,
+        paddingRight: 16,
+        top: -10,
+    },
+    dropdown: {
+        borderColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 8,
+        paddingRight: 8,
+        paddingLeft: 12,
+        paddingVertical: 8,
+    },
+    placeholderStyle: {
+        fontSize: 16,
+        fontFamily: 'Roboto-Regular',
+    },
+    selectedTextStyle: {
+        fontSize: 16,
+        fontFamily: 'Roboto-Regular',
+    },
+    iconStyle: {
+        width: 20,
+        height: 20,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+        fontFamily: 'Roboto-Regular',
     },
 });

@@ -54,7 +54,9 @@ export default function TimerScreen() {
             if (!soundObjects[timerId]) {
                 const soundObject = new Audio.Sound();
                 try {
-                    await soundObject.loadAsync(require('../../assets/sounds/alarm.mp3'));
+                    // Dynamically load the sound file based on the selected sound
+                    const soundFile = getSoundFile(settings.selectedSound);
+                    await soundObject.loadAsync(soundFile);
                     await soundObject.setIsLoopingAsync(true);
                     await soundObject.playAsync();
                     setSoundObjects(prev => ({
@@ -76,6 +78,21 @@ export default function TimerScreen() {
         // Handle vibration
         if (settings.vibrationsEnabled) {
             Vibration.vibrate(VIBRATION_PATTERN, true);
+        }
+    };
+
+    const getSoundFile = (soundName) => {
+        switch (soundName) {
+            case 'alarm':
+                return require('../../assets/sounds/alarm.mp3');
+            case 'radar':
+                return require('../../assets/sounds/radar.mp3');
+            case 'morning_flower':
+                return require('../../assets/sounds/morning_flower.mp3');
+            case 'morning_flower_bass':
+                return require('../../assets/sounds/morning_flower_bass.mp3');
+            default:
+                return require('../../assets/sounds/alarm.mp3'); // Default sound
         }
     };
 
