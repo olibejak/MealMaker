@@ -1,34 +1,45 @@
-import {ScrollView, StyleSheet, View} from "react-native";
+import {FlatList, StyleSheet, View} from "react-native";
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import {BackArrowIcon, StarFilledIcon, StarOutlineIcon, TimerIcon} from "../../assets/icons";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import {useEffect, useRef, useState} from "react";
 import ListItem from "../../components/lists/ListItem";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
-import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../../utils/Logger";
 
-export default function StepByStepRecipeScreen ( { route, navigation} ) {
-    const  recipe  = route.params.recipe;
+export default function StepByStepRecipeScreen ( { route, navigation } ) {
+    const recipe  = route.params.recipe;
     const [stepByStep, setStepByStep] = useState([]);
-    const scrollViewRef = useRef(null);
+    const flatListRef = useRef(null);           // Hook for flat list scroll position
     const [isFavourite, setIsFavourite] = useState(false);
-    const starIconToRender = isFavourite ? StarFilledIcon : StarOutlineIcon;
+    const starIconToRender = isFavourite ? StarFilledIcon : StarOutlineIcon;    // Favourite star icon
 
-    //TODO repair parsing (parser away stuff like '1' or 'STEP 1' etc.)
+    // Parsing recipe instructions into steps
     useEffect(() => {
         const sentenceRegex = /[.!?]+/g;
+        // Define regular expressions to match numbers and "step *number*" before the first newline
+        const numberRegex = /\b\d+\b/g;
+        const stepRegex = /step\s+\*\s*\d+\s*/i;
 
         // Split the text into sentences using the regular expression
-        let sentences = recipe.strInstructions.split(sentenceRegex)
-            // .filter(sentence => !(/^\d+$/.test(sentence.trim())));
-        // Remove any empty strings or strings containing only whitespace
-        setStepByStep(sentences.filter(sentence => sentence.trim() !== ''));
+        let sentences = recipe.strInstructions.split(sentenceRegex);
 
-        scrollViewRef.current.scrollTo({x: 0, y: 0, animated: false});
+        // Remove numbers and "step *number*" from each sentence
+        sentences = sentences.map(sentence => {
+            return sentence
+                .replace(numberRegex, '')
+                .replace(stepRegex, '')
+                .trim(); // Remove leading/trailing whitespace
+        });
+
+        // Remove any empty strings or strings containing only whitespace
+        setStepByStep(sentences.filter(sentence => sentence !== ''));
+
+        flatListRef.current.scrollToOffset({offset: 0, animated: false});
     }, [route]);
 
+    // Favourite checker
     useEffect(() => {
         // Retrieve favourites from local storage
         AsyncStorage.getItem('favouriteRecipes')
@@ -42,6 +53,8 @@ export default function StepByStepRecipeScreen ( { route, navigation} ) {
             .catch((error) => log.error('Error retrieving favourites:', error));
     }, [route]);
 
+
+    // Favourite handler
     const toggleFavourite = async () => {
         AsyncStorage.getItem('favouriteRecipes')
             .then((favourites) => {
@@ -63,21 +76,28 @@ export default function StepByStepRecipeScreen ( { route, navigation} ) {
             .catch((error) => log.error('Error retrieving favorites:', error));
     };
 
+    // Step component
+    const renderItem = ({ item }) => (
+        <ListItem
+            title={'Step ' + (stepByStep.indexOf(item) + 1)}
+            content={item.trim()}
+            dividers={'True'}>
+        </ListItem>
+    )
+
     return <View style={styles.screen}>
         <View>
             <TopNavigationBar title={recipe.strMeal} LeftIcon={BackArrowIcon}
                               RightIcon={starIconToRender} starAction={toggleFavourite} />
         </View>
-        <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling} ref={scrollViewRef}>
-            {stepByStep.map((step, index) => (
-                <ListItem
-                    key={index}
-                    title={'Step ' + (index + 1)}
-                    content={step.trim()}
-                    dividers={'True'}>
-                </ListItem>
-            ))}
-        </ScrollView>
+        <FlatList
+            ref={flatListRef}
+            style={styles.scrollableScreen}
+            contentContainerStyle={styles.scrolling}
+            data={stepByStep}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
+        />
         <BottomRightCornerButton
             IconComponent={TimerIcon}
             onPress={() => navigation.navigate('Timer')}
@@ -111,4 +131,4 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
         paddingBottom: 16,
     },
-    });
+});

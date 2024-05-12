@@ -47,6 +47,7 @@ const RecipeCard = ({
                     style={styles.cardImage}
                     onLoad={() => setIsLoading(false)}
                     onError={() => setIsLoading(false)}
+                    prel
                 />}
             </View>
             <View style={styles.cardContainer}>
