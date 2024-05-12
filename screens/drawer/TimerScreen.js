@@ -23,6 +23,7 @@ export default function TimerScreen() {
 
     useEffect(() => {
         loadTimers();
+        registerForPushNotificationsAsync();
     }, []);
 
     useEffect(() => {
@@ -275,6 +276,27 @@ export default function TimerScreen() {
 
         // Reset the timer
         handleReload(finishedTimerId);
+    }
+
+    async function registerForPushNotificationsAsync() {
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status !== 'granted') {
+            alert('For full functionality, enable notifications in your device settings.');
+            return;
+        }
+
+        Notifications.setNotificationHandler({
+            handleNotification: async ({ receivedNotification }) => {
+                const isAppForeground = receivedNotification.foreground;
+                // Only show alerts when the app is backgrounded
+                return {
+                    shouldShowAlert: !isAppForeground,
+                    shouldPlaySound: true,
+                    shouldSetBadge: false,
+                };
+            },
+        });
+        return (await Notifications.getExpoPushTokenAsync()).data;
     }
 
     return (
