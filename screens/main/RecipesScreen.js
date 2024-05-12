@@ -5,13 +5,15 @@ import BottomNavigationBar from "../../components/navigation/BottomNavigationBar
 import RecipeCard from "../../components/cards/RecipeCard";
 import SearchBar from "../../components/searchbar/SearchBar";
 import {ArrowDropUp, BookIcon, HamburgerIcon} from "../../assets/icons";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {useIsFocused} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import log from "../../utils/Logger";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
+import {SettingsContext} from "../../utils/SettingsProvider";
 
 export default function RecipesScreen ({navigation}) {
+    const { settings } = useContext(SettingsContext);
     const title = "Recipes";
     const filtersOn = false;
     const selectedBottomBar = "Recipes";
@@ -62,7 +64,7 @@ export default function RecipesScreen ({navigation}) {
             }
         };
 
-        if (isFocused) {
+        if (isFocused && settings.shakeForRandomRecipeEnabled) {
             Accelerometer.setUpdateInterval(100); // Set the update interval (in milliseconds)
             Accelerometer.isAvailableAsync().then((available) => {
                 if (available) {
@@ -76,10 +78,10 @@ export default function RecipesScreen ({navigation}) {
                 subscription.remove();
             }
         };
-    }, [recipes]);
+    }, [recipes, isFocused, settings.shakeForRandomRecipeEnabled]);
 
     const handleShake = () => {
-        if (recipes.length > 0) {
+        if (recipes.length > 0 && settings.shakeForRandomRecipeEnabled) {
             const randomIndex = Math.floor(Math.random() * recipes.length);
             const randomRecipe = recipes[randomIndex];
             log.info(`Random recipe: ${randomRecipe.strMeal}`);
