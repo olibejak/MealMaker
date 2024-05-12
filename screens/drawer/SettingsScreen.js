@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useContext} from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
@@ -12,14 +12,15 @@ import {
     VibrationIcon,
     VolumeIcon
 } from "../../assets/icons";
+import {SettingsContext} from "../../utils/SettingsProvider";
 
-export default function SettingsScreen({ navigation }) {
-    const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-    const [soundsEnabled, setSoundsEnabled] = useState(false);
-    const [vibrationsEnabled, setVibrationsEnabled] = useState(false);
-    const [flashingEnabled, setFlashingEnabled] = useState(false);
-    const [shakeForRandomRecipeEnabled, setShakeForRandomRecipeEnabled] = useState(false);
-    // ... Add other state hooks for each setting
+export default function SettingsScreen({ }) {
+    const { settings, updateSettings } = useContext(SettingsContext);
+
+    // Helper function to handle setting changes
+    const handleSettingChange = (settingKey, value) => {
+        updateSettings({ [settingKey]: value });
+    };
 
     return (
         <View style={styles.screen}>
@@ -28,39 +29,38 @@ export default function SettingsScreen({ navigation }) {
                 <SettingsCard
                     title="Notifications"
                     description="Receive a notification when a timer runs out"
-                    value={notificationsEnabled}
-                    onValueChange={setNotificationsEnabled}
+                    value={settings.notificationsEnabled}
+                    onValueChange={(value) => handleSettingChange('notificationsEnabled', value)}
                     IconComponent={NotificationIcon}
                 />
                 <SettingsCard
                     title="Sounds"
                     description="Play a sound when a timer runs out"
-                    value={soundsEnabled}
-                    onValueChange={setSoundsEnabled}
+                    value={settings.soundsEnabled}
+                    onValueChange={(value) => handleSettingChange('soundsEnabled', value)}
                     IconComponent={VolumeIcon}
                 />
                 <SettingsCard
                     title="Vibrations"
                     description="Vibrate when a timer runs out"
-                    value={vibrationsEnabled}
-                    onValueChange={setVibrationsEnabled}
+                    value={settings.vibrationsEnabled}
+                    onValueChange={(value) => handleSettingChange('vibrationsEnabled', value)}
                     IconComponent={VibrationIcon}
                 />
                 <SettingsCard
                     title="Flashing"
                     description="Flash the screen when timer ends"
-                    value={flashingEnabled}
-                    onValueChange={setFlashingEnabled}
+                    value={settings.flashingEnabled}
+                    onValueChange={(value) => handleSettingChange('flashingEnabled', value)}
                     IconComponent={FlashlightIcon}
                 />
                 <SettingsCard
                     title="Shake for random recipe"
                     description="Shake the phone to receive a random recipe recommendation"
-                    value={shakeForRandomRecipeEnabled}
-                    onValueChange={setShakeForRandomRecipeEnabled}
+                    value={settings.shakeForRandomRecipeEnabled}
+                    onValueChange={(value) => handleSettingChange('shakeForRandomRecipeEnabled', value)}
                     IconComponent={PhoneLinkIcon}
                 />
-                {/* Repeat for each additional setting */}
             </ScrollView>
             <BottomNavigationBar selected="Settings" />
         </View>
