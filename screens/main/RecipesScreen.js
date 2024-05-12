@@ -22,90 +22,86 @@ export default function RecipesScreen ({navigation}) {
     const [displayedRecipes, setDisplayedRecipes] = useState([]);
     const [activeFilter, setActiveFilter] = useState(null);
     const [activeSearch, setActiveSearch] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
     const [favouriteRecipes, setFavouriteRecipes] = useState([]);
     const isFocused = useIsFocused();
-    const flatListRef = useRef(null);
+    const flatListRef = useRef(null);   // Hook for flat list scroll position
+    const [isLoading, setIsLoading] = useState(true)
+    const [accelerometerEnabled, setAccelerometerEnabled] = useState(true);
+
+    const loadFavouriteRecipes = async () => {
+        const content = await AsyncStorage.getItem("favouriteRecipes");
+        if (content) {
+            setFavouriteRecipes(JSON.parse(content));
+        }
+    }
+
+    const fetchRecipesFromAPI = async () => {
+        for (let i = 97; i <= 122; ++i) {
+            const char = String.fromCharCode(i);
+            let url = `https://www.themealdb.com/api/json/v1/1/search.php?f=${char}`;
+            const response = await fetch(url);
+            const json = await response.json();
+            if (json.meals) {
+                setRecipes(prevRecipes => [...prevRecipes, ...json.meals]);
+            }
+        }
+        setIsLoading(false);
+    };
 
     useEffect(() => {
-        let fetchedRecipes = [];
-        const fetchRecipesFromAPI = async () => {
-            for (let i = 97; i <= 122; ++i) {
-                const char = String.fromCharCode(i);
-                let url = `https://www.themealdb.com/api/json/v1/1/search.php?f=${char}`;
-                try {
-                    const response = await fetch(url);
-                    const json = await response.json();
-                    if (json.meals) {
-                        setRecipes(prevRecipes => [...prevRecipes, ...json.meals]);
-                    }
-                }
-                catch (error) {
-                    log.error("Failed to fetch ingredients or request timed out:", error);
-                    setRecipes(JSON.parse(await AsyncStorage.getItem("favouriteRecipes")
-                        .catch((error) => log.error("Error loading favourite recipes:", error))))
-                } finally {
-                    setIsLoading(false)
-                }
+        if (isFocused) {
+            fetchRecipesFromAPI()
+                .catch(async error => {log.error("Failed to fetch ingredients:", error);});
+            loadFavouriteRecipes()
+                .catch(error =>  log.error("Error loading favourite recipes:", error));
+            if (!recipes || recipes.length === 0) {
+                setRecipes(favouriteRecipes)
             }
-        };
-        fetchRecipesFromAPI();
+        }
     }, [isFocused]);
 
-    // Accelerometer
+    // Accelerometer for random recipe
     useEffect(() => {
+        // const activeScreen = navigation.routes[navigation.index].name;
         let subscription;
         const threshold = 2; // Adjust this value based on the sensitivity you want
 
-        const handleUpdate = ({ x, y, z }) => {
+        const handleUpdate = ({x, y, z}) => {
             const acceleration = Math.sqrt(x ** 2 + y ** 2 + z ** 2);
             if (acceleration > threshold) {
-                handleShake();
+                getRandomRecipe();
             }
         };
 
-        if (this.isFocused && settings.shakeForRandomRecipeEnabled) {
-            Accelerometer.setUpdateInterval(100); // Set the update interval (in milliseconds)
-            Accelerometer.isAvailableAsync().then((available) => {
-                if (available) {
-                    subscription = Accelerometer.addListener(handleUpdate);
-                }
-            });
-        }
+        Accelerometer.setUpdateInterval(100); // Set the update interval (in milliseconds)
+
+        Accelerometer.isAvailableAsync().then((available) => {
+            if (available && accelerometerEnabled &&
+                navigation.getState().history[navigation.getState().history.length - 1].key.startsWith("Recipes-")) {
+                subscription = Accelerometer.addListener(handleUpdate);
+            }
+             else if (available && subscription) {
+                subscription.remove();
+            }
+        })
 
         return () => {
             if (subscription) {
                 subscription.remove();
             }
         };
-    }, [recipes, this.isFocused, settings.shakeForRandomRecipeEnabled]);
+    }, [recipes]);
 
-    const handleShake = () => {
-        if (recipes.length > 0 && settings.shakeForRandomRecipeEnabled) {
-            const randomIndex = Math.floor(Math.random() * recipes.length);
+    const getRandomRecipe = () => {
+        if (recipes.length > 0 && navigation.getState().history[navigation.getState().history.length - 1].key.startsWith("Recipes-") && settings.shakeForRandomRecipeEnabled) {
+            const randomIndex = Math.floor(Math.random() * recipes.length); // round(<0,1> * recipes length)
             const randomRecipe = recipes[randomIndex];
             log.info(`Random recipe: ${randomRecipe.strMeal}`);
             navigation.navigate("RecipeDetails", {recipe: randomRecipe});
         }
     };
 
-    useEffect( () => {
-        const loadFavouriteRecipes = async () => {
-            try {
-                // Load fridge content
-                const content = await AsyncStorage.getItem("favouriteRecipes");
-                if (content !== null) {
-                    setFavouriteRecipes(JSON.parse(content));
-                }
-            } catch (error) {
-                log.error("Error loading favourite recipes:", error);
-            }
-        }
-        if (isFocused) {
-            loadFavouriteRecipes();
-        }
-    }, [isFocused])
-
+    // Load more recipes that are actively displayed
     const loadMoreRecipes = () => {
         if (currentIndex < recipes.length) {
             const newIndex = currentIndex + 10;
@@ -115,6 +111,7 @@ export default function RecipesScreen ({navigation}) {
         }
     };
 
+    // Render recipe card
     const renderItem = ({item}) => {
         const ingredientKeys = Object.keys(item).filter(key => key.startsWith('strIngredient'));
         const amountKeys = Object.keys(item).filter(key => key.startsWith('strMeasure'));
