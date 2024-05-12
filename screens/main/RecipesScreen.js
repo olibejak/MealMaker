@@ -26,7 +26,6 @@ export default function RecipesScreen ({navigation}) {
     const isFocused = useIsFocused();
     const flatListRef = useRef(null);   // Hook for flat list scroll position
     const [isLoading, setIsLoading] = useState(true)
-    const [accelerometerEnabled, setAccelerometerEnabled] = useState(true);
 
     const loadFavouriteRecipes = async () => {
         const content = await AsyncStorage.getItem("favouriteRecipes");
@@ -76,14 +75,17 @@ export default function RecipesScreen ({navigation}) {
         Accelerometer.setUpdateInterval(100); // Set the update interval (in milliseconds)
 
         Accelerometer.isAvailableAsync().then((available) => {
-            if (available && accelerometerEnabled &&
+            // Add Accelerometer listener when on Recipe Screen
+            if (available &&
+                navigation.getState().history.length > 0 &&
                 navigation.getState().history[navigation.getState().history.length - 1].key.startsWith("Recipes-")) {
                 subscription = Accelerometer.addListener(handleUpdate);
             }
-             else if (available && subscription) {
+            // Remove Accelerometer listener when not on Recipe Screen
+            else if (available && subscription) {
                 subscription.remove();
             }
-        })
+        }).catch(error => log.error("Failed to access Accelerometer ", error));
 
         return () => {
             if (subscription) {
