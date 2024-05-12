@@ -15,12 +15,12 @@ export default function FridgeScreen({ navigation }) {
     const [fridgeContent, setFridgeContent] = useState([]);
     const isFocused = useIsFocused();
     const [modalVisible, setModalVisible] = useState(false);
-    const [deleteVisible, setDeleteVisible] = useState(false);
+    const [deleteVisible, setDeleteVisible] = useState(false);     // Visibility of delete button in modal
     const [selectedIngredient, setSelectedIngredient] = useState(null);     // Ingredient in active modal
     const [isNewIngredient, setIsNewIngredient] = useState(false)  // Whether the ingredient was created from empty modal
 
+    // Get ingredients from AsyncStorage
     const loadFridgeContent = useCallback(async () => {
-        // Get ingredients from AsyncStorage
         const content = await AsyncStorage.getItem("fridgeContent");
         if (content !== null) {
             setFridgeContent(JSON.parse(content));

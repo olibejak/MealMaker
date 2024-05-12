@@ -1,13 +1,13 @@
-import {View, StyleSheet, FlatList, ActivityIndicator, InteractionManager, Text, ScrollView} from "react-native";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import {View, StyleSheet, FlatList, ActivityIndicator, InteractionManager, Text} from "react-native";
+import React, {useEffect, useRef, useState} from "react";
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import SearchBar from "../../components/searchbar/SearchBar";
 import IngredientCard from "../../components/cards/IngredientCard";
-import {ArrowDropUp, BookIcon, HamburgerIcon, PlusIcon} from "../../assets/icons";
+import {ArrowDropUp, BookIcon, HamburgerIcon} from "../../assets/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EditSetAmountModal from "../../components/modals/EditSetAmountModal";
-import {useIsFocused, useNavigationState} from "@react-navigation/native";
+import {useIsFocused} from "@react-navigation/native";
 import SnackbarModal from "../../components/modals/SnackbarModal";
 import log from "../../utils/Logger";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
@@ -47,28 +47,24 @@ export default function IngredientsScreen({ navigation }) {
                     setIsLoading(false);
                 }
             };
-
             fetchIngredients();
         });
     }, []);
 
+    // Get favourite ingredients from AsyncStorage
     useEffect( () => {
         const loadFavouriteIngredients = async () => {
-            try {
-                // Load fridge content
-                const content = await AsyncStorage.getItem("favouriteIngredients");
-                if (content !== null) {
-                    setFavouriteIngredients(JSON.parse(content));
-                }
-            } catch (error) {
-                log.error("Error loading favourite ingredients:", error);
+            const content = await AsyncStorage.getItem("favouriteIngredients");
+            if (content !== null) {
+                setFavouriteIngredients(JSON.parse(content));
             }
         }
         if (isFocused) {
-            loadFavouriteIngredients();
+            loadFavouriteIngredients().catch(error => log.error("Error loading favourite ingredients:", error));
         }
     }, [isFocused])
 
+    // Load more ingredients that are actively displayed
     const loadMoreIngredients = () => {
         if (currentIndex < ingredients.length) {
             const newIndex = currentIndex + 10;
@@ -78,17 +74,7 @@ export default function IngredientsScreen({ navigation }) {
         }
     };
 
-    const renderItem = ({ item }) => (
-        <IngredientCard
-            text={item.strIngredient}
-            fridgeButtonOn={true}
-            cartButtonOn={true}
-            onPress={() => navigation.navigate("IngredientDetails", { ingredient: item })}
-            onPressFridge={() => handleEditAmount(item, "fridgeContent")}
-            onPressCart={() => handleEditAmount(item, "shoppingListContent")}
-        />
-    );
-
+    // Add ingredient to shopping list or fridge
     const addIngredientToStorage = async (ingredient, storage, amount) => {
         const newIngredient = Object.assign({}, ingredient);
         newIngredient.name = ingredient.strIngredient;
@@ -138,6 +124,7 @@ export default function IngredientsScreen({ navigation }) {
         setModalVisible(true);
     };
 
+    // Add selected ingredient to storage after confirm
     const handleConfirmEdit = async (amount) => {
         await addIngredientToStorage(selectedIngredient, selectedDestination, amount)
         setModalVisible(false);
@@ -147,6 +134,17 @@ export default function IngredientsScreen({ navigation }) {
             handleAddToBasket();
         }
     };
+
+    const renderItem = ({ item }) => (
+        <IngredientCard
+            text={item.strIngredient}
+            fridgeButtonOn={true}
+            cartButtonOn={true}
+            onPress={() => navigation.navigate("IngredientDetails", { ingredient: item })}
+            onPressFridge={() => handleEditAmount(item, "fridgeContent")}
+            onPressCart={() => handleEditAmount(item, "shoppingListContent")}
+        />
+    );
 
     return (
         <View style={styles.screen}>

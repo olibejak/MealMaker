@@ -15,13 +15,13 @@ export default function ShoppingListScreen () {
     const title = "Shopping list";
     const selectedBottomBar = "ShoppingList";
     const [shoppingListContent, setShoppingListContent] = useState([]);
-    const [fridgeContent, setFridgeContent] = useState([]); // For moving checked items to fridge
+    const [fridgeContent, setFridgeContent] = useState([]);            // For moving checked items to fridge
     const isFocused = useIsFocused();
     const [modalVisible, setModalVisible] = useState(false);
     const [editModalVisible, setEditModalVisible] = useState(false); // State to manage the visibility of the edit modal
-    const [deleteVisible, setDeleteVisible] = useState(false);
-    const [selectedIngredient, setSelectedIngredient] = useState(null); // State to store the selected ingredient for editing
-    const [isNewIngredient, setIsNewIngredient] = useState(false) // Ingredient isn't yet in the shopping list
+    const [deleteVisible, setDeleteVisible] = useState(false);       // Visibility of delete button in modal
+    const [selectedIngredient, setSelectedIngredient] = useState(null);       // State to store the selected ingredient for editing
+    const [isNewIngredient, setIsNewIngredient] = useState(false)    // Ingredient isn't yet in the shopping list
 
     // Move checked items to fridge and remove from shopping list
     const moveToFridge = async () => {

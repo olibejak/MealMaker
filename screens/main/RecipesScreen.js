@@ -24,7 +24,7 @@ export default function RecipesScreen ({navigation}) {
     const [activeSearch, setActiveSearch] = useState('');
     const [favouriteRecipes, setFavouriteRecipes] = useState([]);
     const isFocused = useIsFocused();
-    const flatListRef = useRef(null);   // Hook for flat list scroll position
+    const flatListRef = useRef(null);   // Hook for flat list scroll top
     const [isLoading, setIsLoading] = useState(true)
 
     const loadFavouriteRecipes = async () => {
@@ -53,6 +53,7 @@ export default function RecipesScreen ({navigation}) {
                 .catch(async error => {log.error("Failed to fetch ingredients:", error);});
             loadFavouriteRecipes()
                 .catch(error =>  log.error("Error loading favourite recipes:", error));
+            // Set favouriteRecipes as default recipes when fetched recipes are empty
             if (!recipes || recipes.length === 0) {
                 setRecipes(favouriteRecipes)
             }
@@ -85,7 +86,7 @@ export default function RecipesScreen ({navigation}) {
             else if (available && subscription) {
                 subscription.remove();
             }
-        }).catch(error => log.error("Failed to access Accelerometer ", error));
+        })
 
         return () => {
             if (subscription) {
@@ -95,7 +96,7 @@ export default function RecipesScreen ({navigation}) {
     }, [recipes]);
 
     const getRandomRecipe = () => {
-        if (recipes.length > 0 && navigation.getState().history[navigation.getState().history.length - 1].key.startsWith("Recipes-") && settings.shakeForRandomRecipeEnabled) {
+        if (recipes.length > 0) {
             const randomIndex = Math.floor(Math.random() * recipes.length); // round(<0,1> * recipes length)
             const randomRecipe = recipes[randomIndex];
             log.info(`Random recipe: ${randomRecipe.strMeal}`);
