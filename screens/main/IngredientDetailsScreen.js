@@ -15,28 +15,27 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     const [mealsFromIngredient, setMealsFromIngredient] = useState([]);
     const [isFavourite, setIsFavourite] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const starIconToRender = isFavourite ? StarFilledIcon  : StarOutlineIcon;
+    const starIconToRender = isFavourite ? StarFilledIcon : StarOutlineIcon;
     const [selectedStorage, setSelectedStorage] = useState("");
     const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    const scrollViewRef = useRef(null);
+    const scrollViewRef = useRef(null); // Hook for resetting scroll view scroll position
     const isFocused = useIsFocused();
 
+    // Scroll to top when the screen is focused
     useEffect(() => {
         const handleScrollToTop = () => {
             if (scrollViewRef.current) {
                 scrollViewRef.current.scrollTo({x: 0, y: 0, animated: false});
             }
         };
-
-        // Scroll to top when the screen is focused
         if (isFocused) {
             handleScrollToTop();
         }
     }, [isFocused]);
 
+    // Retrieve favorites from local storage
     useEffect(() => {
-        // Retrieve favorites from local storage
         AsyncStorage.getItem('favouriteIngredients')
             .then((favourites) => {
                 if (favourites) {
@@ -69,13 +68,13 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
             .catch((error) => log.error('Error retrieving favorites:', error));
     };
 
-
     const parsedIngredientName = () => {
         let parsedString = ingredient.strIngredient.toLowerCase();
         parsedString = parsedString.replace(/ /g, '_');
         return parsedString;
     }
 
+    // Find selected meal in TheMealDB (meals from ingredient are insufficient)
     const navigateToMealDetails = async(idMeal) => {
         const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`;
         try {
@@ -99,17 +98,12 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     useEffect(() => {
             const fetchMealsFromIngredient = async () => {
                 const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${parsedIngredientName()}`;
-                try {
-                    const response = await fetch(url);
-                    const json = await response.json();
-                    setMealsFromIngredient(json.meals);
-                } catch (error) {
-                    log.error("Failed to fetch ingredients or request timed out:", error);
-                }
+                const response = await fetch(url);
+                const json = await response.json();
+                setMealsFromIngredient(json.meals);
             };
-            fetchMealsFromIngredient();
-        }
-        , [route]);
+            fetchMealsFromIngredient().catch(error => log.error("Failed to fetch ingredients:", error));
+    }, [route]);
 
     const renderMealMiniatures = ({item, index}) => {
         return (
@@ -149,6 +143,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
         }
     };
 
+    // Add ingredient to shopping list or fridge
     const addIngredientToStorage = async (amount) => {
         const newIngredient = Object.assign({}, ingredient);
         newIngredient.name = ingredient.strIngredient;

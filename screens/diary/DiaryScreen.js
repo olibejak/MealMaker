@@ -60,8 +60,6 @@ export default function MyDiaryScreen({navigation}) {
         }
     };
 
-
-
     return (
         <View style={styles.screen}>
             <TopNavigationBar title={'My diary'} LeftIcon={BackArrowIcon} />
@@ -101,7 +99,6 @@ export default function MyDiaryScreen({navigation}) {
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => navigation.navigate('NewDiaryEntry')} />
         </View>
     );
-
 }
 
 const styles = StyleSheet.create({
