@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import { FilterIcon, SearchIcon } from "../../assets/icons";
+import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {CloseIcon, FilterIcon, SearchIcon} from "../../assets/icons";
 import FilterCategoriesModal from '../modals/FilterCategoriesModal';
 
 // The SearchBar component with filter functionality
@@ -18,6 +18,10 @@ export default function SearchBar({ onFilterPress, context, setFilter, search, a
 
     const handleCloseFilter = () => {
         setFiltersVisible(false);
+    };
+
+    const clearFilter = () => {
+        setFilter(null); // Assuming setFilter can handle null to clear filters
     };
 
     return (
@@ -48,6 +52,16 @@ export default function SearchBar({ onFilterPress, context, setFilter, search, a
                     context={context}
                     activeFilter={activeFilter}
                 />
+            )}
+            {activeFilter && (
+                <View style={styles.filterContainer}>
+                    <View style={styles.filter}>
+                        <Text style={styles.filterText}>{activeFilter}</Text>
+                        <TouchableOpacity onPress={clearFilter}>
+                            <CloseIcon />
+                        </TouchableOpacity>
+                    </View>
+                </View>
             )}
         </View>
     );
@@ -86,5 +100,30 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
         width: '100%',
         height: '100%',
+    },
+    filterContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start',
+        marginBottom: 3,
+        marginTop: 10,
+
+    },
+    filter: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        margin: 4,
+        paddingVertical: 4,
+        paddingHorizontal: 12,
+        backgroundColor: '#e7ddf6',
+        borderRadius: 8,
+        borderColor: '#e7ddf6',
+        borderWidth: 1,
+        gap: 4,
+    },
+    filterText: {
+        color: '#333',
+        fontSize: 16,
     },
 });
