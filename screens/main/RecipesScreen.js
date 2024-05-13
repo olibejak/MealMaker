@@ -86,7 +86,7 @@ export default function RecipesScreen ({navigation}) {
             else if (available && subscription) {
                 subscription.remove();
             }
-        })
+        }).catch(error => log.error("Failed to access Accelerometer ", error));
 
         return () => {
             if (subscription) {
