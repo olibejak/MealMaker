@@ -47,6 +47,7 @@ const RecipeCard = ({
                     style={styles.cardImage}
                     onLoad={() => setIsLoading(false)}
                     onError={() => setIsLoading(false)}
+                    prel
                 />}
             </View>
             <View style={styles.cardContainer}>
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
     },
     cardImage: {
         width: '100%',
-        height: 200, // Adjust the height as necessary
+        height: 200,
         resizeMode: 'cover',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,

@@ -28,10 +28,10 @@ export default function AboutScreen() {
     return (
         <View style={styles.screen}>
             <TopNavigationBar title="About" LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
-            <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
-                {sections.map((section, index) => (
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                {typeof sections == "object" ? sections.map((section, index) => (
                     <AboutSectionCard key={index} title={section.title} content={section.content} />
-                ))}
+                )) : null}
             </ScrollView>
             <BottomNavigationBar /* other props as needed */ />
         </View>
@@ -117,5 +117,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
         letterSpacing: 0.5,
     },
-    // Add any additional styles you may need
 });

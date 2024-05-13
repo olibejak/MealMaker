@@ -33,7 +33,7 @@ export default function ListItem({ title, content, dividers, IconComponent, onPr
     );
 }
 
-function RenderTrailingElement({ IconComponent, isCollapsed, arrowIcon, toggleCollapse, onEditPress }) {
+function RenderTrailingElement({ IconComponent, arrowIcon, toggleCollapse, onEditPress }) {
     return IconComponent === undefined ? (
         <TouchableOpacity onPress={toggleCollapse}>
             {arrowIcon}

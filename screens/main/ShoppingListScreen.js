@@ -3,7 +3,6 @@ import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
 import {BookIcon, EditIcon, HamburgerIcon, PlusIcon, ShoppingCartIcon} from "../../assets/icons";
 import EditSetAmountModal from "../../components/modals/EditSetAmountModal"; // Import the modal component
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, {useCallback, useEffect, useState} from "react";
 import ListItem from "../../components/lists/ListItem";
@@ -16,34 +15,15 @@ export default function ShoppingListScreen () {
     const title = "Shopping list";
     const selectedBottomBar = "ShoppingList";
     const [shoppingListContent, setShoppingListContent] = useState([]);
-    const [fridgeContent, setFridgeContent] = useState([]);
+    const [fridgeContent, setFridgeContent] = useState([]);            // For moving checked items to fridge
     const isFocused = useIsFocused();
     const [modalVisible, setModalVisible] = useState(false);
     const [editModalVisible, setEditModalVisible] = useState(false); // State to manage the visibility of the edit modal
-    const [deleteVisible, setDeleteVisible] = useState(false);
-    const [selectedIngredient, setSelectedIngredient] = useState(null); // State to store the selected ingredient for editing
-    const [isNewIngredient, setIsNewIngredient] = useState(false)
+    const [deleteVisible, setDeleteVisible] = useState(false);       // Visibility of delete button in modal
+    const [selectedIngredient, setSelectedIngredient] = useState(null);       // State to store the selected ingredient for editing
+    const [isNewIngredient, setIsNewIngredient] = useState(false)    // Ingredient isn't yet in the shopping list
 
-
-    const loadShoppingListContent = useCallback (async () => {
-        try {
-            // Load fridge content
-            const content = await AsyncStorage.getItem("shoppingListContent");
-            if (content !== null) {
-                setShoppingListContent(JSON.parse(content));
-
-            }
-            const fContent = await AsyncStorage.getItem("fridgeContent");
-            if (fContent !== null) {
-                setFridgeContent(JSON.parse(fContent));
-            }
-            // await addToShoppingList({name: "Butter", amount: "100g", isBought: false});
-
-        } catch (error) {
-            log.error("Error loading shopping list content:", error);
-        }
-    }, []);
-
+    // Move checked items to fridge and remove from shopping list
     const moveToFridge = async () => {
         try {
             // Update the amounts if an ingredient with the same name exists in both lists
@@ -82,6 +62,48 @@ export default function ShoppingListScreen () {
         }
     };
 
+    // Load current shopping list content
+    const loadContent = useCallback (async () => {
+        // Load fridge content
+        const shoppingListContent = await AsyncStorage.getItem("shoppingListContent")
+            .catch(error => log.error("Error loading shoppingListContent:", error));
+        if (shoppingListContent) {
+            setShoppingListContent(JSON.parse(shoppingListContent));
+        }
+        // Load fridge Content
+        const fridgeContent = await AsyncStorage.getItem("fridgeContent")
+            .catch(error => log.error("Error loading fridgeContent:", error));
+        if (fridgeContent) {
+            setFridgeContent(JSON.parse(fridgeContent));
+        }
+    }, []);
+    useEffect(() => {
+        if (isFocused) {
+            loadContent().catch(error => log.error("Error loading AsyncStorage:", error));
+        }
+    }, [isFocused, loadContent]);
+
+    // Add new ingredient
+    const persistShoppingListContent = async() => {
+        // Add ingredient to shoppingListContent if it's not empty
+        if (isNewIngredient && selectedIngredient.name !== "") {
+            setShoppingListContent([...shoppingListContent, selectedIngredient]);
+            setIsNewIngredient(false);
+        }
+        // Add ingredient to AsyncStorage
+        const content = await AsyncStorage.getItem("shoppingListContent");
+        if (content !== null) {
+            await AsyncStorage.setItem("shoppingListContent", JSON.stringify(shoppingListContent));
+        }
+        log.info(shoppingListContent);
+    }
+    useEffect(() => {
+        if (isFocused)
+            persistShoppingListContent()
+                .catch(error => log.error("Error saving shopping list content:", error))
+    }, [isFocused, fridgeContent, persistShoppingListContent])
+
+    // Update checked ingredient in AsyncStorage
     const updateIsBought = async (index) => {
         try {
             if (shoppingListContent !== null) {
@@ -103,12 +125,14 @@ export default function ShoppingListScreen () {
         }
     };
 
+    // "pencil" icon in Ingredient card
     const openEditModal = (ingredient) => {
         setSelectedIngredient(ingredient);
         setDeleteVisible(true);
         setEditModalVisible(true);
     };
 
+    // floating "plus" button
     const openEmptyEditModal = () => {
         setSelectedIngredient({name: '', amount: ''});
         setIsNewIngredient(true);
@@ -116,41 +140,16 @@ export default function ShoppingListScreen () {
         setEditModalVisible(true);
     };
 
-    useEffect(() => {
-        if (isFocused) {
-            loadShoppingListContent();
-        }
-    }, [isFocused, loadShoppingListContent]);
-
-    const persistShoppingListContent = async() => {
-        if (isNewIngredient && selectedIngredient.name !== "") {
-            setShoppingListContent([...shoppingListContent, selectedIngredient]);
-            setIsNewIngredient(false);
-        }
-        try {
-            const content = await AsyncStorage.getItem("shoppingListContent");
-            if (content !== null) {
-                await AsyncStorage.setItem("shoppingListContent", JSON.stringify(shoppingListContent));
-            }
-        } catch (error) {
-            log.error("Error saving shopping list content:", error);
-        }
-    }
-
-    useEffect(() => {
-        if (isFocused)
-            persistShoppingListContent()
-    }, [isFocused, fridgeContent, persistShoppingListContent])
-
     return (
         <View style={styles.screen}>
             <View>
                 <TopNavigationBar title={title} LeftIcon={HamburgerIcon} RightIcon={BookIcon} />
             </View>
-            {fridgeContent.length === 0 ? <Text style={styles.emptyText}>No items in the fridge, click + to add some more</Text>
+            {shoppingListContent.length === 0 ?
+                <Text style={styles.emptyText}>No items in the fridge, click + to add some more</Text>
                 :
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                {shoppingListContent.map((ingredient, index) => (
+                {typeof shoppingListContent == "object" ? shoppingListContent.map((ingredient, index) => (
                     <ListItem
                         key={index}
                         title={ingredient.name}
@@ -161,7 +160,7 @@ export default function ShoppingListScreen () {
                         onEditPress={() => openEditModal(ingredient)} // Add this to handle edit press
                         isChecked={ingredient.isBought}>
                     </ListItem>
-                ))}
+                )) : null}
             </ScrollView>}
             <BottomRightCornerButton
                 IconComponent={ShoppingCartIcon}

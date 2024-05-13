@@ -28,7 +28,6 @@ import {useIsFocused} from "@react-navigation/native";
 
 export default function RecipeDetailsScreen ( { route, navigation } ) {
     const {recipe} = route.params;
-    const [isLoading, setIsLoading] = useState(true);
     const [recipeIngredients, setRecipeIngredients] = useState([]);
     const [isFavourite, setIsFavourite] = useState(false);
     const starIconToRender = isFavourite ? StarFilledIcon  : StarOutlineIcon;
@@ -39,21 +38,20 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
     const scrollViewRef = useRef(null);
     const isFocused = useIsFocused();
 
+    // Scroll to top when the screen when focused
     useEffect(() => {
         const handleScrollToTop = () => {
             if (scrollViewRef.current) {
                 scrollViewRef.current.scrollTo({x: 0, y: 0, animated: false});
             }
         };
-
-        // Scroll to top when the screen is focused
         if (isFocused) {
             handleScrollToTop();
         }
     }, [isFocused]);
 
+    // Retrieve favourites from local storage
     useEffect(() => {
-        // Retrieve favourites from local storage
         AsyncStorage.getItem('favouriteRecipes')
             .then((favourites) => {
                 if (favourites) {
@@ -86,6 +84,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
             .catch((error) => log.error('Error retrieving favourites:', error));
     };
 
+    // Recipe ingredients with their amounts
     const ingredientsList = ingredientKeys.map((key, index) => {
         const ingredient = recipe[key];
         const amount = recipe[amountKeys[index]];
@@ -108,6 +107,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
         navigation.navigate("StepByStepRecipe", {recipe: recipe} );
     }
 
+    // Handler for adding all recipe ingredients to shopping list
     const addIngredientsToShoppingList = async () => {
         try {
             // Get existing shopping list content
@@ -153,33 +153,28 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
         }
     }
 
+    // Fetch ingredients included in the given recipe
     useEffect(() => {
-            const fetchMealsFromIngredient = async () => {
-                // Setting a timeout for the fetch request
+            const fetchIngredientsFromRecipe = async () => {
                 const url = 'https://www.themealdb.com/api/json/v1/1/list.php?i=list';
+                setRecipeIngredients([]);
 
-                try {
-                    setRecipeIngredients([]);
-                    for (let ingredientIndex = 1; ingredientIndex < 21; ++ingredientIndex) {
-                        if (recipe[`strIngredient${ingredientIndex}`] === null ||
-                            recipe[`strIngredient${ingredientIndex}`] === "") {break;}
-                        const ingredientName = capitalizeFirstLetter(recipe[`strIngredient${ingredientIndex}`])
-                        // ingredientMap.set(recipe[`strIngredient${ingredientIndex}`], recipe[`strMeasure${ingredientIndex}`])
-                        const response = await fetch(url);
-                        const json = await response.json();
-                        if (json.meals.find(meal => meal.strIngredient === ingredientName)) {
-                            setRecipeIngredients(prevIngredients =>
-                                [...prevIngredients, json.meals.find(meal => meal.strIngredient === ingredientName)]);
-                        }
+                // Get every ingredient from strIngredient1 - strIngredient20
+                // Filter out empty ingredients
+                for (let ingredientIndex = 1; ingredientIndex < 21; ++ingredientIndex) {
+                    if (recipe[`strIngredient${ingredientIndex}`] === null ||
+                        recipe[`strIngredient${ingredientIndex}`] === "") {break;}
+                    const ingredientName = capitalizeFirstLetter(recipe[`strIngredient${ingredientIndex}`])
+                    const response = await fetch(url);
+                    const json = await response.json();
+                    // Link ingredient name to right object
+                    if (json.meals.find(meal => meal.strIngredient === ingredientName)) {
+                        setRecipeIngredients(prevIngredients =>
+                            [...prevIngredients, json.meals.find(meal => meal.strIngredient === ingredientName)]);
                     }
-                } catch (error) {
-                    log.error("Failed to fetch ingredients or request timed out:", error);
-                }
-                finally {
-                    setIsLoading(false); // End loading
                 }
             };
-            fetchMealsFromIngredient();
+            fetchIngredientsFromRecipe().catch(error => log.error("Failed to fetch ingredients:", error));
         }
         , [route]);
 
@@ -202,7 +197,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
             </View>
             <ScrollView style={styles.scrollableScreen} ref={scrollViewRef}>
                 <View style={styles.imageContainer}>
-                    <Image source={{uri: `${recipe.strMealThumb}`,}} style={styles.image} />
+                    <Image source={{uri: `${recipe.strMealThumb}`}} style={styles.image} />
                 </View>
                 <View style={styles.addToButtonsContainer}>
                     <TouchableOpacity style={styles.addToButton} onPress={addIngredientsToShoppingList}>

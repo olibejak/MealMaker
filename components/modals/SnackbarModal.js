@@ -31,7 +31,7 @@ function SnackbarModal({ textToDisplay, visible, onDismiss }) {
         <Modal
             animationType="fade"
             transparent={true}
-            visible={modalVisible}
+            visible={typeof modalVisible == "boolean" ? modalVisible : false}
             statusBarTranslucent={true}
             onRequestClose={() => {
                 if (onDismiss) {

@@ -88,10 +88,10 @@ export default function TimerModal({ modalVisible, setModalVisible, handleAddTim
                         <NumberSelector onChange={setMinutes} value={minutes.toString()} max={59} unit="s" />
                     </View>
                     <View style={styles.modalButtonContainer}>
-                        <TouchableOpacity onPress={handleCancel} style={styles.textButton}>
+                        <TouchableOpacity onPress={handleCancel}>
                             <Text style={styles.modalCancelText}>Cancel</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={handleOk} style={[styles.textButton, styles.rightButton]}>
+                        <TouchableOpacity onPress={handleOk}>
                             <Text style={styles.modalConfirmText}>Confirm</Text>
                         </TouchableOpacity>
                     </View>

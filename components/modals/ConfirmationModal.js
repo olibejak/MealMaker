@@ -1,4 +1,4 @@
-import {Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import React from "react";
 
 export default function ConfirmationModal ({ onConfirm, onCancel, visible, title, text }) {
@@ -34,11 +34,11 @@ export default function ConfirmationModal ({ onConfirm, onCancel, visible, title
     );
 }
 
-const styles = {
+const styles = StyleSheet.create({
     modalBackground: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
         backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dimmed background
     },
     modalContainer: {
@@ -75,7 +75,7 @@ const styles = {
         justifyContent: 'flex-end',
     },
     modalButton: {
-        backgroundColor: '#e5dfe8', // Your color
+        backgroundColor: '#e5dfe8',
         borderRadius: 28,
         paddingVertical: 10,
         paddingHorizontal: 20,
@@ -93,4 +93,4 @@ const styles = {
         color: '#6750a3',
         padding: 10,
     },
-}
+})

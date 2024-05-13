@@ -24,8 +24,9 @@ export default function TimerScreen() {
     const VIBRATION_PATTERN = [500, 500];
 
     useEffect(() => {
-        loadTimers();
-        registerForPushNotificationsAsync();
+        loadTimers().catch(error => log.error('Failed to load timers from AsyncStorage:', error));
+        registerForPushNotificationsAsync()
+            .catch(error => log.error('Failed to register for push notifications:', error));
     }, []);
 
     useEffect(() => {
@@ -100,7 +101,8 @@ export default function TimerScreen() {
     useEffect(() => {
         if (finishedTimersQueue.length > 0) {
             setFinishedModalVisible(true);
-            playSoundAndVibrate(finishedTimersQueue[0]);
+            playSoundAndVibrate(finishedTimersQueue[0])
+                .catch(error => log.error('Error playing soundAndVibrate:', error));
         } else {
             Object.values(soundObjects).forEach(async (soundObject) => {
                 try {
@@ -116,21 +118,17 @@ export default function TimerScreen() {
 
 
     const loadTimers = async () => {
-        try {
-            const storedTimers = await AsyncStorage.getItem('timers');
-            if (storedTimers !== null) {
-                const parsedTimers = JSON.parse(storedTimers);
-                const timersWithUniqueIds = parsedTimers.map(timer => ({
-                    ...timer,
-                    id: timer.id || uuid.v4(),
-                    currentTime: timer.currentTime || timer.time,
-                    isRunning: timer.isRunning || false,
-                    endTime: timer.endTime || null
-                }));
-                setTimers(timersWithUniqueIds);
-            }
-        } catch (error) {
-            log.error('Failed to load timers from AsyncStorage:', error);
+        const storedTimers = await AsyncStorage.getItem('timers');
+        if (storedTimers !== null) {
+            const parsedTimers = JSON.parse(storedTimers);
+            const timersWithUniqueIds = parsedTimers.map(timer => ({
+                ...timer,
+                id: timer.id || uuid.v4(),
+                currentTime: timer.currentTime || timer.time,
+                isRunning: timer.isRunning || false,
+                endTime: timer.endTime || null
+            }));
+            setTimers(timersWithUniqueIds);
         }
     };
 
@@ -295,7 +293,8 @@ export default function TimerScreen() {
         }));
 
         // Add the time
-        handleAddTime(finishedTimerId, 60);
+        handleAddTime(finishedTimerId, 60)
+            .catch(error => log.error('Failed to add time:', error));
     }
 
     function stopTimer(finishedTimerId) {
@@ -303,7 +302,8 @@ export default function TimerScreen() {
         setFinishedTimersQueue(queue => queue.filter(id => id !== finishedTimerId));
 
         // Reset the timer
-        handleReload(finishedTimerId);
+        handleReload(finishedTimerId)
+            .catch(error => log.error('Failed to reload timer:', error));
     }
 
     async function registerForPushNotificationsAsync() {

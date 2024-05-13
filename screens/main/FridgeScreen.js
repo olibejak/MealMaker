@@ -15,53 +15,49 @@ export default function FridgeScreen({ navigation }) {
     const [fridgeContent, setFridgeContent] = useState([]);
     const isFocused = useIsFocused();
     const [modalVisible, setModalVisible] = useState(false);
-    const [deleteVisible, setDeleteVisible] = useState(false);
-    const [selectedIngredient, setSelectedIngredient] = useState(null);
-    const [isNewIngredient, setIsNewIngredient] = useState(false)
+    const [deleteVisible, setDeleteVisible] = useState(false);     // Visibility of delete button in modal
+    const [selectedIngredient, setSelectedIngredient] = useState(null);     // Ingredient in active modal
+    const [isNewIngredient, setIsNewIngredient] = useState(false)  // Whether the ingredient was created from empty modal
 
+    // Get ingredients from AsyncStorage
     const loadFridgeContent = useCallback(async () => {
-        try {
-            const content = await AsyncStorage.getItem("fridgeContent");
-            if (content !== null) {
-                setFridgeContent(JSON.parse(content));
-            }
-        } catch (error) {
-            log.error("Error loading fridge content:", error);
+        const content = await AsyncStorage.getItem("fridgeContent");
+        if (content !== null) {
+            setFridgeContent(JSON.parse(content));
         }
     }, []);
-
     useEffect(() => {
         if (isFocused) {
-            loadFridgeContent();
+            loadFridgeContent().catch(error => log.error("Error loading fridge content:", error));
         }
     }, [isFocused, loadFridgeContent]);
 
+    // Add new ingredient
     const persistFridgeContent = async() => {
+        // Add ingredient to fridge if it's not empty
         if (isNewIngredient && selectedIngredient.name !== "") {
             setFridgeContent([...fridgeContent, selectedIngredient]);
             setIsNewIngredient(false);
         }
-        try {
-            const content = await AsyncStorage.getItem("fridgeContent");
-            if (content !== null) {
-                await AsyncStorage.setItem("fridgeContent", JSON.stringify(fridgeContent));
-            }
-        } catch (error) {
-            log.error("Error saving fridge content:", error);
+        // Add ingredient to AsyncStorage
+        const content = await AsyncStorage.getItem("fridgeContent");
+        if (content !== null) {
+            await AsyncStorage.setItem("fridgeContent", JSON.stringify(fridgeContent));
         }
     }
-
     useEffect(() => {
         if (isFocused)
-            persistFridgeContent()
+            persistFridgeContent().catch(error => log.error("Error saving fridge content:", error));
         }, [isFocused, fridgeContent, persistFridgeContent])
 
+    // "pencil" icon in Ingredient card
     const handleEditPress = (ingredient) => {
         setSelectedIngredient(ingredient);
         setDeleteVisible(true);
         setModalVisible(true);
     };
 
+    // floating "plus" button
     const openEmptyEditModal = () => {
         setSelectedIngredient({name: '', amount: ''});
         setIsNewIngredient(true);
@@ -75,6 +71,7 @@ export default function FridgeScreen({ navigation }) {
             amount={item.amount}
             editButtonOn={true}
             onPress={() =>
+                // strIngredient == name of ingredient in TheMealDB - type: string
                 item.strIngredient && item.strIngredient.toLowerCase() === item.name.toLowerCase() ?
                 navigation.navigate("IngredientDetails", { ingredient: item }) : undefined}
             onPressEdit={() => handleEditPress(item)}

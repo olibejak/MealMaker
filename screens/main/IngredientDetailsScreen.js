@@ -15,33 +15,33 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     const [mealsFromIngredient, setMealsFromIngredient] = useState([]);
     const [isFavourite, setIsFavourite] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const starIconToRender = isFavourite ? StarFilledIcon  : StarOutlineIcon;
+    const starIconToRender = isFavourite ? StarFilledIcon : StarOutlineIcon;
     const [selectedStorage, setSelectedStorage] = useState("");
     const [snackbarModalVisible, setSnackbarModalVisible] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    const scrollViewRef = useRef(null);
+    const scrollViewRef = useRef(null); // Hook for resetting scroll view scroll position
     const isFocused = useIsFocused();
 
+    // Scroll to top when the screen is focused
     useEffect(() => {
         const handleScrollToTop = () => {
             if (scrollViewRef.current) {
                 scrollViewRef.current.scrollTo({x: 0, y: 0, animated: false});
             }
         };
-
-        // Scroll to top when the screen is focused
         if (isFocused) {
             handleScrollToTop();
         }
     }, [isFocused]);
 
+    // Retrieve favorites from local storage
     useEffect(() => {
-        // Retrieve favorites from local storage
         AsyncStorage.getItem('favouriteIngredients')
             .then((favourites) => {
                 if (favourites) {
                     const favoriteIngredients = JSON.parse(favourites);
                     setIsFavourite(favoriteIngredients.findIndex(
+                        // strIngredient == name of the ingredient in TheMealDB - type: string
                         favIngredient => favIngredient.idIngredient === ingredient.idIngredient) > -1);
                 }
             })
@@ -55,6 +55,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 if (isFavourite) {
                     // Remove from favorites
                     favouriteIngredients = favouriteIngredients.filter(
+                        // strIngredient == name of the ingredient in TheMealDB - type: string
                         (favIngredient) => ingredient.idIngredient !== favIngredient.idIngredient);
                     setIsFavourite(false)
                 } else {
@@ -69,13 +70,14 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
             .catch((error) => log.error('Error retrieving favorites:', error));
     };
 
-
     const parsedIngredientName = () => {
+        // strIngredient == name of the ingredient in TheMealDB - type: string
         let parsedString = ingredient.strIngredient.toLowerCase();
         parsedString = parsedString.replace(/ /g, '_');
         return parsedString;
     }
 
+    // Find selected meal in TheMealDB (meals from ingredient are insufficient)
     const navigateToMealDetails = async(idMeal) => {
         const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`;
         try {
@@ -99,36 +101,33 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     useEffect(() => {
             const fetchMealsFromIngredient = async () => {
                 const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${parsedIngredientName()}`;
-                try {
-                    const response = await fetch(url);
-                    const json = await response.json();
-                    setMealsFromIngredient(json.meals);
-                } catch (error) {
-                    log.error("Failed to fetch ingredients or request timed out:", error);
-                }
+                const response = await fetch(url);
+                const json = await response.json();
+                setMealsFromIngredient(json.meals); // meals == array of meals/ingredients fetched from TheMealDB
             };
-            fetchMealsFromIngredient();
-        }
-        , [route]);
+            fetchMealsFromIngredient().catch(error => log.error("Failed to fetch ingredients:", error));
+    }, [route]);
 
     const renderMealMiniatures = ({item, index}) => {
         return (
             <MealMiniature
                 key={index}
-                mealName={item.strMeal}
-                mealThumb={item.strMealThumb}
-                onPress={() => navigateToMealDetails(item.idMeal)}
+                mealName={item.strMeal} // strMeal == name of the meal in TheMealDB - type: string
+                mealThumb={item.strMealThumb} // strMealThumb == URL of the meal thumbnail in TheMealDB - type: string(URL)
+                onPress={() => navigateToMealDetails(item.idMeal)} // idMeal == id of the meal in TheMealDB - type: string
             />
         )
     }
 
     const handleAddToFridge = () => {
+        // strIngredient == name of the ingredient in TheMealDB - type: string
         const ingredientName = ingredient.strIngredient;
         setSnackbarMessage(`${ingredientName} added to the fridge successfully!`);
         setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to fridge
     };
 
     const handleAddToBasket = () => {
+        // strIngredient == name of the ingredient in TheMealDB - type: string
         const ingredientName = ingredient.strIngredient;
         setSnackbarMessage(`${ingredientName} added to the shopping list successfully!`);
         setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to basket
@@ -149,8 +148,10 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
         }
     };
 
+    // Add ingredient to shopping list or fridge
     const addIngredientToStorage = async (amount) => {
         const newIngredient = Object.assign({}, ingredient);
+        // strIngredient == name of the ingredient in TheMealDB - type: string
         newIngredient.name = ingredient.strIngredient;
         newIngredient.amount = amount;
         try {
@@ -162,6 +163,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
             }
             // Check if ingredient already exists in the fridge
             const existingIngredientIndex
+                // strIngredient == name of the ingredient in TheMealDB - type: string
                 = newContent.findIndex(item => item.strIngredient === ingredient.strIngredient)
             if (existingIngredientIndex > -1) {
                 // Ingredient already exists, update its amount by joining with the new amount
@@ -183,11 +185,13 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
     return (
         <View style={styles.screen}>
             <View>
+                {/* strIngredient == name of the ingredient in TheMealDB - type: string*/}
                 <TopNavigationBar title={ingredient.strIngredient} LeftIcon={BackArrowIcon}
                                   RightIcon={starIconToRender} starAction={toggleFavorite} />
             </View>
             <ScrollView style={styles.scrollableScreen} ref={scrollViewRef}>
                 <View style={styles.imageContainer}>
+                    {/* strIngredient == name of the ingredient in TheMealDB - type: string*/}
                     <Image source={{uri: `https://www.themealdb.com/images/ingredients/${ingredient.strIngredient}.png`,}} style={styles.image} />
                 </View>
                 <View style={styles.addToButtonsContainer}>
@@ -203,6 +207,7 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                 <IngredientDetails ingredient={ingredient} />
                 <View style={styles.textContainer}>
                     <Text style={styles.cardTitle}>Description</Text>
+                    {/* strDescription == description of the ingredient in TheMealDB - type: string*/}
                     <Text style={styles.cardContent}>{ingredient.strDescription}</Text>
                 </View>
                 <FlatList
@@ -233,7 +238,9 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
 };
 
 const IngredientDetails = ({ ingredient }) => {
-    if (ingredient.strType) {  // Checks if strType is not empty, undefined, or null
+    // Checks if strType is not empty, undefined, or null
+    // strType == type of the ingredient in TheMealDB - type: string
+    if (ingredient.strType) {
         return (
             <View style={styles.textContainer}>
                 <Text style={styles.cardTitle}>Type</Text>
@@ -273,7 +280,6 @@ const styles = StyleSheet.create({
     textContainer: {
         display: 'flex',
         flexDirection: 'column',
-        textAlign: "justify",
         flexShrink: 0,
         backgroundColor: '#FEF7FF',
         borderRadius: 12,

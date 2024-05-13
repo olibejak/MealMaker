@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity, View, Image, Dimensions} from "react-native";
+import {StyleSheet, Text, TouchableOpacity, View, Image} from "react-native";
 
 export default function MealMiniature({mealName, mealThumb, onPress}) {
     return (
@@ -16,7 +16,6 @@ export default function MealMiniature({mealName, mealThumb, onPress}) {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FEF7FF',
-        boxSizing: 'content-box',
         display: "flex",
         flexDirection: 'column',
         alignItems: "flex-start",

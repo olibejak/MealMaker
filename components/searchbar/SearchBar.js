@@ -67,7 +67,6 @@ export default function SearchBar({ onFilterPress, context, setFilter, search, a
     );
 }
 
-// Updated styles for SearchBar component including main container
 const styles = StyleSheet.create({
     mainContainer: {
         paddingBottom: 6, // Adds space below the search bar

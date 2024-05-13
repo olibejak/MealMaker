@@ -7,7 +7,6 @@ const CustomSwitch = ({ value, onValueChange }) => {
     const trackWidth = 48; // Width of the track
     const trackHeight = 30; // Height of the track
     const padding = 6; // Space between thumb and track border
-    const borderWidth = 2; // Border width added
     const animatedValue = new Animated.Value(value ? 1 : 0);
 
     const thumbTranslateX = animatedValue.interpolate({

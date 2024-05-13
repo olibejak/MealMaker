@@ -27,7 +27,7 @@ export default function MyDiaryScreen({navigation}) {
             setLoading(false); // Loading done
         } catch (error) {
             log.error("Error loading diary content:", error);
-            setLoading(false); // Ensure loading is set to false even if there is an error
+            setLoading(false); // Set to false even if there is an error
         }
     }, []);
 
@@ -60,8 +60,6 @@ export default function MyDiaryScreen({navigation}) {
         }
     };
 
-
-
     return (
         <View style={styles.screen}>
             <TopNavigationBar title={'My diary'} LeftIcon={BackArrowIcon} />
@@ -90,7 +88,7 @@ export default function MyDiaryScreen({navigation}) {
             </ScrollView>
             {modalVisible && (
                 <ConfirmationModal
-                    onConfirm={deleteDiaryEntry}  // Here you should directly pass the function reference
+                    onConfirm={deleteDiaryEntry}
                     onCancel={() => setModalVisible(false)}
                     visible={modalVisible}
                     title={'Delete diary entry'}
@@ -101,7 +99,6 @@ export default function MyDiaryScreen({navigation}) {
             <BottomRightCornerButton IconComponent={PlusIcon} onPress={() => navigation.navigate('NewDiaryEntry')} />
         </View>
     );
-
 }
 
 const styles = StyleSheet.create({
