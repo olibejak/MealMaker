@@ -149,7 +149,7 @@ export default function ShoppingListScreen () {
                 <Text style={styles.emptyText}>No items in the fridge, click + to add some more</Text>
                 :
             <ScrollView style={styles.scrollableScreen} contentContainerStyle={styles.scrolling}>
-                {shoppingListContent.map((ingredient, index) => (
+                {typeof shoppingListContent == "object" ? shoppingListContent.map((ingredient, index) => (
                     <ListItem
                         key={index}
                         title={ingredient.name}
@@ -160,7 +160,7 @@ export default function ShoppingListScreen () {
                         onEditPress={() => openEditModal(ingredient)} // Add this to handle edit press
                         isChecked={ingredient.isBought}>
                     </ListItem>
-                ))}
+                )) : null}
             </ScrollView>}
             <BottomRightCornerButton
                 IconComponent={ShoppingCartIcon}
