@@ -23,6 +23,7 @@ export default function StepByStepRecipeScreen ( { route, navigation } ) {
         const stepRegex = /step\s+\*\s*\d+\s*/i;
 
         // Split the text into sentences using the regular expression
+        // strInstructions == instructions of the meal from TheMealDB - type: string
         let sentences = recipe.strInstructions.split(sentenceRegex);
 
         // Remove numbers and "step *number*" from each sentence
@@ -47,6 +48,7 @@ export default function StepByStepRecipeScreen ( { route, navigation } ) {
                 if (favourites) {
                     const favouriteRecipes = JSON.parse(favourites);
                     setIsFavourite(favouriteRecipes.findIndex(
+                        // idMeal == id of the meal from TheMealDB - type: string
                         favouriteRecipe => favouriteRecipe.idMeal === recipe.idMeal) > -1);
                 }
             })
@@ -62,6 +64,7 @@ export default function StepByStepRecipeScreen ( { route, navigation } ) {
                 if (isFavourite) {
                     // Remove from favorites
                     favouriteRecipes = favouriteRecipes.filter(
+                        // idMeal == id of the meal from TheMealDB - type: string
                         (favouriteRecipe) => recipe.idMeal !== favouriteRecipe.idMeal);
                     setIsFavourite(false)
                 } else {
@@ -87,6 +90,7 @@ export default function StepByStepRecipeScreen ( { route, navigation } ) {
 
     return <View style={styles.screen}>
         <View>
+            {/* strMeal == name of the meal from TheMealDB - type: string */}
             <TopNavigationBar title={recipe.strMeal} LeftIcon={BackArrowIcon}
                               RightIcon={starIconToRender} starAction={toggleFavourite} />
         </View>
