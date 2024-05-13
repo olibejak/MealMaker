@@ -57,7 +57,7 @@ const CustomSwitch = ({ value, onValueChange }) => {
                     borderRadius: thumbSize / 2,
                     position: 'absolute',
                     top: thumbTop,  // Using the dynamic top positioning
-                    transform: `${[{ translateX: thumbTranslateX }]}`
+                    transform: [{ translateX: thumbTranslateX }]
                 }}
             />
         </TouchableOpacity>
