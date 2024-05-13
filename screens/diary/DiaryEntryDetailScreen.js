@@ -5,9 +5,13 @@ import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import {BackArrowIcon, PencilIcon} from "../../assets/icons";
 import BottomRightCornerButton from "../../components/buttons/BottomRightCornerButton";
 
-
 export default function DiaryEntryDetailScreen( { route, navigation } ) {
     const {diaryEntry} = route.params;
+
+    function isImageURISource(value) {
+        if (typeof value === 'string' || (typeof value === 'object' && value.uri != null && typeof value.uri === 'string'))
+            return value;
+    }
 
     return (
         <View style={styles.screen}>
@@ -21,9 +25,9 @@ export default function DiaryEntryDetailScreen( { route, navigation } ) {
                     </View>
                 </View>
                 <View style={styles.imagesContainer}>
-                    {diaryEntry.images.map((image, index) => (
-                        <Image key={index} source={image} style={styles.image} />
-                    ))}
+                    {typeof diaryEntry.images == "object" ? diaryEntry.images.map((image, index) => (
+                        <Image key={index} source={isImageURISource(image)} style={styles.image} />
+                    )) : null}
                 </View>
             </ScrollView>
             <BottomRightCornerButton
@@ -92,7 +96,6 @@ const styles = StyleSheet.create({
     textContainer: {
         display: 'flex',
         flexDirection: 'column',
-        textAlign: "justify",
         flexShrink: 0,
         backgroundColor: '#FEF7FF',
         borderRadius: 12,
