@@ -71,6 +71,7 @@ export default function FridgeScreen({ navigation }) {
             amount={item.amount}
             editButtonOn={true}
             onPress={() =>
+                // strIngredient == name of ingredient in TheMealDB - type: string
                 item.strIngredient && item.strIngredient.toLowerCase() === item.name.toLowerCase() ?
                 navigation.navigate("IngredientDetails", { ingredient: item }) : undefined}
             onPressEdit={() => handleEditPress(item)}
