@@ -18,7 +18,7 @@ function EditSetAmountModal({ visible, ingredient, onClose, deleteIngredient, sh
         if (ingredient) {
             setTitle(ingredient?.name || '')
             setAmount(ingredient?.amount || '')
-            if (!!ingredient.strIngredient && !ingredient.name) {
+            if (!!ingredient.strIngredient && !ingredient.name) { // strIngredient == name attribute in TheMealDB
                 setTitle(ingredient.strIngredient)
                 setTitleEditable(false)
             } else
@@ -59,7 +59,7 @@ function EditSetAmountModal({ visible, ingredient, onClose, deleteIngredient, sh
                             <TextInput
                                 style={styles.modalText}
                                 onChangeText={setTitle}
-                                value={title}
+                                value={(typeof title === 'string' ? title : '')}
                                 autoFocus={editableTitle}
                                 placeholder="Enter new title"
                                 placeholderTextColor={'#625b70'}
@@ -70,7 +70,7 @@ function EditSetAmountModal({ visible, ingredient, onClose, deleteIngredient, sh
                                 <Text style={styles.inputTitle}>Amount</Text>
                                 <TextInput
                                     style={styles.modalInput}
-                                    value={amount}
+                                    value={(typeof amount === 'string' ? amount : '')}
                                     onChangeText={setAmount}
                                     placeholder="Enter amount"
                                     placeholderTextColor={'#625b70'}
@@ -83,7 +83,7 @@ function EditSetAmountModal({ visible, ingredient, onClose, deleteIngredient, sh
                                         <Text style={styles.modalDeleteText}>Delete</Text>
                                     </TouchableOpacity>
                                     :
-                                    <View style={styles.modalDeleteText}></View>}
+                                    <View style={styles.modalDeleteView}></View>}
                                 <View style={styles.twoButtonContainer}>
                                     <TouchableOpacity onPress={onClose}>
                                         <Text style={styles.modalCancelText}>Cancel</Text>
@@ -200,6 +200,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'Roboto-Bold',
         color: '#B3261E',
+        padding: 10,
+        paddingRight: 5,
+    },
+    modalDeleteView: {
         padding: 10,
         paddingRight: 5,
     }

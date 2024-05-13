@@ -47,7 +47,7 @@ const FilterCategoriesModal = ({ visible, onSelectCategory, onClose, context, ac
                                 <CloseIcon />
                             </TouchableOpacity>
                             <View style={styles.buttonsContainer}>
-                                {categories.map((category) => (
+                                {typeof categories == 'object' ? categories.map((category) => (
                                     <TouchableOpacity
                                         key={category}
                                         style={[styles.button, selectedCategory === category && styles.selected]}
@@ -59,7 +59,7 @@ const FilterCategoriesModal = ({ visible, onSelectCategory, onClose, context, ac
                                         )}
                                         <Text style={styles.text}>{category}</Text>
                                     </TouchableOpacity>
-                                ))}
+                                )) : null}
                             </View>
                         </View>
                     </TouchableWithoutFeedback>
@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 16,
         paddingBottom: 8,
-        boxSizing: 'border-box',
 
         // The top position of the modal is different on iOS and Android due to the top bar
         ...Platform.select({

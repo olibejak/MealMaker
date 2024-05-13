@@ -3,6 +3,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import { BasketIcon, DiningIcon, EggIcon, FridgeIcon } from "../../assets/icons";
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import log from "../../utils/Logger";
 
 export default function BottomNavigationBar() {
     const navigation = useNavigation();
@@ -19,6 +20,7 @@ export default function BottomNavigationBar() {
         setSelected(state.routes[state.index].name)
     }, [state]);
 
+    // Set current count of ingredients in the fridge
     const loadFridgeCount = useCallback(async () => {
         const content = await AsyncStorage.getItem("fridgeContent");
         if (content !== null) {
@@ -27,9 +29,11 @@ export default function BottomNavigationBar() {
     }, [setFridgeCount])
 
     useEffect(() => {
-            loadFridgeCount();
+            loadFridgeCount()
+                .catch(error => log.error("Error loading fridge count from AsyncStorage:", error));
     }, [AsyncStorage.getItem("fridgeContent")])
 
+    // Set current count of ingredients in the shopping list
     const loadShoppingListCount = useCallback(async () => {
         const content = await AsyncStorage.getItem("shoppingListContent");
         if (content !== null) {
@@ -38,9 +42,9 @@ export default function BottomNavigationBar() {
     }, [setShoppingListCount])
 
     useEffect(() => {
-            loadShoppingListCount();
+            loadShoppingListCount()
+                .catch(error => log.error("Error loading shopping list count from AsyncStorage:", error));
     }, [AsyncStorage.getItem("shoppingListContent")])
-
     return (
         <View style={styles.bottomBar}>
             { /* Ingredients Button */ }

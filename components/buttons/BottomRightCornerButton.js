@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
             },
         }),
         padding: 15,
-        zIndex: 10, // Make sure it's above everything else
+        zIndex: 10, // Above everything else
     },
     iconButton: {
         // Styles for the touchable opacity
@@ -46,5 +46,4 @@ const styles = StyleSheet.create({
         shadowRadius: 1,
         shadowOpacity: 0.5,
     },
-    // ... add any other styles you might need here
 });

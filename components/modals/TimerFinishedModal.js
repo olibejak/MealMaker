@@ -1,4 +1,4 @@
-import { Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View, StyleSheet } from "react-native";
 import React from "react";
 import { PlusIcon } from "../../assets/icons"; // Adjust the path as necessary
 
@@ -36,7 +36,7 @@ export default function TimerFinishedModal({ label, onStopTimer, onAddOneMinute,
     );
 }
 
-const styles = {
+const styles = StyleSheet.create({
     modalBackground: {
         flex: 1,
         justifyContent: 'center',
@@ -97,7 +97,7 @@ const styles = {
     },
     iconStyle: {
         color: '#625b70',
-        width: '18',  // Smaller width for a smaller icon
-        height: '18', // Smaller height for a smaller icon
+        width: 18,  // Smaller width for a smaller icon
+        height: 18, // Smaller height for a smaller icon
     },
-};
+});

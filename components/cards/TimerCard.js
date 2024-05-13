@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { PlayIcon, PlusIcon, CloseIcon, PauseIcon, ReloadIcon } from "../../assets/icons";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
-export default function TimerCard({ id, label, currentTime, initialTime, onAddTime, onStartStop, onClose, running, reloadTimer }) {
+export default function TimerCard({ label, currentTime, initialTime, onAddTime, onStartStop, onClose, running, reloadTimer }) {
     // Helper function to convert time string to total seconds
     function timeToSeconds(time) {
         const [minutes, seconds] = time.split(":").map(Number);
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         right: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '24'
+        padding: 24
     },
     timeText: {
         fontSize: 40,

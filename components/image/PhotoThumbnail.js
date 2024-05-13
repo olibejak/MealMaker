@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
-import { CloseIcon } from "../../assets/icons"; // Ensure this import is correct
+import { CloseIcon } from "../../assets/icons";
 
 export default function PhotoThumbnail({ sources, onClose }) {
     // Render item function to display each photo and its close button
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         borderWidth: 2,
         borderColor: 'rgba(255, 255, 255, 0.8)',
-        zIndex: 1, // This ensures it stays on top
+        zIndex: 1, // Ensures it stays on top
         padding: 12, // Padding to expand the clickable area while keeping the icon size unchanged
     },
 });

@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Regular',
         fontSize: 16,
     },
-
     separator: {
         borderBottomWidth: 2,
         borderBottomColor: '#CAC4D0',
