@@ -95,7 +95,6 @@ export default function ShoppingListScreen () {
         if (content !== null) {
             await AsyncStorage.setItem("shoppingListContent", JSON.stringify(shoppingListContent));
         }
-        log.info(shoppingListContent);
     }
     useEffect(() => {
         if (isFocused)
