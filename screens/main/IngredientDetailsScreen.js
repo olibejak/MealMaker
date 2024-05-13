@@ -205,11 +205,13 @@ export default function IngredientDetailsScreen ({ route, navigation }) {
                     </TouchableOpacity>
                 </View>
                 <IngredientDetails ingredient={ingredient} />
-                <View style={styles.textContainer}>
-                    <Text style={styles.cardTitle}>Description</Text>
-                    {/* strDescription == description of the ingredient in TheMealDB - type: string*/}
-                    <Text style={styles.cardContent}>{ingredient.strDescription}</Text>
-                </View>
+                {ingredient.strDescription &&
+                    <View style={styles.textContainer}>
+                        <Text style={styles.cardTitle}>Description</Text>
+                        {/* strDescription == description of the ingredient in TheMealDB - type: string*/}
+                        <Text style={styles.cardContent}>{ingredient.strDescription}</Text>
+                    </View>
+                }
                 <FlatList
                     horizontal={true}
                     data={mealsFromIngredient}
