@@ -81,6 +81,7 @@ export default function RecipesScreen ({navigation}) {
             if (available &&
                 settings.shakeForRandomRecipeEnabled &&
                 navigation.getState().history.length > 0 &&
+                navigation.getState().history[navigation.getState().history.length - 1].key &&
                 navigation.getState().history[navigation.getState().history.length - 1].key.startsWith("Recipes-")) {
                 subscription = Accelerometer.addListener(handleUpdate);
             }
