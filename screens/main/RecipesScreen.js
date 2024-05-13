@@ -40,6 +40,7 @@ export default function RecipesScreen ({navigation}) {
             let url = `https://www.themealdb.com/api/json/v1/1/search.php?f=${char}`;
             const response = await fetch(url);
             const json = await response.json();
+            // meals == array of ingredients/meals from TheMealDB
             if (json.meals) {
                 setRecipes(prevRecipes => [...prevRecipes, ...json.meals]);
             }
@@ -133,16 +134,17 @@ export default function RecipesScreen ({navigation}) {
         }).filter(item => item !== null).join(', ');
 
         let tags;
-
+        // strTags == tags of the meal from TheMealDB - type: string
         if (item.strTags) {
             tags = item.strTags.split(',').join(', ');
         }
 
         return (
             <RecipeCard
-                title={item.strMeal}
+                title={item.strMeal} // strMeal == name of the meal from TheMealDB - type: string
                 date={tags}
                 description={ingredientsList}
+                // strMealThumb == URL of the thumbnail of the meal from TheMealDB - type: string (URL)
                 image={{uri: item.strMealThumb}}
                 onPressDetails={() => navigation.navigate("RecipeDetails", {recipe: item})}
                 onPressSecondary={() => navigation.navigate("StepByStepRecipe", {recipe: item})}
@@ -160,10 +162,13 @@ export default function RecipesScreen ({navigation}) {
                 ref={flatListRef}
                 data={activeFilter === "Favourite recipes" ?
                     favouriteRecipes.filter(item => activeSearch ?
+                        // strMeal == name of the meal from TheMealDB - type: string
                         item && item.strMeal && item.strMeal.toLowerCase().includes(activeSearch.trim()) : true)
                     : recipes
+                        // strCategory == category of the meal in TheMealDB - type: string
                     .filter(item => activeFilter ? item && item.strCategory && item.strCategory === activeFilter : true)
                     .filter(item => activeSearch ?
+                        // strMeal == name of the meal in TheMealDB
                         item && item.strMeal && item.strMeal.toLowerCase().includes(activeSearch.trim()) : true)
                 }
                 renderItem={renderItem}

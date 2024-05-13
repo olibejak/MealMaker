@@ -57,6 +57,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                 if (favourites) {
                     const favouriteRecipes = JSON.parse(favourites);
                     setIsFavourite(favouriteRecipes.findIndex(
+                        // idMeal == id of the meal from TheMealDB
                         favouriteRecipe => favouriteRecipe.idMeal === recipe.idMeal) > -1);
                 }
             })
@@ -70,6 +71,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                 if (isFavourite) {
                     // Remove from favourites
                     favouriteRecipes = favouriteRecipes.filter(
+                        // idMeal == id of the meal from TheMealDB
                         (favouriteRecipe) => recipe.idMeal !== favouriteRecipe.idMeal);
                     setIsFavourite(false)
                 } else {
@@ -120,7 +122,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
             // Filter out empty ingredient names and create an array of ingredients to add
             const ingredientsToAdd = ingredientKeys.map((key, index) => ({
                 name: recipe[key],
-                amount: recipe[amountKeys[index]] || 'N/A' // Use 'N/A' if amount is missing
+                amount: recipe[amountKeys[index]] || 'N/A' // Use N/A if amount is missing
             })).filter(item => item.name);
 
             // Iterate over ingredients to add
@@ -168,6 +170,8 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                     const response = await fetch(url);
                     const json = await response.json();
                     // Link ingredient name to right object
+                    // meals == array of ingredients/meals fetched from TheMealDB
+                    // strIngredient == name of the ingredient from TheMealDB
                     if (json.meals.find(meal => meal.strIngredient === ingredientName)) {
                         setRecipeIngredients(prevIngredients =>
                             [...prevIngredients, json.meals.find(meal => meal.strIngredient === ingredientName)]);
@@ -182,6 +186,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
         return (
             <MealMiniature
                 key={index}
+                {/* strIngredient == name of the ingredient from TheMealDB */}
                 mealName={item.strIngredient}
                 mealThumb={`https://www.themealdb.com/images/ingredients/${item.strIngredient}.png`}
                 onPress={() => navigateToIngredientDetails(item)}
@@ -192,11 +197,13 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
     return (
         <View style={styles.screen}>
             <View>
+                {/* strMeal == name of the meal from TheMealDB */}
                 <TopNavigationBar title={recipe.strMeal} LeftIcon={BackArrowIcon}
                                   RightIcon={starIconToRender} starAction={toggleFavourite} />
             </View>
             <ScrollView style={styles.scrollableScreen} ref={scrollViewRef}>
                 <View style={styles.imageContainer}>
+                    {/* strMealThumb == URL of the meal thumbnail from TheMealDB - type: string (URL) */}
                     <Image source={{uri: `${recipe.strMealThumb}`}} style={styles.image} />
                 </View>
                 <View style={styles.addToButtonsContainer}>
@@ -207,6 +214,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                 </View>
                 <View style={styles.textContainer}>
                     <Text style={styles.cardTitle}>Categories</Text>
+                    {/* strCategory == category of the meal from TheMealDB */}
                     <Text style={styles.cardContent}>{recipe.strCategory}</Text>
                 </View>
                 <View style={styles.textContainer}>
@@ -228,6 +236,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                     />
                 <View style={[styles.textContainer, {marginBottom: 16}]}>
                     <Text style={styles.cardTitle}>Instructions</Text>
+                    {/* strInstructions = instructions of the meal from TheMealDB */}
                     <Text style={styles.cardContent}>{recipe.strInstructions}</Text>
                 </View>
             </ScrollView>

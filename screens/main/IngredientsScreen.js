@@ -36,6 +36,7 @@ export default function IngredientsScreen({ navigation }) {
                 try {
                     const response = await fetch(url);
                     const json = await response.json();
+                    // meals == array of ingredients/meals fetched from TheMealDB
                     setIngredients(json.meals);
                     setDisplayedIngredients(json.meals.slice(0, 10)); // Initially display only the first 10 items
                     setCurrentIndex(10);
@@ -47,7 +48,8 @@ export default function IngredientsScreen({ navigation }) {
                     setIsLoading(false);
                 }
             };
-            fetchIngredients();
+            fetchIngredients()
+                .catch(error => log.error("Failed to fetch ingredients", error));
         });
     }, []);
 
@@ -77,6 +79,7 @@ export default function IngredientsScreen({ navigation }) {
     // Add ingredient to shopping list or fridge
     const addIngredientToStorage = async (ingredient, storage, amount) => {
         const newIngredient = Object.assign({}, ingredient);
+        // strIngredients == name of the ingredient from TheMealDB
         newIngredient.name = ingredient.strIngredient;
         newIngredient.amount = amount;
         try {
@@ -88,6 +91,7 @@ export default function IngredientsScreen({ navigation }) {
             }
             // Check if ingredient already exists in the fridge
             const existingIngredientIndex
+                // strIngredients == name of the ingredient from TheMealDB
                 = newContent.findIndex(item => item.strIngredient === ingredient.strIngredient)
             if (existingIngredientIndex > -1) {
                 // Ingredient already exists, update its amount by joining with the new amount
@@ -107,12 +111,14 @@ export default function IngredientsScreen({ navigation }) {
     }
 
     const handleAddToFridge = () => {
+        // strIngredients == name of the ingredient from TheMealDB
         const ingredientName = selectedIngredient.strIngredient;
         setSnackbarMessage(`${ingredientName} added to the fridge successfully!`);
         setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to fridge
     };
 
     const handleAddToBasket = () => {
+        // strIngredients == name of the ingredient from TheMealDB
         const ingredientName = selectedIngredient.strIngredient;
         setSnackbarMessage(`${ingredientName} added to the shopping list successfully!`);
         setSnackbarModalVisible(true); // Show the SnackbarModal when ingredient is added to basket
@@ -137,7 +143,7 @@ export default function IngredientsScreen({ navigation }) {
 
     const renderItem = ({ item }) => (
         <IngredientCard
-            text={item.strIngredient}
+            text={item.strIngredient} // strIngredients == name of the ingredient from TheMealDB
             fridgeButtonOn={true}
             cartButtonOn={true}
             onPress={() => navigation.navigate("IngredientDetails", { ingredient: item })}
@@ -152,6 +158,7 @@ export default function IngredientsScreen({ navigation }) {
             <FlatList
                 ref={flatListRef}
                 data={ activeFilter ? favouriteIngredients.filter(item => activeSearch ?
+                    // strIngredients == name of the ingredient from TheMealDB
                     item && item.strIngredient && item.strIngredient.toLowerCase().includes(activeSearch.trim()) : true)
                     : ingredients
                     .filter(item => activeSearch ?
