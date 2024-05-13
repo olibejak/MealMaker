@@ -1,4 +1,4 @@
-import {View, StyleSheet, ActivityIndicator, FlatList, Text} from "react-native";
+import {View, StyleSheet, ActivityIndicator, FlatList, Text, InteractionManager} from "react-native";
 import { Accelerometer } from 'expo-sensors';
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
@@ -17,13 +17,13 @@ export default function RecipesScreen ({navigation}) {
     const title = "Recipes";
     const filtersOn = false;
     const selectedBottomBar = "Recipes";
+    const isFocused = useIsFocused();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [recipes, setRecipes] = useState([]);
     const [displayedRecipes, setDisplayedRecipes] = useState([]);
     const [activeFilter, setActiveFilter] = useState(null);
     const [activeSearch, setActiveSearch] = useState('');
     const [favouriteRecipes, setFavouriteRecipes] = useState([]);
-    const isFocused = useIsFocused();
     const flatListRef = useRef(null);   // Hook for flat list scroll top
     const [isLoading, setIsLoading] = useState(true)
 
@@ -33,33 +33,40 @@ export default function RecipesScreen ({navigation}) {
             setFavouriteRecipes(JSON.parse(content));
         }
     }
-
-    const fetchRecipesFromAPI = async () => {
-        for (let i = 97; i <= 122; ++i) {
-            const char = String.fromCharCode(i);
-            let url = `https://www.themealdb.com/api/json/v1/1/search.php?f=${char}`;
-            const response = await fetch(url);
-            const json = await response.json();
-            // meals == array of ingredients/meals from TheMealDB
-            if (json.meals) {
-                setRecipes(prevRecipes => [...prevRecipes, ...json.meals]);
-            }
-        }
-        setIsLoading(false);
-    };
-
     useEffect(() => {
-        if (isFocused) {
-            fetchRecipesFromAPI()
-                .catch(async error => {log.error("Failed to fetch ingredients:", error);});
-            loadFavouriteRecipes()
-                .catch(error =>  log.error("Error loading favourite recipes:", error));
-            // Set favouriteRecipes as default recipes when fetched recipes are empty
-            if (!recipes || recipes.length === 0) {
-                setRecipes(favouriteRecipes)
-            }
-        }
+        if (isFocused)
+        loadFavouriteRecipes()
+            .catch(error =>  log.error("Error loading favourite recipes:", error));
     }, [isFocused]);
+
+    // Fetch recipes from TheMealDB
+    useEffect(() => {
+        InteractionManager.runAfterInteractions(() => {
+            const fetchRecipesFromAPI = async () => {
+                for (let i = 97; i <= 122; ++i) {
+                    const char = String.fromCharCode(i);
+                    let url = `https://www.themealdb.com/api/json/v1/1/search.php?f=${char}`;
+                    const response = await fetch(url);
+                    const json = await response.json();
+                    // meals == array of ingredients/meals from TheMealDB
+                    if (json.meals) {
+                        setRecipes(prevRecipes => [...prevRecipes, ...json.meals]);
+                    }
+                }
+                setIsLoading(false);
+            };
+            fetchRecipesFromAPI()
+                .catch(async error => {
+                    log.error("Failed to fetch recipes:", error);
+                    // Set favouriteRecipes as default recipes when fetched recipes are empty
+                    await AsyncStorage.getItem("favouriteRecipes")
+                        .then((data) => {
+                            setRecipes(JSON.parse(data))
+                        })
+                        .catch((error) => log.error("Error loading favourite recipes:", error))
+                });
+        });
+    }, []);
 
     // Accelerometer for random recipe
     useEffect(() => {

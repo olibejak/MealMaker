@@ -42,8 +42,9 @@ export default function IngredientsScreen({ navigation }) {
                     setCurrentIndex(10);
                 } catch (error) {
                     log.error("Failed to fetch ingredients:", error);
-                    setIngredients(JSON.parse(await AsyncStorage.getItem("favouriteIngredients")
-                        .catch((error) => log.error("Error loading favourite ingredients:", error))))
+                    await AsyncStorage.getItem("favouriteIngredients")
+                        .then((data) => {setIngredients(JSON.parse(data))})
+                        .catch((error) => log.error("Error loading favourite ingredients:", error))
                 } finally {
                     setIsLoading(false);
                 }
