@@ -186,7 +186,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
         return (
             <MealMiniature
                 key={index}
-                {/* strIngredient == name of the ingredient from TheMealDB */}
+                // strIngredient == name of the ingredient from TheMealDB
                 mealName={item.strIngredient}
                 mealThumb={`https://www.themealdb.com/images/ingredients/${item.strIngredient}.png`}
                 onPress={() => navigateToIngredientDetails(item)}
