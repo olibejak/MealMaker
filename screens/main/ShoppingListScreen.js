@@ -213,8 +213,8 @@ const styles = StyleSheet.create({
     },
     scrolling: {
         alignItems: 'center',
-        paddingBottom: 60,
-        backgroundColor: "#FEF7FF",
+        paddingBottom: 90,
+        backgroundColor: "#FFF",
     },
 
     iconSize: {
