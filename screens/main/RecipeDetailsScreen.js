@@ -122,7 +122,10 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
             // Filter out empty ingredient names and create an array of ingredients to add
             const ingredientsToAdd = ingredientKeys.map((key, index) => ({
                 name: recipe[key],
-                amount: recipe[amountKeys[index]] || 'N/A' // Use N/A if amount is missing
+                amount: recipe[amountKeys[index]] ?
+                    recipe[amountKeys[index]].includes('/') ? // if the amount includes '/' remove everything that comes after
+                            recipe[amountKeys[index]].split('/')[0] : recipe[amountKeys[index]]
+                        : 'N/A' // Use N/A if amount is missing or null // Use N/A if amount is missing
             })).filter(item => item.name);
 
             // Iterate over ingredients to add
@@ -135,10 +138,11 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                 if (existingIndex > -1) {
                     // If the ingredient already exists, update its amount by appending the new amount
                     if(newContent[existingIndex].amount.trim() === "")
-                        newContent[existingIndex].amount += `${newIngredient.amount}`;
+                        newContent[existingIndex].amount += `${newIngredient}`;
                     else
                         // Not parsing this - TheMealDB amounts are inconsistent
-                        newContent[existingIndex].amount += `, ${newIngredient.amount}`;
+                        // newContent[existingIndex].amount += `, ${newIngredient.amount}`;
+                        newContent[existingIndex].amount = parseAmount(newIngredient.amount.trim().toLowerCase(), newContent[existingIndex].amount.trim().toLowerCase());
                 } else if (newIngredient.name) {
                     // If the ingredient does not exist, add it to the shopping list
                     newContent.push(newIngredient);
@@ -154,6 +158,71 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
         } catch (error) {
             log.error("Error adding to shopping list:", error);
         }
+    }
+
+    // Sum amounts with same units
+    const parseAmount = (str1, str2) => {
+        if (str1 === "" && str2 === "")
+            return "";
+
+        const arr1 = str1.split(',').map(item => item.trim());
+        const arr2 = str2.split(',').map(item => item.trim());
+
+        for (let i = 0; i < arr1.length; i++) {
+            let number1, unit1;
+            // Parse number and unit from the current item in arr1
+            if (/^[a-zA-Z\s½¼¾⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞()]+$/.test(arr1[i])) {
+                number1 = '1'; // Set number to '1' when only letters are present
+                unit1 = arr1[i];  // Set unit to the entire item
+            } else {
+                // Split the item into numbers and letters
+                const [numbersPart, ...lettersPart] = arr1[i].split(/(?=[a-zA-Z])/);
+
+                // Check if there is a numbers part
+                if (numbersPart) {
+                    number1 = numbersPart; // Set number to the numbers part
+                }
+
+                // Join the letters part back into a string
+                unit1 = lettersPart.join('');
+            }
+            // Iterate through each item in the second array
+            for (let j = 0; j < arr2.length; j++) {
+                // Parse number and unit from the current item in arr2
+                let number2, unit2;
+                // Split numbers and letters
+                if (/^[a-zA-Z\s½¼¾⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞()]+$/.test(arr2[j])) {
+                    number2 = '1'; // Set number to '1' when only letters are present
+                    unit2 = arr2[j];  // Set unit to the entire item
+                } else {
+                    // Split the item into numbers and letters
+                    const [numbersPart, ...lettersPart] = arr2[j].split(/(?=[a-zA-Z])/);
+
+                    // Check if there is a numbers part
+                    if (numbersPart) {
+                        number2 = numbersPart; // Set number to the numbers part
+                    }
+
+                    // Join the letters part back into a string
+                    unit2 = lettersPart.join('');
+                }
+
+                console.log(`number1: ${number1} - unit1: ${unit1}`);
+                console.log(`number2: ${number2} - unit1: ${unit2}`);
+                // Check if units are the same
+                if (unit1 === unit2 || (!unit1 && !unit2)) {
+                    // If units are the same, sum the numbers
+                    arr2[j] = `${parseFloat(number1) + parseFloat(number2)} ${unit2 ? unit2 : ""}`;
+                    break; // No more iteration needed
+                }
+                // If same unit not found, add new item to array
+                else if (j === arr2.length - 1) {
+                    arr2.push(arr1[i]);
+                    break; // Array length changed, need to break
+                }
+            }
+        }
+        return arr2.filter(item => item.trim() !== "").join(", ");
     }
 
     // Fetch ingredients included in the given recipe

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import { ArrowDropDown, CheckmarkIconWhite, ArrowDropUp } from "../../assets/icons";
 
@@ -8,6 +8,11 @@ export default function ListItem({ title, content, dividers, IconComponent, onPr
     const [checked, setChecked] = useState(isChecked);
 
     const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+
+    // Resetting checked when the item changes
+    useEffect(() => {
+        setChecked(isChecked);
+    }, [isChecked]);
 
     return (
         <View style={dividers === 'True' ? [styles.container, styles.divider] : styles.container}>

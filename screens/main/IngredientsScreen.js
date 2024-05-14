@@ -123,18 +123,47 @@ export default function IngredientsScreen({ navigation }) {
         const arr2 = str2.split(',').map(item => item.trim());
 
         for (let i = 0; i < arr1.length; i++) {
+            let number1, unit1;
             // Parse number and unit from the current item in arr1
-            const [number1 = '0', unit1 = ''] = arr1[i].split(/\s*(?=[a-zA-Z])/); // Split numbers and letters
+            if (/^[a-zA-Z]+$/.test(arr1[i])) {
+                number1 = '1'; // Set number to '1' when only letters are present
+                unit1 = arr1[i];  // Set unit to the entire item
+            } else {
+                // Split the item into numbers and letters
+                const [numbersPart, ...lettersPart] = arr1[i].split(/(?=[a-zA-Z])/);
+
+                // Check if there is a numbers part
+                if (numbersPart) {
+                    number1 = numbersPart; // Set number to the numbers part
+                }
+
+                // Join the letters part back into a string
+                unit1 = lettersPart.join('');
+            }
             // Iterate through each item in the second array
             for (let j = 0; j < arr2.length; j++) {
                 // Parse number and unit from the current item in arr2
-                const [number2 = '0', unit2 = ''] = arr2[j].split(/\s*(?=[a-zA-Z])/); // Split numbers and letters
+                let number2, unit2;
+                // Split numbers and letters
+                if (/^[a-zA-Z]+$/.test(arr2[j])) {
+                    number2 = '1'; // Set number to '1' when only letters are present
+                    unit2 = arr2[j];  // Set unit to the entire item
+                } else {
+                    // Split the item into numbers and letters
+                    const [numbersPart, ...lettersPart] = arr2[j].split(/(?=[a-zA-Z])/);
 
+                    // Check if there is a numbers part
+                    if (numbersPart) {
+                        number2 = numbersPart; // Set number to the numbers part
+                    }
+
+                    // Join the letters part back into a string
+                    unit2 = lettersPart.join('');
+                }
                 // Check if units are the same
                 if (unit1 === unit2 || (!unit1 && !unit2)) {
                     // If units are the same, sum the numbers
-                    arr2[j] = `${number1? parseFloat(number1) : '' + 
-                        number2 ? parseFloat(number2) : ''} ${unit2 ? unit2 : ""}`;
+                    arr2[j] = `${parseFloat(number1) + parseFloat(number2)} ${unit2 ? unit2 : ""}`;
                     break; // No more iteration needed
                 }
                 // If same unit not found, add new item to array
@@ -144,7 +173,7 @@ export default function IngredientsScreen({ navigation }) {
                 }
             }
         }
-        return arr2.join(", ");
+        return arr2.filter(item => item.trim() !== "").join(", ");
     }
 
     const handleAddToFridge = () => {
