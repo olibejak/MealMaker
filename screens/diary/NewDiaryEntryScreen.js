@@ -128,6 +128,7 @@ export default function NewDiaryEntryScreen( { route, navigation } ) {
             title: firstLine, // Set or update the title based on the first line of the input text
             text: inputText,
             images: imageUris,
+            date: new Date().toLocaleDateString(),
         };
 
         if (diaryEntry) {
