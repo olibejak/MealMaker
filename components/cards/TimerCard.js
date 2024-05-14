@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
         right: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 24
     },
     timeText: {
         fontSize: 40,
