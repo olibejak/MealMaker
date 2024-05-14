@@ -1,71 +1,63 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import log from "./Logger";
-import {ActivityIndicator} from "react-native";
 
-export const SettingsContext = createContext();
+export const SettingsContext = createContext({
+    settings: null,
+    isLoading: true,
+    updateSettings: () => {},
+});
 
 export const SettingsProvider = ({ children }) => {
-    const [settings, setSettings] = useState();
-    const [isLoading, setIsLoading] = useState(true);  // Add a loading state
-
-    const loadSettings = async () => {
-        try {
-            const savedSettings = await AsyncStorage.getItem('settings');
-            if (savedSettings !== null) {
-                setSettings(JSON.parse(savedSettings));
-            } else {
-                // Set default settings if none are stored
-                setSettings({
-                    soundsEnabled: true,
-                    selectedSound: 'alarm',
-                    vibrationsEnabled: true,
-                    notificationsEnabled: true,
-                    shakeForRandomRecipeEnabled: true,
-                });
-            }
-        } catch (error) {
-            log.error("Failed to load settings from storage:", error);
-            // Fallback to default values in case of error
-            setSettings({
-                soundsEnabled: true,
-                selectedSound: 'alarm',
-                vibrationsEnabled: true,
-                notificationsEnabled: true,
-                shakeForRandomRecipeEnabled: true,
-            });
-        }
-        setIsLoading(false);  // Set loading to false after settings are loaded
+    // Default settings
+    const defaultSettings = {
+        soundsEnabled: true,
+        selectedSound: 'alarm',
+        vibrationsEnabled: true,
+        notificationsEnabled: true,
+        shakeForRandomRecipeEnabled: true,
     };
 
+    const [settings, setSettings] = useState({...defaultSettings});
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
+        const loadSettings = async () => {
+            try {
+                const savedSettings = await AsyncStorage.getItem('settings');
+                if (savedSettings !== null) {
+                    const loadedSettings = JSON.parse(savedSettings);
+                    setSettings(prevSettings => ({...prevSettings, ...loadedSettings}));
+                }
+                log.info("Loaded settings:", savedSettings || "default settings used");
+            } catch (error) {
+                log.error("Failed to load settings from storage:", error);
+            }
+            setIsLoading(false); // Set loading to false after settings are loaded
+        };
         loadSettings();
     }, []);
 
     useEffect(() => {
-        if (!isLoading) {  // Ensure settings are not undefined before saving
+        if (!isLoading) {
             const saveSettings = async () => {
                 try {
                     await AsyncStorage.setItem('settings', JSON.stringify(settings));
+                    log.info("Settings saved to storage.");
                 } catch (error) {
                     log.error("Failed to save settings to storage:", error);
                 }
             };
             saveSettings();
         }
-    }, [settings, isLoading]);
+    }, [settings]);
 
     const updateSettings = (newSettings) => {
         setSettings(prevSettings => ({ ...prevSettings, ...newSettings }));
     };
 
-    if (isLoading) {
-        // Optionally return a loading screen or null while settings are loading
-        return <ActivityIndicator size={"large"} />;
-    }
-
     return (
-        <SettingsContext.Provider value={{ settings, updateSettings }}>
+        <SettingsContext.Provider value={{ settings, updateSettings, isLoading }}>
             {children}
         </SettingsContext.Provider>
     );
