@@ -137,6 +137,7 @@ export default function RecipeDetailsScreen ( { route, navigation } ) {
                     if(newContent[existingIndex].amount.trim() === "")
                         newContent[existingIndex].amount += `${newIngredient.amount}`;
                     else
+                        // Not parsing this - TheMealDB amounts are inconsistent
                         newContent[existingIndex].amount += `, ${newIngredient.amount}`;
                 } else if (newIngredient.name) {
                     // If the ingredient does not exist, add it to the shopping list

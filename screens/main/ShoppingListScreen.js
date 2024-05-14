@@ -23,6 +23,39 @@ export default function ShoppingListScreen () {
     const [selectedIngredient, setSelectedIngredient] = useState(null);       // State to store the selected ingredient for editing
     const [isNewIngredient, setIsNewIngredient] = useState(false)    // Ingredient isn't yet in the shopping list
 
+    // Sum amounts with same units
+    const parseAmount = (str1, str2) => {
+        if (str1 === "" && str2 === "")
+            return "";
+
+        const arr1 = str1.split(',').map(item => item.trim());
+        const arr2 = str2.split(',').map(item => item.trim());
+
+        for (let i = 0; i < arr1.length; i++) {
+            // Parse number and unit from the current item in arr1
+            const [number1 = '0', unit1 = ''] = arr1[i].split(/\s*(?=[a-zA-Z])/); // Split numbers and letters
+            // Iterate through each item in the second array
+            for (let j = 0; j < arr2.length; j++) {
+                // Parse number and unit from the current item in arr2
+                const [number2 = '0', unit2 = ''] = arr2[j].split(/\s*(?=[a-zA-Z])/); // Split numbers and letters
+
+                // Check if units are the same
+                if (unit1 === unit2 || (!unit1 && !unit2)) {
+                    // If units are the same, sum the numbers
+                    arr2[j] = `${number1? parseFloat(number1) : '' +
+                        number2 ? parseFloat(number2) : ''} ${unit2 ? unit2 : ""}`;
+                    break; // No more iteration needed
+                }
+                // If same unit not found, add new item to array
+                else if (j === arr2.length - 1) {
+                    arr2.push(arr1[i]);
+                    break; // Array length changed, need to break
+                }
+            }
+        }
+        return arr2.join(", ");
+    }
+
     // Move checked items to fridge and remove from shopping list
     const moveToFridge = async () => {
         try {
@@ -33,7 +66,10 @@ export default function ShoppingListScreen () {
                     if (existingItemIndex !== -1) {
                         // Ingredient with the same name exists in fridge content
                         const existingItem = fridgeContent[existingItemIndex];
-                        existingItem.amount += `, ${shoppingItem.amount}`; // Update the amount
+                        existingItem.amount = parseAmount(
+                            shoppingItem.amount.trim().toLowerCase(),
+                            existingItem.amount.trim().toLowerCase()
+                        ); // Update the amount
                         fridgeContent[existingItemIndex] = existingItem;
                     } else {
                         // Ingredient with this name doesn't exist, add it to the fridge content
@@ -87,7 +123,19 @@ export default function ShoppingListScreen () {
     const persistShoppingListContent = async() => {
         // Add ingredient to shoppingListContent if it's not empty
         if (isNewIngredient && selectedIngredient.name !== "") {
-            setShoppingListContent([...shoppingListContent, selectedIngredient]);
+            const duplicateItemIndex = shoppingListContent.findIndex(
+                item => item.name.toLowerCase().trim() === selectedIngredient.name.toLowerCase().trim());
+
+            // Sum amounts with same units, else join strings
+            if (duplicateItemIndex >= 0) {
+                shoppingListContent[duplicateItemIndex].amount =
+                    `${parseAmount(selectedIngredient.amount.trim().toLowerCase(),
+                        shoppingListContent[duplicateItemIndex].amount.trim().toLowerCase())}`;
+            }
+            // Add new ingredient to shopping list
+            else {
+                setShoppingListContent([...shoppingListContent, selectedIngredient]);
+            }
             setIsNewIngredient(false);
         }
         // Add ingredient to AsyncStorage

@@ -99,7 +99,10 @@ export default function IngredientsScreen({ navigation }) {
                 if(newContent[existingIngredientIndex].amount.trim() === "")
                     newContent[existingIngredientIndex].amount += `${newIngredient.amount}`;
                 else
-                    newContent[existingIngredientIndex].amount += `, ${newIngredient.amount}`;
+                    newContent[existingIngredientIndex].amount = parseAmount(
+                        newIngredient.amount.trim().toLowerCase(),
+                        newContent[existingIngredientIndex].amount.trim().toLowerCase()
+                    );
             } else {
                 // Ingredient does not exist, add it to the fridge
                 newContent.push(newIngredient);
@@ -109,6 +112,39 @@ export default function IngredientsScreen({ navigation }) {
         } catch (error) {
             log.error("Error adding to storage:", error);
         }
+    }
+
+    // Sum amounts with same units
+    const parseAmount = (str1, str2) => {
+        if (str1 === "" && str2 === "")
+            return "";
+
+        const arr1 = str1.split(',').map(item => item.trim());
+        const arr2 = str2.split(',').map(item => item.trim());
+
+        for (let i = 0; i < arr1.length; i++) {
+            // Parse number and unit from the current item in arr1
+            const [number1 = '0', unit1 = ''] = arr1[i].split(/\s*(?=[a-zA-Z])/); // Split numbers and letters
+            // Iterate through each item in the second array
+            for (let j = 0; j < arr2.length; j++) {
+                // Parse number and unit from the current item in arr2
+                const [number2 = '0', unit2 = ''] = arr2[j].split(/\s*(?=[a-zA-Z])/); // Split numbers and letters
+
+                // Check if units are the same
+                if (unit1 === unit2 || (!unit1 && !unit2)) {
+                    // If units are the same, sum the numbers
+                    arr2[j] = `${number1? parseFloat(number1) : '' + 
+                        number2 ? parseFloat(number2) : ''} ${unit2 ? unit2 : ""}`;
+                    break; // No more iteration needed
+                }
+                // If same unit not found, add new item to array
+                else if (j === arr2.length - 1) {
+                    arr2.push(arr1[i]);
+                    break; // Array length changed, need to break
+                }
+            }
+        }
+        return arr2.join(", ");
     }
 
     const handleAddToFridge = () => {
