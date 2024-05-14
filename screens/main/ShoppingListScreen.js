@@ -1,7 +1,7 @@
 import {View, StyleSheet, ScrollView, Text} from "react-native";
 import TopNavigationBar from "../../components/navigation/TopNavigationBar";
 import BottomNavigationBar from "../../components/navigation/BottomNavigationBar";
-import {BookIcon, EditIcon, HamburgerIcon, PlusIcon, ShoppingCartIcon} from "../../assets/icons";
+import {BookIcon, EditIcon, FridgeWithArrow, HamburgerIcon, PlusIcon} from "../../assets/icons";
 import EditSetAmountModal from "../../components/modals/EditSetAmountModal"; // Import the modal component
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, {useCallback, useEffect, useState} from "react";
@@ -210,7 +210,7 @@ export default function ShoppingListScreen () {
                 )) : null}
             </ScrollView>}
             <BottomRightCornerButton
-                IconComponent={ShoppingCartIcon}
+                IconComponent={FridgeWithArrow}
                 onPress={() => setModalVisible(true)}  // Only set modal to visible
                 SecondIconComponent={PlusIcon}
                 secondOnPress={openEmptyEditModal}
