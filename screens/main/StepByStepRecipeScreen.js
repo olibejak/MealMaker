@@ -17,22 +17,24 @@ export default function StepByStepRecipeScreen ( { route, navigation } ) {
 
     // Parsing recipe instructions into steps
     useEffect(() => {
+        // Define regular expressions
+        const numberRegex = /^\s*\d+\s*$/; // Matches a sentence consisting solely of a number
+        const stepRegex = /^\s*step\s*\d+\s*/i; // Matches a sentence starting with "step" followed by a number, case insensitive
+        const newLineNumberRegex = /\s*\d+\s*\n/g; // Matches new line, single number, new line
+
+        // Replace occurrences of new line, single number, new line with an empty string
+        let cleanedInstructions = recipe.strInstructions.replace(newLineNumberRegex, ' ');
+
+        // Split the cleaned instructions into sentences
         const sentenceRegex = /[.!?]+/g;
-        // Define regular expressions to match numbers and "step *number*" before the first newline
-        const numberRegex = /\b\d+\b/g;
-        const stepRegex = /step\s+\*\s*\d+\s*/i;
+        let sentences = cleanedInstructions.split(sentenceRegex);
 
-        // Split the text into sentences using the regular expression
-        // strInstructions == instructions of the meal from TheMealDB - type: string
-        let sentences = recipe.strInstructions.split(sentenceRegex);
+        // Filter out sentences that match the number or step regex
+        sentences = sentences.filter(sentence => {
+            return !(numberRegex.test(sentence) || stepRegex.test(sentence));
+        }).map(sentence => sentence.trim()); // Remove leading/trailing whitespace from remaining sentences
 
-        // Remove numbers and "step *number*" from each sentence
-        sentences = sentences.map(sentence => {
-            return sentence
-                .replace(numberRegex, '')
-                .replace(stepRegex, '')
-                .trim(); // Remove leading/trailing whitespace
-        });
+        console.log(sentences); // Check the output
 
         // Remove any empty strings or strings containing only whitespace
         setStepByStep(sentences.filter(sentence => sentence !== ''));
