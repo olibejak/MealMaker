@@ -75,10 +75,10 @@ const styles = StyleSheet.create({
         overflow: 'visible',
         marginBottom: 8,
         marginTop: 3,
-        minHeight: 250,
     },
     buttonContainer: {
         marginTop: 16,
+        marginBottom: 8,
         flexDirection: 'row',
         justifyContent: 'flex-end',
         gap: 8,

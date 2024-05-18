@@ -4,10 +4,10 @@
     "slug": "mealmakerreactapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/mealmakerlogo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/mealmakerlogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -15,17 +15,19 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pechabar.mealmakerreactapp"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/mealmakerlogo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.pechabar.mealmakerreactapp"
     },
     "androidNavigationBar": {
-        "backgroundColor": "#F2EDF6",
-        "barStyle": "light-content"
+      "backgroundColor": "#F2EDF6",
+      "barStyle": "light-content"
     },
     "web": {
       "favicon": "./assets/favicon.png"
